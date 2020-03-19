@@ -67,7 +67,7 @@ render(){
         <Route exact path = "/login/account">
           <Account accountInfo = {this.state.accountInfo}/>
         </Route>
-        <Route exact path = "/login/reset">
+        <Route exact path = "/login/account/resetpassword">
           <LoginReset/>
         </Route>
         <Route exact path="/">
