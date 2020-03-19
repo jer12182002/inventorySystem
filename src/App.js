@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {BrowserRouter as Switch,Router, Route} from 'react-router-dom';
 
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,7 +11,6 @@ import Login from "./components/login/login";
 import Account from "./components/login/account/account";
 import Register from "./components/login/register/register";
 import LoginReset from "./components/login/loginReset/loginReset";
-import EditUser from "./components/login/editUser/editUser";
 
 import Cookies from 'universal-cookie';
 
@@ -20,7 +19,8 @@ const cookies = new Cookies();
 class App extends React.Component {
 
 state = {
-  accountInfo: []
+  accountInfo: [],
+  affectedAccount:[]
 }
 
 receiveFromChild = (childrenData) => {
@@ -30,7 +30,10 @@ receiveFromChild = (childrenData) => {
     });
     cookies.set('user',childrenData);
   }
+}
 
+saveAffectedAccount = (receivedAffectedAccount)=>{
+  console.log("123123");
 }
 
 componentDidMount(){
@@ -48,20 +51,16 @@ render(){
      
       <Header accountInfo = {this.state.accountInfo}/>
 
-
        {this.state.accountInfo.ACCESS_LEVEL<3 ? (
-      <Router>
-         <Route exact path = "/login/account/editUser" component={EditUser}/>
-         <Route exact path = "/login/account/register">
+      <Switch>
+        <Route exact path = "/login/account/register" forcerefresh={true}>
           <Register accountInfo = {this.state.accountInfo}/>
         </Route>
-      </Router>
+      </Switch>
       ):null
       }
-      <Router>
-      	<Route exact path="/">
-          <Home accountInfo = {this.state.accountInfo}/>
-        </Route>
+      <Switch>
+      	
         <Route exact path="/login">
           <Login getDataFromChildren = {this.receiveFromChild} />
         </Route> 
@@ -71,8 +70,10 @@ render(){
         <Route exact path = "/login/reset">
           <LoginReset/>
         </Route>
-
-      </Router>
+        <Route exact path="/">
+          <Home accountInfo = {this.state.accountInfo}/>
+        </Route>
+      </Switch>
 
 
      

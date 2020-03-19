@@ -2,7 +2,9 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import './account.scss';
 
+
 import $ from 'jquery';
+
 import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
@@ -25,6 +27,45 @@ export default class account extends React.Component {
 
 
 
+	editClick(event,id){
+		event.preventDefault();
+
+		let updateUserInfo={}
+		updateUserInfo.ID = id;
+		updateUserInfo.ACCESS_LEVEL=$(`#access_level${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.VIEW_ITEM=$(`#view_item${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.ADD_ITEM=$(`#add_item${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.DELETE_ITEM=$(`#delete_item${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.NAME_MODIFY=$(`#name_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.QTY_VIEW=$(`#qty_view${id}`).prop("checked")||$(`#qty_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.QTY_MODIFY=$(`#qty_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.TYPE_VIEW=$(`#type_view${id}`).prop("checked")||$(`#type_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.TYPE_MODIFY=$(`#type_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.GRAM_VIEW=$(`#gram_view${id}`).prop("checked")||$(`#gram_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.GRAM_MODIFY=$(`#gram_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.EXP_VIEW=$(`#exp_view${id}`).prop("checked")||$(`#exp_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.EXP_MODIFY=$(`#exp_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.TAG_VIEW=$(`#tag_view${id}`).prop("checked")||$(`#tag_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.TAG_MODIFY=$(`#tag_modify${id}`).prop("checked")? 1 : 0;
+		
+
+		console.log(updateUserInfo);
+		fetch(`http://localhost:4000/login/account/saveUpdatedUser?userInfo=${JSON.stringify(updateUserInfo)}`)
+		.then(res=>res.json())
+		.then(data=>{
+			if(data.data === 'success') {
+				window.location.reload();
+
+			}else {
+				$(".statusText").text("something went wrong, please check if your login session has expired!. To solve it, please log in again!");
+			}
+		})
+		
+
+	}
+
+
+
 	componentDidMount(){
 		let cookieUser = cookies.get('user');
 		if(cookieUser.ACCESS_LEVEL < 3){
@@ -35,7 +76,6 @@ export default class account extends React.Component {
 
 
 	render() {
-
 		return (
 			<div className="account-wrapper">
 			<div className="header-section">
@@ -57,6 +97,9 @@ export default class account extends React.Component {
 					(
 						<div className="block userView-container">
 							<h1>User overview</h1>
+								<div className = "statusText-container block">
+        							<h3 className = "statusText warning-status text-center"></h3>
+        						</div>
 							<div className="usersView-display">
 								{this.state.users.length?( 
 								<table className="block user-displayTable">
@@ -86,32 +129,24 @@ export default class account extends React.Component {
 										{this.state.users.map( (user,key) => (
 											<tr key={`user-${key}`} className={`userRow user-${key}`}>
 												<td><strong>{user.USERNAME}</strong></td>
-												<td>{user.ACCESS_LEVEL < 3? 'Manager' : 'USER' }</td>
-												<td>{user.VIEW_ITEM ?'YES':'NO'}</td>
-												<td>{user.ADD_ITEM ?'YES':'NO'}</td>
-												<td>{user.DELETE_ITEM ?'YES':'NO'}</td>
-												<td>{user.NAME_MODIFY ?'YES':'NO'}</td>
-												<td>{user.QTY_VIEW ?'YES':'NO'}</td>
-												<td>{user.QTY_MODIFY ?'YES':'NO'}</td>
-												<td>{user.TYPE_VIEW ?'YES':'NO'}</td>
-												<td>{user.TYPE_MODIFY ?'YES':'NO'}</td>
-												<td>{user.GRAM_VIEW ?'YES':'NO'}</td>
-												<td>{user.GRAM_MODIFY ?'YES':'NO'}</td>
-												<td>{user.EXP_VIEW ?'YES':'NO'}</td>
-												<td>{user.EXP_MODIFY ?'YES':'NO'}</td>
-												<td>{user.TAG_VIEW ?'YES':'NO'}</td>
-												<td>{user.TAG_MODIFY ?'YES':'NO'}</td>
+												<td><input id={`access_level${user.ID}`} type="checkbox" defaultChecked={user.ACCESS_LEVEL < 3}></input></td>
+												<td><input id={`view_item${user.ID}`} type="checkbox" defaultChecked={user.VIEW_ITEM}></input></td>
+												<td><input id={`add_item${user.ID}`} type="checkbox" defaultChecked={user.ADD_ITEM}></input></td>
+												<td><input id={`delete_item${user.ID}`} type="checkbox" defaultChecked={user.DELETE_ITEM}></input></td>
+												<td><input id={`name_modify${user.ID}`} type="checkbox" defaultChecked={user.NAME_MODIFY}></input></td>
+												<td><input id={`qty_view${user.ID}`} type="checkbox" defaultChecked={user.QTY_VIEW}></input></td>
+												<td><input id={`qty_modify${user.ID}`} type="checkbox" defaultChecked={user.QTY_MODIFY}></input></td>
+												<td><input id={`type_view${user.ID}`} type="checkbox" defaultChecked={user.TYPE_VIEW}></input></td>
+												<td><input id={`type_modify${user.ID}`} type="checkbox" defaultChecked={user.TYPE_MODIFY}></input></td>
+												<td><input id={`gram_view${user.ID}`} type="checkbox" defaultChecked={user.GRAM_VIEW}></input></td>
+												<td><input id={`gram_modify${user.ID}`} type="checkbox" defaultChecked={user.GRAM_MODIFY}></input></td>
+												<td><input id={`exp_view${user.ID}`} type="checkbox" defaultChecked={user.EXP_VIEW}></input></td>
+												<td><input id={`exp_modify${user.ID}`} type="checkbox" defaultChecked={user.EXP_MODIFY}></input></td>
+												<td><input id={`tag_view${user.ID}`} type="checkbox" defaultChecked={user.TAG_VIEW}></input></td>
+												<td><input id={`tag_modify${user.ID}`} type="checkbox" defaultChecked={user.TAG_MODIFY}></input></td>
 												<td>{user.CREATEDBY}</td>
 												<td>
-													<Link to = {{
-														pathname: '/login/account/editUser',
-														state: {
-															isManager: true,
-															targetUserID: user.ID
-														}
-													}}>Edit</Link>
-													<Link to = "/login/account/editUser">aa</Link>
-													
+													<button type="button" className="btn btn-success" onClick={(e)=>this.editClick(e,`${user.ID}`)}>Save</button>									
 												</td>
 											</tr>
 											)								
