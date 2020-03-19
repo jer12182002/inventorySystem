@@ -1,0 +1,58 @@
+.register-wrapper {
+	
+	.header-section {
+		
+	}
+
+	.main-section {
+		text-align: center;
+
+		.register-panel {
+			margin-top: 50px;
+
+
+			.block {
+				margin-top: 20px;
+
+				label {
+					font-size: 24px;
+				}
+
+				.inputField {
+					width: 300px;
+				}
+
+				.btn {
+					background-color: green;
+					border-radius: 25px;
+					color: white;
+					font-size: 24px;
+				}
+
+				.permission-item, .permission-itemDetails {
+					width: 500px;
+					margin: 0 auto;
+					margin-top: 50px;
+
+					& {
+						font-size: 24px;  //everthing in this table set to same font-size;
+					}
+					
+					td {
+						width: 150px;
+						height: 30px;
+						border-bottom: 1px solid lightgray;
+					} 
+
+					input {
+						width: 25px;
+						height: 25px;
+					}
+
+				}
+			}
+
+			
+		}
+	}
+}

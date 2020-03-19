@@ -1,0 +1,48 @@
+.login-wrapper {
+	
+	.main-section {
+		width: 60%;
+		margin: 0 auto;
+		margin-top:50px;
+
+
+		.login-panel {
+			height: 200px;
+			text-align: center;
+
+			form {
+				margin: 0 auto;
+			
+				label {
+					display: block;
+					font-size: 30px;
+					font-weight:500;
+
+				}
+				
+				input {
+					width: 50%;
+					background-color: lightblue;
+				}
+
+				.btn {
+					margin: 10px;
+					border-radius: 10px;
+					border: 2px solid black;
+					box-shadow: 2px 2px black;
+					padding: 5px 20px;
+					background-color: lightgray;
+					font-weight: 800;
+				}
+			}
+		}
+
+		.statusText-container {
+			margin-top: 50px;
+
+			.statusText {
+				text-align: center;
+			}
+		}
+	}
+}

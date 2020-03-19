@@ -1,0 +1,30 @@
+.loginReset-wrapper {
+	.main-section {
+		width: 60%;
+		margin: 0 auto;		
+		text-align: center;
+
+		label {
+			display: block;
+			font-weight: 800;
+		}
+
+		.btn {
+			margin: 10px;
+			border-radius: 10px;
+			padding: 5px 20px;
+			border: 2px solid black;
+			box-shadow: 2px 2px darkgreen;
+		}
+
+		.clear {
+			margin: 10px;
+			border-radius: 10px;
+			border: 2px solid black;
+			box-shadow: 2px 2px black;
+			padding: 5px 20px;
+			background-color: lightgray;
+			font-weight: 800;
+		}
+	}
+}

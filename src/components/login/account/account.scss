@@ -1,0 +1,47 @@
+.account-wrapper {
+	.header-section {
+		width: 100%;
+
+		.nav-bar {
+			border-top: 2px solid lightgray;
+			border-bottom: 2px solid lightgray;
+			li {
+				display: inline-block;
+				margin: 10px 20px;
+
+				a {
+					font-size: 20px;
+				}
+			}
+		}
+	}
+
+	.main-section {
+		.userView-container {
+
+			.usersView-display {
+
+				.user-displayTable {
+					.userRowHeader {
+						
+						td {
+							font-weight: 900;
+							padding: 10px;
+							border: 2px solid black;
+							text-align: center;
+						}
+					}
+
+					.userRow {
+						td {
+							padding: 10px;
+							border: 2px solid black;
+							text-align: center;
+						}
+					}
+					
+				}				
+			}
+		}
+	}
+}
