@@ -70,6 +70,28 @@ app.get('/login/account/register',(req,res) =>{
 });
 
 
+app.get('/login/account/resetpassword',(req,res)=>{
+	console.log("Received Data from resetPassword");
+	let userPwdInfo = JSON.parse(req.query.newUserInfo);
+
+	var sqlQuery = `UPDATE account_list set PASSWORD = '${userPwdInfo.newPassword}' where ID = ${userPwdInfo.id}`;
+	console.log(sqlQuery);
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}
+		else{
+			return res.json({data:'success'});
+		}
+	});
+
+});
+
+
+
+
+
 
 app.get('/login/account/displayUsers',(req,res) =>{
 	console.log("Get Target User" + req.query);
@@ -101,7 +123,6 @@ app.get('/login/account/saveUpdatedUser',(req,res)=>{
 			return (res.json({data: 'success'}));
 		}
 	});
-
 });
 
 
