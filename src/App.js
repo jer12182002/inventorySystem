@@ -12,6 +12,8 @@ import Account from "./components/login/account/account";
 import Register from "./components/login/register/register";
 import LoginReset from "./components/login/loginReset/loginReset";
 
+import InventoryMain from './components/inventory/inventoryMain';
+
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -55,6 +57,10 @@ render(){
       <Switch>
         <Route exact path = "/login/account/register" forcerefresh={true}>
           <Register accountInfo = {this.state.accountInfo}/>
+        </Route>
+
+        <Route exact path = "/inventory">
+          <InventoryMain/>
         </Route>
       </Switch>
       ):null
