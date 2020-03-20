@@ -128,6 +128,23 @@ app.get('/login/account/saveUpdatedUser',(req,res)=>{
 
 
 
+app.get('/inventory/loadSelect',(req,res)=>{
+
+	var sqlQuery = 'SELECT ITEM_TYPE FROM item_list_type_list';
+	console.log('Get request from inventory/loadSelect');
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}else {
+			console.log(result);
+			return res.json({data: result});
+		}
+	});
+});
+
+
+
+
 app.get('/home', function(req, res) {
 	if (req.session.loggedin) {
 		res.send('Welcome back, ' + req.session.username + '!');

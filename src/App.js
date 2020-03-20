@@ -60,7 +60,8 @@ render(){
         </Route>
 
         <Route exact path = "/inventory">
-          <InventoryMain/>
+          <InventoryMain accountInfo = {this.state.accountInfo}/>
+          }
         </Route>
       </Switch>
       ):null

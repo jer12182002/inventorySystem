@@ -7,14 +7,19 @@ export default class inventoryMain extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			loggedUser: this.props.accountInfo
+		}
+
+	
 	}
 
 	render() {
 		return (
 			<div className= "inventorymain-wrapper">
-				inventory main
 				<Notification/>
-				<InventroyItemDisplay/>
+				<InventroyItemDisplay loggedUser = {this.props.accountInfo}/>
+				
 			</div>
 		);
 	}
