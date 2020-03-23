@@ -92,6 +92,7 @@ export default class register extends React.Component {
 				QTY_MODIFY: $("#qtyM").prop("checked")? 1 : 0,
 				TYPE_VIEW: ($("#typeV").prop("checked")||$("#typeM").prop("checked"))? 1 : 0,
 				TYPE_MODIFY: $("#typeM").prop("checked")? 1 : 0,
+				SHELF_MODIFY: $("#shelf_M").prop("checked")? 1: 0,
 				GRAM_VIEW: ($("#gramV").prop("checked")||$("#gramM").prop("checked"))? 1 : 0,
 				GRAM_MODIFY: $("#gramM").prop("checked")? 1 : 0,
 				EXP_VIEW: ($("#expV").prop("checked")||$("#expM").prop("checked"))? 1 : 0,
@@ -129,6 +130,7 @@ export default class register extends React.Component {
 						&QTY_MODIFY=${this.state.userPermission.QTY_MODIFY}
 						&TYPE_VIEW=${this.state.userPermission.TYPE_VIEW}
 						&TYPE_MODIFY=${this.state.userPermission.TYPE_MODIFY}
+						&SHELF_MODIFY=${this.state.userPermission.SHELF_MODIFY}
 						&GRAM_VIEW=${this.state.userPermission.GRAM_VIEW}
 						&GRAM_MODIFY=${this.state.userPermission.GRAM_MODIFY}
 						&EXP_VIEW=${this.state.userPermission.EXP_VIEW}
@@ -252,6 +254,12 @@ export default class register extends React.Component {
 	        								<td><input type="checkbox" id="typeV"/></td>
 	        								<td><input type="checkbox" id="typeM" onChange = {this.checkWhileModify}/></td>
 	        							</tr>
+	        							<tr>
+	        								<td>Shelf No.</td>
+	        								<td></td>
+	        								<td><input type="checkbox" id="shelf_M" onChange = {this.checkWhileModify}/></td>
+	        							</tr>
+
 	        							<tr>
 	        								<td>Gram</td>
 	        								<td><input type="checkbox" id="gramV"/></td>

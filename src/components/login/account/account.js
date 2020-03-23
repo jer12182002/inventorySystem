@@ -41,6 +41,7 @@ export default class account extends React.Component {
 		updateUserInfo.QTY_MODIFY=$(`#qty_modify${id}`).prop("checked")? 1 : 0;
 		updateUserInfo.TYPE_VIEW=$(`#type_view${id}`).prop("checked")||$(`#type_modify${id}`).prop("checked")? 1 : 0;
 		updateUserInfo.TYPE_MODIFY=$(`#type_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.SHELF_MODIFY=$(`#SHELF_MODIFY${id}`).prop("checked")? 1 : 0;
 		updateUserInfo.GRAM_VIEW=$(`#gram_view${id}`).prop("checked")||$(`#gram_modify${id}`).prop("checked")? 1 : 0;
 		updateUserInfo.GRAM_MODIFY=$(`#gram_modify${id}`).prop("checked")? 1 : 0;
 		updateUserInfo.EXP_VIEW=$(`#exp_view${id}`).prop("checked")||$(`#exp_modify${id}`).prop("checked")? 1 : 0;
@@ -115,6 +116,7 @@ export default class account extends React.Component {
 											<td>Modify QTY</td>
 											<td>View Type</td>
 											<td>Modify Type</td>
+											<td>Modify Shelf</td>
 											<td>View Gram</td>
 											<td>Modify Gram</td>
 											<td>View EXP</td>
@@ -138,6 +140,7 @@ export default class account extends React.Component {
 												<td><input id={`qty_modify${user.ID}`} type="checkbox" defaultChecked={user.QTY_MODIFY}></input></td>
 												<td><input id={`type_view${user.ID}`} type="checkbox" defaultChecked={user.TYPE_VIEW}></input></td>
 												<td><input id={`type_modify${user.ID}`} type="checkbox" defaultChecked={user.TYPE_MODIFY}></input></td>
+												<td><input id={`SHELF_MODIFY${user.ID}`} type="checkbox"defaultChecked={user.SHELF_MODIFY}></input></td>
 												<td><input id={`gram_view${user.ID}`} type="checkbox" defaultChecked={user.GRAM_VIEW}></input></td>
 												<td><input id={`gram_modify${user.ID}`} type="checkbox" defaultChecked={user.GRAM_MODIFY}></input></td>
 												<td><input id={`exp_view${user.ID}`} type="checkbox" defaultChecked={user.EXP_VIEW}></input></td>
