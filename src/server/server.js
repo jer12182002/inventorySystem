@@ -19,6 +19,8 @@ app.use(cors());
 
 connection.connect();
 
+//****************************Account*************************************
+
 app.get('/login',(req,res)=>{
 	const {account, password } = req.query;
 	var sqlQuery = `SELECT * FROM ACCOUNT_LIST WHERE ACCOUNT = '${account}' AND PASSWORD = '${password}'`;
@@ -90,9 +92,6 @@ app.get('/login/account/resetpassword',(req,res)=>{
 
 
 
-
-
-
 app.get('/login/account/displayUsers',(req,res) =>{
 	console.log("Get Target User" + req.query);
 
@@ -125,9 +124,12 @@ app.get('/login/account/saveUpdatedUser',(req,res)=>{
 	});
 });
 
+//*******************************************************************************************
 
 
 
+
+//****************************Inventroy******************************************************
 app.get('/inventory/loadSelect',(req,res)=>{
 
 	var sqlQuery = 'SELECT ITEM_TYPE FROM item_list_type_list';
@@ -136,13 +138,41 @@ app.get('/inventory/loadSelect',(req,res)=>{
 		if(err){
 			res.send(err);
 		}else {
-			console.log(result);
 			return res.json({data: result});
 		}
 	});
 });
 
 
+
+app.get('/inventory/addNewItem',(req,res)=>{
+	let newItem = JSON.parse(req.query.newItem);
+	console.log('Get request to add newItem');
+
+	let sqlQuery = `INSERT INTO item_list(TYPE, SHELF_NO,MANUFACTURE,ENGLISH_NAME,CHINESE_NAME, QTY,EXPIRE_DATE,GRAM,CREATED_BY,LAST_MODIFIED_BY) VALUES ('${newItem.type}', '${newItem.shelfNo}', '${newItem.manufacturer}', '${newItem.ENname}','${newItem.CHname}', '${newItem.qty}', '${newItem.exp}','${newItem.gram}', '${newItem.createdBy}', '${newItem.createdBy}')`;
+	console.log(sqlQuery);
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}else {
+			return (res.json({data: 'success'}));
+		}
+	});
+});
+
+app.get('/inventory/loadAllItem',(req,res)=>{
+	let sqlQuery = 'SELECT * FROM item_list';
+
+	console.log('Get all item for inventory');
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}else {
+			return (res.json({data:result}));
+		}
+	})
+
+});
 
 
 app.get('/home', function(req, res) {

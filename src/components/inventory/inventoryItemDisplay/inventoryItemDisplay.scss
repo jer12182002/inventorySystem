@@ -2,6 +2,27 @@
 	background-color: lightyellow;
 
 
+	.main-section {
+		.items-table {
+			
+			td {
+				border: 2px solid black;
+				vertical-align: middle;
+			}
 
+			thead {
+				font-weight: 900;
+				border-top: 4px solid black;
+				border-bottom: 4px solid black;
+				
+			}
+			
+
+			tbody {
+			
+			}
+
+		}
+	}
 
 }

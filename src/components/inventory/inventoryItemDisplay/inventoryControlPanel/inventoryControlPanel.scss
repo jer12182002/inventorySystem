@@ -3,4 +3,25 @@
 		bottom:0;
 		width: 100%;
 		background-color: lightblue;
+
+		.main-section {
+			label,input,select,button {
+				margin: 5px;
+				height: 35px;
+			}
+			button {
+				margin-top: 0;
+			}
+
+			#addShelf {
+				width: 35px;
+			}
+			
+			#addQty {
+				width: 50px;
+			}
+			#addGram {
+				width: 50px;
+			}
+		}
 }

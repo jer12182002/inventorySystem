@@ -6,6 +6,10 @@
   display:inline-block;
 }
 
+.table {
+	display: table;
+}
+
 .header-section {
 	width: 100%;
 	text-align: center;
@@ -24,4 +28,8 @@
 }
 .text-center {
 	text-align: center;
+}
+
+.margin-center {
+	margin: 0 auto;
 }
