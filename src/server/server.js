@@ -161,7 +161,7 @@ app.get('/inventory/addNewItem',(req,res)=>{
 });
 
 app.get('/inventory/loadAllItem',(req,res)=>{
-	let sqlQuery = 'SELECT * FROM item_list';
+	let sqlQuery = 'SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY,ROWSPAN FROM item_list I INNER JOIN (SELECT CHINESE_NAME AS T_CHINESE_NAME, SUM(QTY) AS T_QTY,count(CHINESE_NAME) AS ROWSPAN FROM item_list GROUP BY CHINESE_NAME) T ON I.CHINESE_NAME = T.T_CHINESE_NAME Order by I.TYPE, I.CHINESE_NAME';
 
 	console.log('Get all item for inventory');
 	connection.query(sqlQuery,(err,result)=>{
@@ -173,6 +173,44 @@ app.get('/inventory/loadAllItem',(req,res)=>{
 	})
 
 });
+
+
+app.get('/inventory/updateItems',(req,res)=>{
+	let updatedItem = JSON.parse(req.query.updatedItem);
+	let sqlQuery = `UPDATE item_list SET ENGLISH_NAME = '${updatedItem.ENGLISH_NAME}',CHINESE_NAME = '${updatedItem.CHINESE_NAME}',TYPE = '${updatedItem.TYPE}',SHELF_NO = '${updatedItem.SHELF_NO}' ,QTY = '${updatedItem.QTY}'`;
+		sqlQuery += updatedItem.EXPIRE_DATE? `,EXPIRE_DATE = '${updatedItem.EXPIRE_DATE}'`:``
+		sqlQuery += `,GRAM = '${updatedItem.GRAM}' WHERE ID = '${updatedItem.itemId}'`;
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}
+		else {
+			console.log(result);
+			return (res.json({data:result}));
+		}
+	})
+});
+
+app.get('/inventory/deleteItem',(req,res)=>{
+	let {itemId} = req.query;
+	console.log({itemId});
+
+	let sqlQuery = `DELETE FROM item_list where ID = ${itemId}`;
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}
+		else {
+			return (res.json({data:'success'}));
+		} 
+	})
+})
+
+
+
+
 
 
 app.get('/home', function(req, res) {

@@ -4,7 +4,10 @@
 
 	.main-section {
 		.items-table {
-			
+			.number {
+				width: 80px;
+			}
+
 			td {
 				border: 2px solid black;
 				vertical-align: middle;
@@ -19,7 +22,31 @@
 			
 
 			tbody {
-			
+				
+				.hightLighYellow {
+					background-color: #FDD023;
+				}
+
+				.hightLighBlue {
+					background-color: #93CCEA;
+				}
+
+				p {
+					margin: 0;
+				}
+
+				input[type="number"], .shelf_no {
+					text-align: center;
+					width: 50px;
+				}
+
+				input[type="date"] {
+					text-align: center;
+				}
+
+				.btn-danger {
+					margin: 0 10px;
+				}
 			}
 
 		}
