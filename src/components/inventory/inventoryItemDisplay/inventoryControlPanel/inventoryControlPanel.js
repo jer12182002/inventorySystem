@@ -47,36 +47,43 @@ export default class inventoryControlPanel extends React.Component {
 
 		return (
 			<div className="controlPanel-wrapper">
-				<div className="inline-b main-section">
-					<label>Type:</label>
-					<select id="addType">
-					{this.props.types.map((type,keyIndex)=>
-						<option key={keyIndex}>{type.ITEM_TYPE}</option>					
-					)}
-					</select>
+				<div className="main-section">
+					<div className="inline-b">
+						<label>Type:</label>
+						<select id="addType">
+						{this.props.types.map((type,keyIndex)=>
+							<option key={keyIndex}>{type.ITEM_TYPE}</option>					
+						)}
+						</select>
 
-					<label>Shelf No.:</label>
-					<input id="addShelf" type="text"></input>
+						<label>Shelf No.:</label>
+						<input id="addShelf" type="text"></input>
 
-					<label>Manaufacturer:</label>
-					<input id="addManufact" type="text"></input>
+						<label>Manaufacturer:</label>
+						<input id="addManufact" type="text"></input>
 
-					<label>En Name:</label>
-					<input id="addENName" type="text"></input>
+						<label>En Name:</label>
+						<input id="addENName" type="text"></input>
 
-					<label>CH Name:</label>
-					<input id="addCHName" type="text"></input>
+						<label>CH Name:</label>
+						<input id="addCHName" type="text"></input>
 
-					<label>QTY:</label>
-					<input id="addQty" type="number"></input>
+						<label>QTY:</label>
+						<input id="addQty" type="number"></input>
 
-					<label>Exp:</label>
-					<input id="addExp" type="date"></input>
+						<label>Exp:</label>
+						<input id="addExp" type="date"></input>
 
-					<label>Gram: </label>
-					<input id="addGram" type="number"></input>
+						<label>Gram: </label>
+						<input id="addGram" type="number"></input>
 
-					<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
+						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
+					</div>
+
+					<div className="inline-b filter-Section">
+						<input id="itemFilter" type="text"/>
+						<button id="filterBtn" type="button" className="btn btn-success">Find</button>
+					</div>
 				</div>
 			</div>
 		);
