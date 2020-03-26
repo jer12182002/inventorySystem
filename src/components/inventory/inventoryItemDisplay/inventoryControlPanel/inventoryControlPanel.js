@@ -43,8 +43,18 @@ export default class inventoryControlPanel extends React.Component {
 		}
 	}
 
-	render() {
 
+
+	filterBtnClcik(){
+		this.props.filterDisplay($.trim($("#itemFilter").val().toUpperCase()));
+	}
+
+
+
+
+
+	render() {	
+		console.log(this.props.loggedUser);
 		return (
 			<div className="controlPanel-wrapper">
 				<div className="main-section">
@@ -82,7 +92,7 @@ export default class inventoryControlPanel extends React.Component {
 
 					<div className="inline-b filter-Section">
 						<input id="itemFilter" type="text"/>
-						<button id="filterBtn" type="button" className="btn btn-success">Find</button>
+						<button id="filterBtn" type="button" className="btn btn-success" onClick={(e)=>this.filterBtnClcik(e)}>Find</button>
 					</div>
 				</div>
 			</div>
