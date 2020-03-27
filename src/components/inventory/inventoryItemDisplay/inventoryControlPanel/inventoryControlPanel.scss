@@ -6,7 +6,7 @@
 
 		.main-section {
 			label,input,select,button {
-				margin: 5px;
+				margin: 3px;
 				height: 35px;
 			}
 			button {
@@ -27,6 +27,7 @@
 
 			.filter-Section {
 				background-color: orange;
+				padding-top:3px;
 				float:right;
 			}
 		}

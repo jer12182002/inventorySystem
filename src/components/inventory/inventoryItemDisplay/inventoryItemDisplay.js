@@ -3,6 +3,7 @@ import './inventoryItemDisplay.scss';
 
 
 import $ from 'jquery';
+
 import ControlPanel from './inventoryControlPanel/inventoryControlPanel';
 
 export default class inventoryItemDisplay extends React.Component {
@@ -13,7 +14,7 @@ export default class inventoryItemDisplay extends React.Component {
 			loggedUser: this.props.loggedUser,
 			types: [],
 			allItems: [],
-			rowSpan: 0
+			savedFilters:[]
 		}
 
 		this.loadAllItem();
@@ -40,17 +41,15 @@ export default class inventoryItemDisplay extends React.Component {
 		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
 		.then(res => res.json())
 		.then(data =>{
+			
+			data.data.map((item,index)=>{ 		//this is for the filter display
+				item.checkDisplay = false;
+			});
+
 			this.setState({allItems: this.setStateWithRowSpan(data.data)});
 		});
 	}
 
-	// highlightColor(key){
-	// 	if($("#menu"+key).text().toUpperCase().search("STTW")>=0){
-	// 		$("#menu"+key).addClass('hightLighYellow');
-	// 	}else if(($("#menu"+key).text().toUpperCase().search("STSC")>=0)){
-	// 		$("#menu"+key).addClass('hightLighBlue');
-	// 	}
-	// }
 
 
 //=================================================================================	
@@ -101,23 +100,23 @@ deleteItem (id){
 //=================================================================================
 
 //============================== All btns click ===================================
-	loadDefaultSelect(key){
-		$("#TYPE_MODIFY" + key).val($("#TYPE_MODIFY"+key).data("defaultvalue"));
+	setTypeDefault(id,type){
+		$("#TYPE_MODIFY"+id).val(type);
 	}
-
 
 	clickEdit(e, key){
 		e.preventDefault();
 		$("#edit-btn"+key).addClass("display-none");
 		$("#functional-Btns"+key).removeClass("display-none");
 		$(".editToggle"+key).removeClass("display-none");
-		this.loadDefaultSelect(key);
 	}
 
 	clickSave(e,key,id) {
 		e.preventDefault();
 		this.updateItem(id);
 		this.setInvisible(key);
+		
+		//window.location.reload();
 	}
 
 	clickCancel(e,key) {
@@ -128,6 +127,8 @@ deleteItem (id){
 	clickDelete(e,id){
 		e.preventDefault();
 		this.deleteItem(id);
+
+		//window.location.reload();
 	}
 	
 
@@ -136,13 +137,30 @@ deleteItem (id){
 		$("#functional-Btns"+key).addClass("display-none");
 		$(".editToggle"+key).addClass("display-none");
 	}
+
+
+	saveDisplayClearBtnFromChild(status){
+		// let filterArr = this.state.savedFilters;
+		// filterArr.push(filterValue)
+		// this.setState({savedFilters:filterArr});
+		
+		if(status === 'display')
+			console.log("display");
+
+		else {
+			//this.setState({savedFilters:[]});
+			console.log("clear");
+		}
+	}
+
+
+
 //===========================================================================
 	
 
 
-//============================= Helper Functions ===================================
+//============================= Display Functions ===================================
 	setStateWithRowSpan(recivedData){
-
 		recivedData.map((data,index)=>{
 	
 			let rowSpan = 1;
@@ -151,22 +169,29 @@ deleteItem (id){
 				&& recivedData[index+1].ENGLISH_NAME === data.ENGLISH_NAME 
 				&& recivedData[index+1].CHINESE_NAME === data.CHINESE_NAME 
 				&& recivedData[index+1].TYPE === data.TYPE) {
-
 					rowSpan = recivedData.filter(r => r.ENGLISH_NAME === data.ENGLISH_NAME && r.CHINESE_NAME === data.CHINESE_NAME && r.TYPE === data.TYPE).length;
 			}
-
 			if(index>=1 
 				&& recivedData[index-1].ENGLISH_NAME === data.ENGLISH_NAME 
 				&& recivedData[index-1].CHINESE_NAME === data.CHINESE_NAME 	
 				&& recivedData[index-1].TYPE === data.TYPE) {
-				rowSpan = 0;
-			}		
-			
+					rowSpan = 0;
+			}			
 			data.ROWSPAN = rowSpan;		
 		})
-	
-	return recivedData;
+		return recivedData;
 	}
+
+
+
+
+	checkDisplay(e,id){
+		e.preventDefault();
+		console.log('@@@');
+		console.log(id);
+	}
+
+
 
 
 
@@ -243,7 +268,7 @@ deleteItem (id){
 						<td className="name">
 							<p>{item.ENGLISH_NAME}</p>
 							{this.state.loggedUser.NAME_MODIFY? 
-								<input id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.ENGLISH_NAME}></input>:null
+								<input key={item.ENGLISH_NAME} id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.ENGLISH_NAME}/>:null
 							}
 						</td>
 
@@ -254,7 +279,7 @@ deleteItem (id){
 						<td className="name">
 							<p>{item.CHINESE_NAME}</p>
 							{this.state.loggedUser.NAME_MODIFY? 
-								<input id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.CHINESE_NAME}></input>:null
+								<input key={item.CHINESE_NAME} id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.CHINESE_NAME}/>:null
 							}
 						</td>
 
@@ -264,7 +289,7 @@ deleteItem (id){
 							this.state.loggedUser.TYPE_MODIFY? 
 								<td className="margin-center text-center">
 									<p data-id={`TYPE_MODIFY${item.ID}`}>{item.TYPE}</p>
-									<select id={`TYPE_MODIFY${item.ID}`} className={`editToggle${key} display-none`} data-defaultvalue={item.TYPE} >
+									<select key={item.TYPE} id={`TYPE_MODIFY${item.ID}`} className={`editToggle${key} display-none`}>
 										{this.state.types.map((type,keyIndex)=>
 											<option key={keyIndex}>{type.ITEM_TYPE}</option>					
 										)}
@@ -280,12 +305,14 @@ deleteItem (id){
 						<td className="margin-center text-center number">
 							<p>{item.SHELF_NO}</p>
 							{this.state.loggedUser.SHELF_MODIFY ? 
-								<input id={`SHELF_M${item.ID}`}type="text" className={`editToggle${key} display-none shelf_no`} defaultValue={item.SHELF_NO}/> : null
+								<input key={item.SHELF_NO} id={`SHELF_M${item.ID}`}type="text" className={`editToggle${key} display-none shelf_no`} defaultValue={item.SHELF_NO}/> : null
 							}
 						</td>
 						
 
-						<td id={`menu${item.ID}`} className="highlightColor">{item.MANUFACTURE}</td>
+						<td id={`menu${item.ID}`} className="highlightColor">{item.MANUFACTURE}
+							
+						</td>
 						
 
 
@@ -294,7 +321,7 @@ deleteItem (id){
 							this.state.loggedUser.QTY_MODIFY?
 								<td className="margin-center text-center number">
 									<p>{item.QTY}</p>
-									<input id={`QTY_MODIFY${item.ID}`} type="number"  className={`editToggle${key} display-none`} defaultValue={item.QTY}/>
+									<input key={item.QTY} id={`QTY_MODIFY${item.ID}`} type="number"  className={`editToggle${key} display-none`} defaultValue={item.QTY}/>
 								</td>
 								:<td className="margin-center text-center number">{item.QTY}</td>
 							:null
@@ -320,7 +347,7 @@ deleteItem (id){
 							this.state.loggedUser.EXP_MODIFY? 
 								<td className="margin-center text-center">
 									<p>{item.EXPIRE_DATE}</p>
-									<input id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} display-none`} defaultValue={item.EXPIRE_DATE}/>
+									<input key={item.EXPIRE_DATE} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} display-none`} defaultValue={item.EXPIRE_DATE}/>
 								</td>
 								:<td className="margin-center text-center">{item.EXPIRE_DATE}</td>	
 							:null
@@ -331,7 +358,7 @@ deleteItem (id){
 							this.state.loggedUser.GRAM_MODIFY?
 								<td className="margin-center text-center">
 									<p>{item.GRAM}</p>
-									<input id={`GRAM_M${item.ID}`}type="number" className={`editToggle${key} display-none`} defaultValue={item.GRAM}/>
+									<input key={item.GRAM} id={`GRAM_M${item.ID}`}type="number" className={`editToggle${key} display-none`} defaultValue={item.GRAM}/>
 								</td>
 								:<td className="margin-center text-center">{item.GRAM}</td>	
 							:null
@@ -341,9 +368,10 @@ deleteItem (id){
 						{this.state.loggedUser.NAME_MODIFY || this.state.loggedUser.TYPE_MODIFY ||
 						 this.state.loggedUser.QTY_MODIFY || this.state.loggedUser.EXP_MODIFY || 
 						 this.state.loggedUser.GRAM_MODIFY ?
-						<td className="margin-center text-center btns">
-							<div id={`edit-btn${key}`}>
-								<button type="button" className="btn btn-primary" onClick={(e)=>this.clickEdit(e,key)}>Edit</button>
+						<td className="margin-center text-center">
+							<div id={`edit-btn${key}`} className="inline-f">
+								<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickEdit(e,key); this.setTypeDefault(item.ID,item.TYPE)}}>Edit</button>
+								<input type="checkbox" className="checkBoxDisplay"/>
 							</div>
 
 							<div id={`functional-Btns${key}`} className="display-none">
@@ -362,8 +390,10 @@ deleteItem (id){
 				</div>
 				
 				{this.state.loggedUser.ADD_ITEM? 
-					(<ControlPanel loggedUser={this.state.loggedUser} filterDisplay={this.loadAllItem.bind(this)} loggedUser = {this.state.loggedUser.USERNAME} types={this.state.types}/>):null
+					(<ControlPanel loggedUser={this.state.loggedUser} filterDisplay={this.loadAllItem.bind(this)} saveDisplayClearBtnInChild={this.saveDisplayClearBtnFromChild.bind(this)} types={this.state.types}/>):null
 				}
+
+				
 			</div>
 		);
 	}

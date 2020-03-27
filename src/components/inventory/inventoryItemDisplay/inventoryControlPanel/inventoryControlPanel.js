@@ -6,6 +6,7 @@ import $ from 'jquery';
 export default class inventoryControlPanel extends React.Component {
 
 
+
 	clickAddBtn (e){
 		e.preventDefault();
 
@@ -45,10 +46,26 @@ export default class inventoryControlPanel extends React.Component {
 
 
 
-	filterBtnClcik(){
+	filterItem(){
 		this.props.filterDisplay($.trim($("#itemFilter").val().toUpperCase()));
 	}
 
+
+
+
+	filterDisplayBtnClick(e){
+		e.preventDefault();
+		this.props.saveDisplayClearBtnInChild('display');
+		$('.saveFilter-container').addClass('display-none');
+		$('.clearDisplayFilter-container').removeClass('display-none');
+	}
+
+	filterClearBtnClick(e){
+		e.preventDefault();
+		this.props.saveDisplayClearBtnInChild('clear');
+		$('.clearDisplayFilter-container').addClass('display-none');
+		$('.saveFilter-container').removeClass('display-none');
+	}
 
 
 
@@ -90,9 +107,15 @@ export default class inventoryControlPanel extends React.Component {
 						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
 					</div>
 
-					<div className="inline-b filter-Section">
-						<input id="itemFilter" type="text"/>
-						<button id="filterBtn" type="button" className="btn btn-success" onClick={(e)=>this.filterBtnClcik(e)}>Find</button>
+					<div className="inline-f filter-Section">
+						<input id="itemFilter" type="text" onChange= {this.filterItem.bind(this)}/>
+						
+						<div className="saveFilter-container">
+							<button id="displayFilter" type="button" className="btn btn-success" onClick={(e)=>this.filterDisplayBtnClick(e)}>Display</button>
+						</div>
+						<div className="clearDisplayFilter-container display-none">
+							<button id="clearDisplayFilter"type="button" className="btn btn-success" onClick={(e)=>this.filterClearBtnClick(e)}>Clear</button>
+						</div>
 					</div>
 				</div>
 			</div>
