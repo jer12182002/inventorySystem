@@ -38,7 +38,7 @@
 				p {
 					margin: 0;
 				}
-
+	
 				input[type="number"], .shelf_no {
 					text-align: center;
 					width: 50px;
@@ -47,7 +47,11 @@
 				input[type="date"] {
 					text-align: center;
 				}
-
+				
+				input[type="checkbox"] {
+					width: 50px;
+					height: 40px
+				}
 				.btn-danger {
 					margin: 0 10px;
 				}
