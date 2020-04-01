@@ -14,7 +14,7 @@ export default class inventoryItemDisplay extends React.Component {
 			loggedUser: this.props.loggedUser,
 			types: [],
 			allItems: [],
-			savedFilters:[]
+			checkedItem:[]
 		}
 
 		this.loadAllItem();
@@ -41,15 +41,12 @@ export default class inventoryItemDisplay extends React.Component {
 		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
 		.then(res => res.json())
 		.then(data =>{
-			
-			data.data.map((item,index)=>{ 		//this is for the filter display
-				item.checkDisplay = false;
-			});
 
-			this.setState({allItems: this.setStateWithRowSpan(data.data)});
+			if(data.data){
+				this.setState({allItems: this.setStateWithRowSpan(data.data)});
+			}	
 		});
 	}
-
 
 
 //=================================================================================	
@@ -139,18 +136,39 @@ deleteItem (id){
 	}
 
 
-	saveDisplayClearBtnFromChild(status){
-		// let filterArr = this.state.savedFilters;
-		// filterArr.push(filterValue)
-		// this.setState({savedFilters:filterArr});
-		
-		if(status === 'display')
-			console.log("display");
+	filterCallFromChild(filterArr){
+		// receive objArray from child
 
-		else {
-			//this.setState({savedFilters:[]});
-			console.log("clear");
-		}
+		this.setState({allItems:this.setStateWithRowSpan(filterArr)});
+		
+	}
+
+
+	saveDisplayClearBtnFromChild(status) {
+		
+		// if(status === 'display') {
+		// 	let checkedItemArray = [];
+			
+		// 	this.state.checkedItem.map((item,key) => {
+		// 		if(item.checked) {
+		// 			console.log('@@'+item.ENGLISH_NAME);
+		// 			checkedItemArray.push(item);
+		// 		}
+		// 	});
+
+		// 	this.setState({allItems:this.setStateWithRowSpan(checkedItemArray)});
+		// 	checkedItemArray.map((item,key)=>{
+		// 		$(`#checkbox${item.ID}`).prop("checked",true);
+		// 	});
+
+		// }
+		// else {
+		// 	this.setState({checkedItem:[]});
+		// 	this.loadAllItem();
+		// 	this.state.allItems.map((item,key)=>{
+		// 			$(`#checkbox${item.ID}`).prop("checked",false);
+		// 	});
+		// }
 	}
 
 
@@ -184,14 +202,27 @@ deleteItem (id){
 
 
 
+	// clickCheckBox(e,id){
+	// 	e.stopPropagation();
 
-	checkDisplay(e,id){
-		e.preventDefault();
-		console.log('@@@');
-		console.log(id);
-	}
+	// 	let checkedArray = this.state.allItems;
+		
+	// 	checkedArray.map((item,key)=>{
+	// 		if(item.ID === id) {
+	// 			if(item.checked != true){
+	// 				item.checked = $(`#checkbox${id}`).prop("checked");
+	// 			}else {
+	// 				item.checked = false;
+	// 			}
+	// 		}
+	// 	});
+
+	// 	console.log(checkedArray);
+	// 	this.setState({checkedItem:checkedArray});
 
 
+
+	// }
 
 
 
@@ -252,145 +283,143 @@ deleteItem (id){
 					</tr>
 					</thead>
 
-
-					<tbody>
-					{this.state.allItems.map((item,key)=>
-					<tr key={key+1}>
-						<td className="margin-center text-center number">{key+1}</td>
-						
-
-
-						{item.ROWSPAN > 0?
-							<td rowSpan={item.ROWSPAN} className="margin-center text-center number">{item.ROWSPAN}</td>
-							:null
-						}
-							
-						<td className="name">
-							<p>{item.ENGLISH_NAME}</p>
-							{this.state.loggedUser.NAME_MODIFY? 
-								<input key={item.ENGLISH_NAME} id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.ENGLISH_NAME}/>:null
-							}
-						</td>
-
-
-						
-
-						
-						<td className="name">
-							<p>{item.CHINESE_NAME}</p>
-							{this.state.loggedUser.NAME_MODIFY? 
-								<input key={item.CHINESE_NAME} id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.CHINESE_NAME}/>:null
-							}
-						</td>
-
-					
-
-						{this.state.loggedUser.TYPE_VIEW?
-							this.state.loggedUser.TYPE_MODIFY? 
-								<td className="margin-center text-center">
-									<p data-id={`TYPE_MODIFY${item.ID}`}>{item.TYPE}</p>
-									<select key={item.TYPE} id={`TYPE_MODIFY${item.ID}`} className={`editToggle${key} display-none`}>
-										{this.state.types.map((type,keyIndex)=>
-											<option key={keyIndex}>{type.ITEM_TYPE}</option>					
-										)}
-									</select>
+						<tbody>
+						{this.state.allItems.map((item,key)=>
+							<tr key={key+1}>
+								<td className="margin-center text-center number">{key+1}</td>
+								
+								{item.ROWSPAN > 0?
+									<td rowSpan={item.ROWSPAN} className="margin-center text-center number">{item.ROWSPAN}</td>
+									:null
+								}
+									
+								<td className="name">
+									<p>{item.ENGLISH_NAME}</p>
+									{this.state.loggedUser.NAME_MODIFY? 
+										<input key={`${item.ENGLISH_NAME}${key+1}`} id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.ENGLISH_NAME}/>:null
+									}
 								</td>
-								: <td className="margin-center text-center">{item.TYPE}</td> 
-							:null
-						}
 
 
-				
+								
 
-						<td className="margin-center text-center number">
-							<p>{item.SHELF_NO}</p>
-							{this.state.loggedUser.SHELF_MODIFY ? 
-								<input key={item.SHELF_NO} id={`SHELF_M${item.ID}`}type="text" className={`editToggle${key} display-none shelf_no`} defaultValue={item.SHELF_NO}/> : null
-							}
-						</td>
-						
+								
+								<td className="name">
+									<p>{item.CHINESE_NAME}</p>
+									{this.state.loggedUser.NAME_MODIFY? 
+										<input key={`${item.CHINESE_NAME}${key+1}`} id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.CHINESE_NAME}/>:null
+									}
+								</td>
 
-						<td id={`menu${item.ID}`} className="highlightColor">{item.MANUFACTURE}
 							
-						</td>
+
+								{this.state.loggedUser.TYPE_VIEW?
+									this.state.loggedUser.TYPE_MODIFY? 
+										<td className="margin-center text-center">
+											<p data-id={`TYPE_MODIFY${item.ID}`}>{item.TYPE}</p>
+											<select key={`${item.TYPE}${key+1}`} id={`TYPE_MODIFY${item.ID}`} className={`editToggle${key} display-none`}>
+												{this.state.types.map((type,keyIndex)=>
+													<option key={keyIndex}>{type.ITEM_TYPE}</option>					
+												)}
+											</select>
+										</td>
+										: <td className="margin-center text-center">{item.TYPE}</td> 
+									:null
+								}
+
+
 						
 
-
-
-						{this.state.loggedUser.QTY_VIEW ?
-							this.state.loggedUser.QTY_MODIFY?
 								<td className="margin-center text-center number">
-									<p>{item.QTY}</p>
-									<input key={item.QTY} id={`QTY_MODIFY${item.ID}`} type="number"  className={`editToggle${key} display-none`} defaultValue={item.QTY}/>
+									<p>{item.SHELF_NO}</p>
+									{this.state.loggedUser.SHELF_MODIFY ? 
+										<input key={`${item.SHELF_NO}${key+1}`} id={`SHELF_M${item.ID}`}type="text" className={`editToggle${key} display-none shelf_no`} defaultValue={item.SHELF_NO}/> : null
+									}
 								</td>
-								:<td className="margin-center text-center number">{item.QTY}</td>
-							:null
-						}
+								
 
-						
+								<td id={`menu${item.ID}`} className="highlightColor">{item.MANUFACTURE}
+									
+								</td>
+								
 
-						{this.state.loggedUser.QTY_VIEW ?
-							this.state.loggedUser.QTY_MODIFY?
-								item.ROWSPAN > 0? //allow to display number
-									<td rowSpan = {item.ROWSPAN} className="margin-center text-center number">{item.T_QTY}</td>
+
+
+								{this.state.loggedUser.QTY_VIEW ?
+									this.state.loggedUser.QTY_MODIFY?
+										<td className="margin-center text-center number">
+											<p>{item.QTY}</p>
+											<input key={`${item.QTY}${key+1}`} id={`QTY_MODIFY${item.ID}`} type="number"  className={`editToggle${key} display-none`} defaultValue={item.QTY}/>
+										</td>
+										:<td className="margin-center text-center number">{item.QTY}</td>
 									:null
-								:	
-								item.ROWSPAN > 0? //allow to display number
-									<td rowSpan = {item.ROWSPAN} className="margin-center text-center number">{item.T_QTY}</td>
+								}
+
+								
+
+								{this.state.loggedUser.QTY_VIEW ?
+									this.state.loggedUser.QTY_MODIFY?
+										item.ROWSPAN > 0? //allow to display number
+											<td rowSpan = {item.ROWSPAN} className="margin-center text-center number">{item.T_QTY}</td>
+											:null
+										:	
+										item.ROWSPAN > 0? //allow to display number
+											<td rowSpan = {item.ROWSPAN} className="margin-center text-center number">{item.T_QTY}</td>
+											:null
 									:null
-							:null
-						}
+								}
 
 
 
-						{this.state.loggedUser.EXP_VIEW ?
-							this.state.loggedUser.EXP_MODIFY? 
+								{this.state.loggedUser.EXP_VIEW ?
+									this.state.loggedUser.EXP_MODIFY? 
+										<td className="margin-center text-center">
+											<p>{item.EXPIRE_DATE}</p>
+											<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} display-none`} defaultValue={item.EXPIRE_DATE}/>
+										</td>
+										:<td className="margin-center text-center">{item.EXPIRE_DATE}</td>	
+									:null
+								}
+
+
+								{this.state.loggedUser.GRAM_VIEW ?
+									this.state.loggedUser.GRAM_MODIFY?
+										<td className="margin-center text-center">
+											<p>{item.GRAM}</p>
+											<input key={`${item.GRAM}${key+1}`} id={`GRAM_M${item.ID}`} type="number" className={`editToggle${key} display-none`} defaultValue={item.GRAM}/>
+										</td>
+										:<td className="margin-center text-center">{item.GRAM}</td>	
+									:null
+								}
+
+
+								{this.state.loggedUser.NAME_MODIFY || this.state.loggedUser.TYPE_MODIFY ||
+								 this.state.loggedUser.QTY_MODIFY || this.state.loggedUser.EXP_MODIFY || 
+								 this.state.loggedUser.GRAM_MODIFY ?
 								<td className="margin-center text-center">
-									<p>{item.EXPIRE_DATE}</p>
-									<input key={item.EXPIRE_DATE} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} display-none`} defaultValue={item.EXPIRE_DATE}/>
-								</td>
-								:<td className="margin-center text-center">{item.EXPIRE_DATE}</td>	
-							:null
-						}
+									<div id={`edit-btn${key}`} className="inline-f">
+										<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickEdit(e,key); this.setTypeDefault(item.ID,item.TYPE)}}>Edit</button>
+									</div>
 
-
-						{this.state.loggedUser.GRAM_VIEW ?
-							this.state.loggedUser.GRAM_MODIFY?
-								<td className="margin-center text-center">
-									<p>{item.GRAM}</p>
-									<input key={item.GRAM} id={`GRAM_M${item.ID}`}type="number" className={`editToggle${key} display-none`} defaultValue={item.GRAM}/>
-								</td>
-								:<td className="margin-center text-center">{item.GRAM}</td>	
-							:null
-						}
-
-
-						{this.state.loggedUser.NAME_MODIFY || this.state.loggedUser.TYPE_MODIFY ||
-						 this.state.loggedUser.QTY_MODIFY || this.state.loggedUser.EXP_MODIFY || 
-						 this.state.loggedUser.GRAM_MODIFY ?
-						<td className="margin-center text-center">
-							<div id={`edit-btn${key}`} className="inline-f">
-								<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickEdit(e,key); this.setTypeDefault(item.ID,item.TYPE)}}>Edit</button>
-								<input type="checkbox" className="checkBoxDisplay"/>
-							</div>
-
-							<div id={`functional-Btns${key}`} className="display-none">
-								<button type="button" className="btn btn-success" onClick={(e)=>this.clickSave(e,key,item.ID)}>Save</button>
-								<button type="button" className="btn btn-danger" onClick={(e)=>this.clickCancel(e,key)}>Cancel</button>
-								<button type="button" className="btn btn-warning" onClick={(e)=>this.clickDelete(e, item.ID)}>Delete</button>
-							</div>
-						</td> :
-						null
-						}
-					</tr>
-					)}
-					</tbody>
+									<div id={`functional-Btns${key}`} className="display-none">
+										<button type="button" className="btn btn-success" onClick={(e)=>this.clickSave(e,key,item.ID)}>Save</button>
+										<button type="button" className="btn btn-danger" onClick={(e)=>this.clickCancel(e,key)}>Cancel</button>
+										<button type="button" className="btn btn-warning" onClick={(e)=>this.clickDelete(e, item.ID)}>Delete</button>
+									</div>
+								</td> :
+								null
+								}
+							</tr>
+						)}
+						</tbody>
 				</table>
 				
 				</div>
 				
+
 				{this.state.loggedUser.ADD_ITEM? 
-					(<ControlPanel loggedUser={this.state.loggedUser} filterDisplay={this.loadAllItem.bind(this)} saveDisplayClearBtnInChild={this.saveDisplayClearBtnFromChild.bind(this)} types={this.state.types}/>):null
+					(<ControlPanel loggedUser={this.state.loggedUser}types={this.state.types} filterCall={this.filterCallFromChild.bind(this)}/>):null
+					}
 				}
 
 				

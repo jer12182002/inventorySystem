@@ -3,10 +3,24 @@ import './inventoryControlPanel.scss';
 
 
 import $ from 'jquery';
+
+
 export default class inventoryControlPanel extends React.Component {
 
+	constructor(props){
+		super(props);
 
+		this.state = {
+			defaultAllItems:[],
+			allItems:[],
+			checkedId:[]
+		}
+		this.loadAllItem('',true);
 
+	}
+
+	
+ 
 	clickAddBtn (e){
 		e.preventDefault();
 
@@ -44,34 +58,111 @@ export default class inventoryControlPanel extends React.Component {
 		}
 	}
 
+	//===============================Load Data========================================
+	loadAllItem(receviedFilter='',defaultCall=false){
+		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
+		.then(res => res.json())
+		.then(data =>{
+			if(data) {
+				if(defaultCall) {
+					this.setState({defaultAllItems:data.data});
+				}
+
+				data.data.map(item=>{
+					if(this.state.checkedId.includes(item.ID)){
+							item.checked = true;
+					}
+				});
+
+				this.setState({allItems: data.data});
+			}
+		});
+	}
+
+	setDefault(){
+		this.setState({checkedId:[]});
+		this.loadAllItem('',true);
+		this.props.filterCall(this.state.allItems);
+		$('.checkBoxDisplay:checkbox').prop('checked', false).removeAttr('checked');
+	}
+	//================================================================================
 
 
-	filterItem(){
-		this.props.filterDisplay($.trim($("#itemFilter").val().toUpperCase()));
+
+
+	//===============================Event Listener===================================
+	filterItemOnChange(){
+		this.loadAllItem($.trim($("#itemFilter").val().toUpperCase()));
 	}
 
 
 
+	filterBtn(){
+		if($("#filterBtn").text()==="Filter"){
+			$("#itemFilter").removeClass("display-none");
+			$(".selectfilter-container").removeClass("display-none");
+			$("#filterBtn").text("Close");
+		}else {
+			$("#itemFilter").addClass("display-none");
+			$(".selectfilter-container").addClass("display-none");
+			$("#filterBtn").text("Filter");
+			$("#showBtn").addClass("display-none");
+			this.setDefault();	
+		}
+	}
 
-	filterDisplayBtnClick(e){
+
+
+	hideBtn(e) {
 		e.preventDefault();
-		this.props.saveDisplayClearBtnInChild('display');
-		$('.saveFilter-container').addClass('display-none');
-		$('.clearDisplayFilter-container').removeClass('display-none');
+		$("#showBtn").removeClass("display-none");
+		$(".selectfilter-container").addClass("display-none");
 	}
 
-	filterClearBtnClick(e){
+
+	showBtn(e) {
 		e.preventDefault();
-		this.props.saveDisplayClearBtnInChild('clear');
-		$('.clearDisplayFilter-container').addClass('display-none');
-		$('.saveFilter-container').removeClass('display-none');
+		$(".selectfilter-container").removeClass("display-none");
+		$("#showBtn").addClass("display-none");	
 	}
 
 
 
+
+	selectCheckBox(e,id){
+		e.stopPropagation();
+
+	 	let checkedIdArray = this.state.checkedId;
+
+	 	let checkedItems = [];
+
+
+	    if($(`#checkbox${id}`).prop("checked")){
+	     		checkedIdArray.push(id);   // push in anyway, then delete the duplicate later
+	    }else {
+	    	checkedIdArray = checkedIdArray.filter(ele => {
+	    		return ele != id;
+	    	});
+	    }
+
+	    checkedIdArray = checkedIdArray.filter((v,i)=>checkedIdArray.indexOf(v)===i);  // delete the duplicate
+
+	   
+	    this.state.defaultAllItems.map(item=>{
+	    	if(checkedIdArray.includes(item.ID)){
+	    		checkedItems.push(item);
+	    	}
+	    });
+
+		this.setState({checkedId:checkedIdArray});
+		this.props.filterCall(checkedItems);
+	}
+
+
+
+	//=============================================================================
 
 	render() {	
-		console.log(this.props.loggedUser);
 		return (
 			<div className="controlPanel-wrapper">
 				<div className="main-section">
@@ -108,15 +199,29 @@ export default class inventoryControlPanel extends React.Component {
 					</div>
 
 					<div className="inline-f filter-Section">
-						<input id="itemFilter" type="text" onChange= {this.filterItem.bind(this)}/>
-						
-						<div className="saveFilter-container">
-							<button id="displayFilter" type="button" className="btn btn-success" onClick={(e)=>this.filterDisplayBtnClick(e)}>Display</button>
-						</div>
-						<div className="clearDisplayFilter-container display-none">
-							<button id="clearDisplayFilter"type="button" className="btn btn-success" onClick={(e)=>this.filterClearBtnClick(e)}>Clear</button>
-						</div>
+						<input id="itemFilter" type="text" className="display-none" onChange= {e=>this.filterItemOnChange(e)}/>
+						<button id="showBtn" type="button" className="display-none" onClick={e=>this.showBtn(e)}>Show</button>
+						<button id="filterBtn" type="button" className="btn btn-warning" onClick={e=>this.filterBtn(e)}>Filter</button>
 					</div>
+				</div>
+
+				<div className="selectfilter-container block display-none" >
+					
+					<div className="selectAll">
+						<h3 className="inline-b">CheckItem</h3>
+						<button id="hideBtn" type="button" onClick={e=>this.hideBtn(e)}>Hide</button>
+					</div>
+						
+					<ul className="scroll-container">
+						{this.state.allItems.map((item,key)=>
+							<li key={`${key}${item.ID}`}>
+								<input key={`${key}${item.ID}`} id={`checkbox${item.ID}`} className="checkBoxDisplay inline-b" type="checkbox" defaultChecked={item.checked} onChange={e=>this.selectCheckBox(e,item.ID)}/>	
+								<p className="inline-b">{item.ENGLISH_NAME}-{item.CHINESE_NAME}<br/><strong>{item.EXPIRE_DATE}-{item.MANUFACTURE}</strong></p>
+							</li>					
+						)}						
+
+					</ul>
+
 				</div>
 			</div>
 		);

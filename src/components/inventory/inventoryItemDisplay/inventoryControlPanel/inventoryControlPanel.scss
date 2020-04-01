@@ -1,34 +1,93 @@
 .controlPanel-wrapper {
 	position: fixed;
+	bottom:0;
+	width: 100%;
+	background-color: lightblue;
+
+	.main-section {
+		label,input,select,button {
+			margin: 3px;
+			height: 35px;
+		}
+	
+		button {
+			margin-top: 0;
+		}
+
+		#addShelf {
+			width: 35px;
+		}
+		
+		#addQty {
+			width: 50px;
+		}
+	
+		#addGram {
+			width: 50px;
+		}
+
+		.filter-Section {
+			background-color: orange;
+			padding-top:3px;
+			float:right;
+		}
+	}
+
+	.selectfilter-container {
+		position:fixed;
+		right:0;
 		bottom:0;
-		width: 100%;
-		background-color: lightblue;
+		width:400px;
+		height: 600px;
+		background-color: white;
+		border: 2px solid black;
+		border-radius: 20px;
+		margin-bottom:50px;
+		
 
-		.main-section {
-			label,input,select,button {
-				margin: 3px;
-				height: 35px;
+		.selectAll {
+			border-bottom: 3px solid black;
+			h3 {
+				margin-left: 10px;
 			}
-			button {
-				margin-top: 0;
-			}
-
-			#addShelf {
-				width: 35px;
-			}
-			
-			#addQty {
-				width: 50px;
-			}
-			#addGram {
-				width: 50px;
-			}
-
-
-			.filter-Section {
-				background-color: orange;
-				padding-top:3px;
+			#hideBtn {
 				float:right;
+				margin-right: 10px;
+				border-radius: 20px;
+				width: 100px;
+				height: 40px;
 			}
 		}
+		
+		.scroll-container {
+			overflow:scroll;
+			position:absolute;
+			bottom: 0;
+			height:530px;
+			width:100%;
+			padding:5px;
+			
+				li {
+					list-style-type: none;
+					border-bottom: 2px solid black;
+
+					
+					input {
+						height: 25px;
+						width: 25px;
+						margin-top:15px;
+						margin-bottom: 0;
+					}
+
+					p {
+						margin-left: 10px;
+						display:inline-block;
+						width: 80%;
+					}
+				}
+			
+
+
+		}
+	}
 }
