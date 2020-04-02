@@ -174,6 +174,8 @@ deleteItem (id){
 
 
 	render() {
+
+		console.log(this.state.loggedUser);
 		return (
 			<div className="inventoryitemdisplay-wrapper">
 				<div className="notification-panel"></div>
@@ -351,7 +353,9 @@ deleteItem (id){
 									<div id={`functional-Btns${key}`} className="display-none">
 										<button type="button" className="btn btn-success" onClick={(e)=>this.clickSave(e,key,item.ID)}>Save</button>
 										<button type="button" className="btn btn-danger" onClick={(e)=>this.clickCancel(e,key)}>Cancel</button>
+										{this.state.loggedUser.DELETE_ITEM?
 										<button type="button" className="btn btn-warning" onClick={(e)=>this.clickDelete(e, item.ID)}>Delete</button>
+										:null}
 									</div>
 								</td> :
 								null
