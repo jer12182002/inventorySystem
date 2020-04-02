@@ -112,8 +112,6 @@ deleteItem (id){
 		e.preventDefault();
 		this.updateItem(id);
 		this.setInvisible(key);
-		
-		//window.location.reload();
 	}
 
 	clickCancel(e,key) {
@@ -124,8 +122,6 @@ deleteItem (id){
 	clickDelete(e,id){
 		e.preventDefault();
 		this.deleteItem(id);
-
-		//window.location.reload();
 	}
 	
 
@@ -144,32 +140,6 @@ deleteItem (id){
 	}
 
 
-	saveDisplayClearBtnFromChild(status) {
-		
-		// if(status === 'display') {
-		// 	let checkedItemArray = [];
-			
-		// 	this.state.checkedItem.map((item,key) => {
-		// 		if(item.checked) {
-		// 			console.log('@@'+item.ENGLISH_NAME);
-		// 			checkedItemArray.push(item);
-		// 		}
-		// 	});
-
-		// 	this.setState({allItems:this.setStateWithRowSpan(checkedItemArray)});
-		// 	checkedItemArray.map((item,key)=>{
-		// 		$(`#checkbox${item.ID}`).prop("checked",true);
-		// 	});
-
-		// }
-		// else {
-		// 	this.setState({checkedItem:[]});
-		// 	this.loadAllItem();
-		// 	this.state.allItems.map((item,key)=>{
-		// 			$(`#checkbox${item.ID}`).prop("checked",false);
-		// 	});
-		// }
-	}
 
 
 
@@ -200,29 +170,6 @@ deleteItem (id){
 		return recivedData;
 	}
 
-
-
-	// clickCheckBox(e,id){
-	// 	e.stopPropagation();
-
-	// 	let checkedArray = this.state.allItems;
-		
-	// 	checkedArray.map((item,key)=>{
-	// 		if(item.ID === id) {
-	// 			if(item.checked != true){
-	// 				item.checked = $(`#checkbox${id}`).prop("checked");
-	// 			}else {
-	// 				item.checked = false;
-	// 			}
-	// 		}
-	// 	});
-
-	// 	console.log(checkedArray);
-	// 	this.setState({checkedItem:checkedArray});
-
-
-
-	// }
 
 
 
