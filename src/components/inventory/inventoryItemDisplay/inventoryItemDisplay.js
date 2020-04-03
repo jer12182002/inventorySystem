@@ -57,15 +57,14 @@ export default class inventoryItemDisplay extends React.Component {
 
 updateItem(id) {
 	let updatedItemInfo = {}
-	
 	updatedItemInfo.itemId = id;
-	updatedItemInfo.ENGLISH_NAME = $.trim($("#NAME_EN_M" + id).val());
-	updatedItemInfo.CHINESE_NAME = $.trim($("#NAME_CH_M" + id).val());
-    updatedItemInfo.TYPE = $("#TYPE_MODIFY" + id).val();
-    updatedItemInfo.SHELF_NO = $.trim($("#SHELF_M" + id).val().toUpperCase());
-    updatedItemInfo.QTY = $("#QTY_MODIFY" + id).val();
-    updatedItemInfo.EXPIRE_DATE = $("#EXP_M" + id).val();
-    updatedItemInfo.GRAM = $("#GRAM_M" + id).val();
+	updatedItemInfo.ENGLISH_NAME = this.state.loggedUser.NAME_MODIFY? $.trim($("#NAME_EN_M" + id).val()) : $(`#NAME_EN_V${id}`).text();
+	updatedItemInfo.CHINESE_NAME = this.state.loggedUser.NAME_MODIFY? $.trim($("#NAME_CH_M" + id).val()) : $(`#NAME_CH_V${id}`).text();
+    updatedItemInfo.TYPE = this.state.loggedUser.TYPE_MODIFY? $("#TYPE_MODIFY" + id).val() : $(`#TYPE_VIEW${id}`).text();
+    updatedItemInfo.SHELF_NO = this.state.loggedUser.SHELF_MODIFY? $.trim($("#SHELF_M" + id).val().toUpperCase()) : $(`#SHELF_V${id}`).text();
+    updatedItemInfo.QTY = this.state.loggedUser.QTY_MODIFY? $("#QTY_MODIFY" + id).val() : $(`#QTY_VIEW${id}`).text();
+    updatedItemInfo.EXPIRE_DATE = this.state.loggedUser.EXP_MODIFY? $("#EXP_M" + id).val() : $(`#EXP_V${id}`).text();
+    updatedItemInfo.GRAM = this.state.loggedUser.GRAM_MODIFY? $("#GRAM_M" + id).val() : $(`#GRAM_V${id}`).text();
 
     fetch(`http://localhost:4000/inventory/updateItems?updatedItem=${JSON.stringify(updatedItemInfo)}`)
     .then(res =>res.json())
@@ -223,9 +222,10 @@ deleteItem (id){
 							<td className="margin-center text-center">Gram</td>: null
 						}
 
-						{this.state.loggedUser.NAME_MODIFY || this.state.loggedUser.TYPE_MODIFY ||
-						 this.state.loggedUser.QTY_MODIFY || this.state.loggedUser.EXP_MODIFY || 
-						 this.state.loggedUser.GRAM_MODIFY ?
+						{this.state.loggedUser.NAME_MODIFY  || this.state.loggedUser.TYPE_MODIFY ||
+						 this.state.loggedUser.SHELF_MODIFY || this.state.loggedUser.QTY_MODIFY  || 
+						 this.state.loggedUser.EXP_MODIFY   || this.state.loggedUser.GRAM_MODIFY || 
+						 this.state.loggedUser.DELETE_ITEM ?
 							<td className="margin-center text-center">Action</td>:null
 						}
 
@@ -243,9 +243,10 @@ deleteItem (id){
 								}
 									
 								<td className="name">
-									<p>{item.ENGLISH_NAME}</p>
+									<p id={`NAME_EN_V${item.ID}`}>{item.ENGLISH_NAME}</p>
 									{this.state.loggedUser.NAME_MODIFY? 
-										<input key={`${item.ENGLISH_NAME}${key+1}`} id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.ENGLISH_NAME}/>:null
+										<input key={`${item.ENGLISH_NAME}${item.ID}${key+1}`} id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.ENGLISH_NAME}/>
+										:null
 									}
 								</td>
 
@@ -254,9 +255,9 @@ deleteItem (id){
 
 								
 								<td className="name">
-									<p>{item.CHINESE_NAME}</p>
+									<p id={`NAME_CH_V${item.ID}`}>{item.CHINESE_NAME}</p>
 									{this.state.loggedUser.NAME_MODIFY? 
-										<input key={`${item.CHINESE_NAME}${key+1}`} id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.CHINESE_NAME}/>:null
+										<input key={`${item.CHINESE_NAME}${item.ID}${key+1}`} id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.CHINESE_NAME}/>:null
 									}
 								</td>
 
@@ -265,14 +266,17 @@ deleteItem (id){
 								{this.state.loggedUser.TYPE_VIEW?
 									this.state.loggedUser.TYPE_MODIFY? 
 										<td className="margin-center text-center">
-											<p data-id={`TYPE_MODIFY${item.ID}`}>{item.TYPE}</p>
+											<p id={`TYPE_VIEW${item.ID}`} data-id={`TYPE_MODIFY${item.ID}`}>{item.TYPE}</p>
 											<select key={`${item.TYPE}${key+1}`} id={`TYPE_MODIFY${item.ID}`} className={`editToggle${key} display-none`}>
 												{this.state.types.map((type,keyIndex)=>
 													<option key={keyIndex}>{type.ITEM_TYPE}</option>					
 												)}
 											</select>
 										</td>
-										: <td className="margin-center text-center">{item.TYPE}</td> 
+										: 
+										<td className="margin-center text-center">
+											<p id={`TYPE_VIEW${item.ID}`} data-id={`TYPE_MODIFY${item.ID}`}>{item.TYPE}</p>
+										</td> 
 									:null
 								}
 
@@ -280,7 +284,7 @@ deleteItem (id){
 						
 
 								<td className="margin-center text-center number">
-									<p>{item.SHELF_NO}</p>
+									<p id={`SHELF_V${item.ID}`}>{item.SHELF_NO}</p>
 									{this.state.loggedUser.SHELF_MODIFY ? 
 										<input key={`${item.SHELF_NO}${key+1}`} id={`SHELF_M${item.ID}`}type="text" className={`editToggle${key} display-none shelf_no`} defaultValue={item.SHELF_NO}/> : null
 									}
@@ -300,7 +304,9 @@ deleteItem (id){
 											<p>{item.QTY}</p>
 											<input key={`${item.QTY}${key+1}`} id={`QTY_MODIFY${item.ID}`} type="number"  className={`editToggle${key} display-none`} defaultValue={item.QTY}/>
 										</td>
-										:<td className="margin-center text-center number">{item.QTY}</td>
+										:<td className="margin-center text-center number">
+											<p id={`QTY_VIEW${item.ID}`}>{item.QTY}</p>
+										</td>
 									:null
 								}
 
@@ -326,7 +332,9 @@ deleteItem (id){
 											<p>{item.EXPIRE_DATE}</p>
 											<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} display-none`} defaultValue={item.EXPIRE_DATE}/>
 										</td>
-										:<td className="margin-center text-center">{item.EXPIRE_DATE}</td>	
+										:<td className="margin-center text-center">
+											<p id={`EXP_V${item.ID}`}>{item.EXPIRE_DATE}</p>
+										</td>	
 									:null
 								}
 
@@ -337,21 +345,28 @@ deleteItem (id){
 											<p>{item.GRAM}</p>
 											<input key={`${item.GRAM}${key+1}`} id={`GRAM_M${item.ID}`} type="number" className={`editToggle${key} display-none`} defaultValue={item.GRAM}/>
 										</td>
-										:<td className="margin-center text-center">{item.GRAM}</td>	
+										:<td className="margin-center text-center">
+											<p id={`GRAM_V${item.ID}`}>{item.GRAM}</p>
+										</td>	
 									:null
 								}
 
 
-								{this.state.loggedUser.NAME_MODIFY || this.state.loggedUser.TYPE_MODIFY ||
-								 this.state.loggedUser.QTY_MODIFY || this.state.loggedUser.EXP_MODIFY || 
-								 this.state.loggedUser.GRAM_MODIFY ?
+								{this.state.loggedUser.NAME_MODIFY  ||  this.state.loggedUser.TYPE_MODIFY ||
+								 this.state.loggedUser.SHELF_MODIFY ||  this.state.loggedUser.QTY_MODIFY  || 
+								 this.state.loggedUser.EXP_MODIFY   ||  this.state.loggedUser.GRAM_MODIFY || 
+								 this.state.loggedUser.DELETE_ITEM?
 								<td className="margin-center text-center">
 									<div id={`edit-btn${key}`} className="inline-f">
 										<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickEdit(e,key); this.setTypeDefault(item.ID,item.TYPE)}}>Edit</button>
 									</div>
 
 									<div id={`functional-Btns${key}`} className="display-none">
+										{this.state.loggedUser.NAME_MODIFY  ||  this.state.loggedUser.TYPE_MODIFY ||
+								 		 this.state.loggedUser.QTY_MODIFY   ||  this.state.loggedUser.EXP_MODIFY  || 
+								 		 this.state.loggedUser.SHELF_MODIFY ||  this.state.loggedUser.GRAM_MODIFY ? 
 										<button type="button" className="btn btn-success" onClick={(e)=>this.clickSave(e,key,item.ID)}>Save</button>
+										:null}
 										<button type="button" className="btn btn-danger" onClick={(e)=>this.clickCancel(e,key)}>Cancel</button>
 										{this.state.loggedUser.DELETE_ITEM?
 										<button type="button" className="btn btn-warning" onClick={(e)=>this.clickDelete(e, item.ID)}>Delete</button>
