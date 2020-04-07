@@ -20,6 +20,19 @@ app.use(cors());
 connection.connect();
 
 //****************************Account*************************************
+app.get('/chcekPermission',(req,res)=>{
+	var userId = req.query.id;
+	const sqlQuery = `SELECT * FROM account_list where ID = ${userId}`;
+	
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:result});
+		}
+	});
+});
+
 
 app.get('/login',(req,res)=>{
 	const {account, password } = req.query;
