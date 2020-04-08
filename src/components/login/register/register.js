@@ -68,7 +68,8 @@ export default class register extends React.Component {
 							access_level: $("#ACCESS_LEVEL").prop("checked")? "2" : "3",
 							createdBy: this.props.accountInfo.USERNAME
 							}});
-			//console.log(this.state.userInfo);
+
+			
 			$('.statusText').addClass('success-status');
 			$('.statusText').removeClass('warning-status');
 		}else {

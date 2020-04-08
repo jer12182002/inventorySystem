@@ -1,5 +1,6 @@
-import './header.scss';
 import React from 'react';
+import { NavLink } from 'react-router-dom';
+import './header.scss';
 
 import Cookies from 'universal-cookie';
 
@@ -7,9 +8,12 @@ const cookies = new Cookies();
 
 class header extends React.Component {
 
-	logoutClick = ()=>{
+	logoutClick = (e)=>{
+		e.preventDefault();
 		cookies.remove('user');
+		this.props.logoutBtnClicked();
 	}
+
 
 
 	render() {
@@ -18,13 +22,13 @@ class header extends React.Component {
 				<header>
 
 					<h1><a href="/">Ren De Inc Inventory System</a></h1>
-
+				
 					{this.props.accountInfo.USERNAME?
 						(<ul>
-							<li><a href="/login/account">{this.props.accountInfo.USERNAME}</a></li>
-							<li><a href="/" id="logout-btn" onClick = {this.logoutClick}>Log Out</a></li>
-							<li><a href="/inventory">Inventory</a></li>
-							<li><a href="/checkout">Checkout</a></li>
+							<li><NavLink to="/login/account">{this.props.accountInfo.USERNAME}</NavLink></li>
+							<li><NavLink to="/" id="logout-btn" onClick = {e => {this.logoutClick(e)}}>Log Out</NavLink></li>
+							<li><NavLink to="/inventory">Inventory</NavLink></li>
+							<li><NavLink to="/checkout">Checkout</NavLink></li>
 						</ul>)
 						:
 						(<ul>

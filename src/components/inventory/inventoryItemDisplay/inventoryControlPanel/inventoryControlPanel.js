@@ -166,6 +166,8 @@ export default class inventoryControlPanel extends React.Component {
 		return (
 			<div className="controlPanel-wrapper">
 				<div className="main-section">
+
+				{this.props.loggedUser.ADD_ITEM? 
 					<div className="inline-b">
 						<label>Type:</label>
 						<select id="addType">
@@ -197,7 +199,8 @@ export default class inventoryControlPanel extends React.Component {
 
 						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
 					</div>
-
+					:null}
+					
 					<div className="inline-f filter-Section">
 						<input id="itemFilter" type="text" className="display-none" onChange= {e=>this.filterItemOnChange(e)}/>
 						<button id="showBtn" type="button" className="display-none" onClick={e=>this.showBtn(e)}>Show</button>

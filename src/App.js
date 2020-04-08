@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Switch,Router, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -20,69 +20,92 @@ const cookies = new Cookies();
 
 class App extends React.Component {
 
+
 state = {
-  accountInfo: [],
-  affectedAccount:[]
+  accountInfo: []
 }
 
-receiveFromChild = (childrenData) => {
-  if(childrenData) {
-    this.setState ({
-      accountInfo: childrenData
+
+
+checkPermissionBySeconds(){
+
+  setInterval (()=>{
+    if(this.state.accountInfo.ID){
+  
+       fetch(`http://localhost:4000/chcekPermission?id=${this.state.accountInfo.ID}`)
+       .then(res => res.json())
+       .then(data => {
+          if(JSON.stringify(data.data[0]) != JSON.stringify(this.state.accountInfo)) {
+            this.setState({accountInfo:data.data[0]});
+          }
+       });
+    }
+  },1000)
+}
+
+saveAccountFromLogIn(userLogin){
+  console.log(userLogin);
+  if(userLogin) {
+    this.setState ({accountInfo: userLogin},()=>{
+      let time = new Date();
+      time.setHours(time.getHours() + 2);
+
+      let cookiesUser = {ACCOUNT: userLogin.ACCOUNT, PASSWORD: userLogin.PASSWORD, expires: time};
+
+      cookies.set('RenDeInc-LoggedUser', cookiesUser,{expires:time});
+      this.checkPermissionBySeconds();
     });
-    cookies.set('user',childrenData);
   }
 }
 
-saveAffectedAccount = (receivedAffectedAccount)=>{
-  console.log("123123");
+clearAccountInfo(){
+  this.setState({accountInfo:[]});
 }
+
+
+cookiesUserLogin(cookiesUser) {
+  fetch(`http://localhost:4000/login?account=${cookiesUser.ACCOUNT}&password=${cookiesUser.PASSWORD}`)
+    .then(res => res.json())
+    .then(data => {
+      if(data.data[0]){
+        this.saveAccountFromLogIn(data.data[0]);
+      }
+    });
+  
+}
+
+
 
 componentDidMount(){
-  let cookieUser = cookies.get('user');
-
-  if(cookieUser){
-    this.setState({
-      accountInfo : cookieUser
-    });
+  let cookiesUser = cookies.get("RenDeInc-LoggedUser");
+  if(cookiesUser){
+    this.cookiesUserLogin(cookiesUser);
   }
 }
+
+
+
+
+
 render(){
+
   return (
   <div className="main-wrapper">
-     
-      <Header accountInfo = {this.state.accountInfo}/>
+    <Router>
+      <Header accountInfo = {this.state.accountInfo} logoutBtnClicked = {this.clearAccountInfo.bind(this)}/>
+      <Route exact path="/login" component = {props => <Login getDataFromChildren = {this.saveAccountFromLogIn.bind(this)} clearAccountInfo= {this.clearAccountInfo.bind(this)} />}/>     
+      <Route exact path = "/login/account" component = {props => (<Account accountInfo = {this.state.accountInfo}/>)}/>            
+      <Route exact path = "/login/account/resetpassword" component = {(props=><LoginReset/>)}/>
+      <Route exact path="/" component = { props => <Home accountInfo = {this.state.accountInfo}/>}/>
 
-       {this.state.accountInfo.ACCESS_LEVEL<3 ? (
-      <Switch>
-        <Route exact path = "/login/account/register" forcerefresh={true}>
-          <Register accountInfo = {this.state.accountInfo}/>
-        </Route>
-
-        <Route exact path = "/inventory">
-          <InventoryMain accountInfo = {this.state.accountInfo}/>
-        </Route>
-      </Switch>
-      ):null
-      }
-      <Switch>
-      	
-        <Route exact path="/login">
-          <Login getDataFromChildren = {this.receiveFromChild} />
-        </Route> 
-        <Route exact path = "/login/account">
-          <Account accountInfo = {this.state.accountInfo}/>
-        </Route>
-        <Route exact path = "/login/account/resetpassword">
-          <LoginReset/>
-        </Route>
-        <Route exact path="/">
-          <Home accountInfo = {this.state.accountInfo}/>
-        </Route>
-      </Switch>
-
-
-     
+      {this.state.accountInfo.ACCESS_LEVEL < 3 ? (
+        <div>
+        <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/>
+        <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
+        </div>
+      ):null}
+    </Router>     
+       
     </div>
   );
 }

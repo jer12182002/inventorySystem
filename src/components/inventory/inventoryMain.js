@@ -8,7 +8,7 @@ export default class inventoryMain extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			loggedUser: this.props.accountInfo
+			accountInfo: this.props.accountInfo
 		}
 
 	
@@ -18,8 +18,9 @@ export default class inventoryMain extends React.Component {
 		return (
 			<div className= "inventorymain-wrapper">
 				<Notification/>
-				<InventroyItemDisplay loggedUser = {this.props.accountInfo}/>
-				
+				{this.state.accountInfo.VIEW_ITEM? 
+				<InventroyItemDisplay loggedUser = {this.state.accountInfo}/>
+				:null}
 			</div>
 		);
 	}

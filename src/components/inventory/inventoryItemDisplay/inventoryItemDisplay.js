@@ -174,7 +174,6 @@ deleteItem (id){
 
 	render() {
 
-		console.log(this.state.loggedUser);
 		return (
 			<div className="inventoryitemdisplay-wrapper">
 				<div className="notification-panel"></div>
@@ -381,14 +380,7 @@ deleteItem (id){
 				</table>
 				
 				</div>
-				
-
-				{this.state.loggedUser.ADD_ITEM? 
-					(<ControlPanel loggedUser={this.state.loggedUser}types={this.state.types} filterCall={this.filterCallFromChild.bind(this)}/>):null
-					}
-				}
-
-				
+				<ControlPanel loggedUser={this.state.loggedUser} types={this.state.types} filterCall={this.filterCallFromChild.bind(this)}/>)
 			</div>
 		);
 	}
