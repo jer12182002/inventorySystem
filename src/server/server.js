@@ -196,7 +196,7 @@ app.get('/inventory/updateItems',(req,res)=>{
 	let updatedItem = JSON.parse(req.query.updatedItem);
 	let sqlQuery = `UPDATE item_list SET ENGLISH_NAME = '${updatedItem.ENGLISH_NAME}',CHINESE_NAME = '${updatedItem.CHINESE_NAME}',TYPE = '${updatedItem.TYPE}',SHELF_NO = '${updatedItem.SHELF_NO}' ,QTY = '${updatedItem.QTY}'`;
 		sqlQuery += updatedItem.EXPIRE_DATE? `,EXPIRE_DATE = '${updatedItem.EXPIRE_DATE}'`:``
-		sqlQuery += `,GRAM = '${updatedItem.GRAM}' WHERE ID = '${updatedItem.itemId}'`;
+		sqlQuery += `,GRAM = '${updatedItem.GRAM}' WHERE ID = '${updatedItem.ID}'`;
 
 	console.log(sqlQuery);
 	connection.query(sqlQuery,(err,result)=>{
