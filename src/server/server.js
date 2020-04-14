@@ -176,7 +176,7 @@ app.get('/inventory/addNewItem',(req,res)=>{
 app.get('/inventory/loadAllItem',(req,res)=>{
 	let filter = req.query.filter;
 
-	let sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY,ROWSPAN FROM item_list I INNER JOIN (SELECT CHINESE_NAME AS T_CHINESE_NAME,TYPE AS T_TYPE, SUM(QTY) AS T_QTY,'Filter' AS ROWSPAN FROM item_list GROUP BY CHINESE_NAME, TYPE) T ON I.CHINESE_NAME = T.T_CHINESE_NAME AND I.TYPE = T.T_TYPE WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.CHINESE_NAME, I.TYPE`;
+	let sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.HOLD_QTY, I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY,ROWSPAN FROM item_list I INNER JOIN (SELECT CHINESE_NAME AS T_CHINESE_NAME,TYPE AS T_TYPE, SUM(QTY) AS T_QTY,'Filter' AS ROWSPAN FROM item_list GROUP BY CHINESE_NAME, TYPE) T ON I.CHINESE_NAME = T.T_CHINESE_NAME AND I.TYPE = T.T_TYPE WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.CHINESE_NAME, I.TYPE`;
 	
 	console.log('Get all item for inventory');
 	console.log(sqlQuery);
@@ -228,6 +228,31 @@ app.get('/inventory/deleteItem',(req,res)=>{
 
 
 
+app.get('/inventory/addhold',(req,res)=>{
+
+	let holdItem = JSON.parse(req.query.holdItem);
+	
+	let sqlQuery = `INSERT INTO hold_item_list (ITEM_ID, PERSON, HOLD_QTY, DATE) VALUES ('${holdItem.ITEM_ID}', '${holdItem.PERSON}','${holdItem.HOLD_QTY}', '${holdItem.DATE}')`;
+
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}
+		else {
+			connection.query(`UPDATE item_list set HOLD_QTY = (SELECT HOLD_QTY FROM item_list where ID = ${holdItem.ITEM_ID}) + ${holdItem.HOLD_QTY} where ID = ${holdItem.ITEM_ID}`,(err,result)=>{
+				if(err) {
+					res.send(err);
+				}
+				else {
+					return (res.json({data:'success'}));
+				}
+			});
+		}
+	})
+
+})
+	
 
 
 
