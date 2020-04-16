@@ -7,7 +7,8 @@ const connection = mysql.createConnection({
 	host: 'localhost',
 	user: 'root',
 	password:'',
-	database:'inventorysystem'
+	database:'inventorysystem',
+	multipleStatements: true
 });
 
 
@@ -179,6 +180,21 @@ app.get('/inventory/loadAllItem',(req,res)=>{
 	let sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.HOLD_QTY, I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY,ROWSPAN FROM item_list I INNER JOIN (SELECT CHINESE_NAME AS T_CHINESE_NAME,TYPE AS T_TYPE, SUM(QTY) AS T_QTY,'Filter' AS ROWSPAN FROM item_list GROUP BY CHINESE_NAME, TYPE) T ON I.CHINESE_NAME = T.T_CHINESE_NAME AND I.TYPE = T.T_TYPE WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.CHINESE_NAME, I.TYPE`;
 	
 	console.log('Get all item for inventory');
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}else {
+			return (res.json({data:result}));
+		}
+	})
+});
+
+app.get('/inventory/loadAllHoldItem',(req,res)=>{
+
+	let sqlQuery = 'SELECT I.ID, H.ID, H.ITEM_ID, I.CHINESE_NAME, I.ENGLISH_NAME, I.TYPE, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE, I.GRAM, I.MANUFACTURE, H.PERSON, H.HOLD_QTY, DATE_FORMAT(H.DATE, "%Y-%m-%d") AS DATE from item_list I INNER JOIN hold_item_list H ON I.ID = H.ITEM_ID';
+	
+	console.log('Get hold items');
 	console.log(sqlQuery);
 
 	connection.query(sqlQuery,(err,result)=>{
@@ -188,7 +204,6 @@ app.get('/inventory/loadAllItem',(req,res)=>{
 			return (res.json({data:result}));
 		}
 	})
-
 });
 
 
@@ -196,8 +211,9 @@ app.get('/inventory/updateItems',(req,res)=>{
 	let updatedItem = JSON.parse(req.query.updatedItem);
 	let sqlQuery = `UPDATE item_list SET ENGLISH_NAME = '${updatedItem.ENGLISH_NAME}',CHINESE_NAME = '${updatedItem.CHINESE_NAME}',TYPE = '${updatedItem.TYPE}',SHELF_NO = '${updatedItem.SHELF_NO}' ,QTY = '${updatedItem.QTY}'`;
 		sqlQuery += updatedItem.EXPIRE_DATE? `,EXPIRE_DATE = '${updatedItem.EXPIRE_DATE}'`:``
-		sqlQuery += `,GRAM = '${updatedItem.GRAM}' WHERE ID = '${updatedItem.itemId}'`;
+		sqlQuery += `,GRAM = '${updatedItem.GRAM}' WHERE ID = '${updatedItem.ID}'`;
 
+	console.log(updatedItem);
 	console.log(sqlQuery);
 	connection.query(sqlQuery,(err,result)=>{
 		if(err) {
@@ -212,11 +228,10 @@ app.get('/inventory/updateItems',(req,res)=>{
 
 app.get('/inventory/deleteItem',(req,res)=>{
 	let {itemId} = req.query;
-	console.log({itemId});
 
-	let sqlQuery = `DELETE FROM item_list where ID = ${itemId}`;
-
-	connection.query(sqlQuery,(err,result)=>{
+	let sqlQuery = `DELETE FROM hold_item_list WHERE ITEM_ID = ${itemId}; DELETE FROM item_list where ID = ${itemId}`;
+	
+	connection.query(sqlQuery,[1,2],(err,result)=>{
 		if(err){
 			res.send(err);
 		}
@@ -234,7 +249,6 @@ app.get('/inventory/addhold',(req,res)=>{
 	
 	let sqlQuery = `INSERT INTO hold_item_list (ITEM_ID, PERSON, HOLD_QTY, DATE) VALUES ('${holdItem.ITEM_ID}', '${holdItem.PERSON}','${holdItem.HOLD_QTY}', '${holdItem.DATE}')`;
 
-
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);
@@ -250,9 +264,38 @@ app.get('/inventory/addhold',(req,res)=>{
 			});
 		}
 	})
-
 })
 	
+
+
+app.get('/inventory/restockHold',(req,res)=>{
+
+	let restockItem = JSON.parse(req.query.restockInfo);
+	
+	let sqlQuery = `UPDATE item_list set HOLD_QTY = (SELECT HOLD_QTY FROM item_list where ID = ${restockItem.ITEM_ID}) - ${restockItem.HOLD_QTY} where ID = ${restockItem.ITEM_ID}`;
+	console.log(sqlQuery);
+	connection.query(sqlQuery,(err,result)=>{
+		if(err){
+			res.send(err);
+		}
+		else {
+			console.log(restockItem);
+			sqlQuery = `DELETE FROM hold_item_list WHERE ID = ${restockItem.ID}`;
+			
+			console.log(sqlQuery);
+			connection.query(sqlQuery,(err,result)=>{
+				if(err) {
+					res.send(err);
+				}
+				else {
+					return (res.json({data:'success'}));
+				}
+			});
+		}
+	})
+})
+	
+
 
 
 
