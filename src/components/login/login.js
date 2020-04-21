@@ -8,7 +8,7 @@ class Login extends Component {
   
   state = {
       user:[],
-      loggedInUserInfo:[]
+      loggedInUserInfo: this.props.accountInfo
     }
 
 
@@ -32,7 +32,7 @@ class Login extends Component {
     .then(data => {
       if(data.data[0]){
       this.setState({loggedInUserInfo: data.data[0]},()=>{
-        this.props.getDataFromChildren(this.state.loggedInUserInfo);
+        this.props.saveAccountFromLogIn(this.state.loggedInUserInfo);
       });
       }
     });
@@ -52,7 +52,6 @@ class Login extends Component {
 
 
   loginBtnClicked(e) {
-    console.log("loginBtn");
     e.preventDefault();
     var account = $("#login_acc").val();
     var password = $("#login_pwd").val();

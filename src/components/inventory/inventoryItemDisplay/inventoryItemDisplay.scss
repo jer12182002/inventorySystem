@@ -1,7 +1,20 @@
 .inventoryitemdisplay-wrapper {
 	background-color: lightyellow;
+	.header-section {
+		border-bottom: 3px solid black;
+		display: table;
+		height: 80px;
 
-
+		.title {
+			float:left;
+			margin-left: 30px;
+		}
+		div {
+			vertical-align: middle;
+			display: table-cell; 
+		}	
+	}
+	
 	.main-section {
 		.items-table {
 			.number {
@@ -26,7 +39,10 @@
 			
 
 			tbody {
-				
+				.hold-highlight {
+					background-color: #D0F0C0; 
+				}
+
 				.hightLighYellow {
 					background-color: #FDD023;
 				}
@@ -52,8 +68,19 @@
 					width: 50px;
 					height: 40px
 				}
+				
+				button[type="button"] {
+					margin: 0 10px;
+				}
+
 				.btn-danger {
 					margin: 0 10px;
+				}
+
+				.hold-functional-Btns {
+					input {
+						margin: 5px;
+					}
 				}
 			}
 

@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
 .header-wrapper {
-	background-color: #fffff2;
-	border-bottom: 3px solid lightgray;
+	//background-color: #fffff2;
+	border-bottom: 8px solid black;
 	height: 60px;
 	position: sticky;
+
 
 	header {
 		text-align: left;
@@ -11,6 +14,7 @@
 			display: inline-block;
 			float:left;
 			color: black;
+			font-family: 'Great Vibes', cursive;
 		}
 
 		ul {
@@ -23,9 +27,15 @@
 
 
 				a {
-					font-size: 20px;
+					font-size: 15px;
 					margin: 15px;
 					margin-top: 30px;
+				}
+
+
+				.header-nav-active {
+					font-weight: bold;
+					font-size: 20px;
 				}
 			}
 		}

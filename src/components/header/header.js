@@ -10,7 +10,7 @@ class header extends React.Component {
 
 	logoutClick = (e)=>{
 		e.preventDefault();
-		cookies.remove('user');
+		cookies.remove("RenDeInc-LoggedUser");
 		this.props.logoutBtnClicked();
 	}
 
@@ -25,10 +25,10 @@ class header extends React.Component {
 				
 					{this.props.accountInfo.USERNAME?
 						(<ul>
-							<li><NavLink to="/login/account">{this.props.accountInfo.USERNAME}</NavLink></li>
-							<li><NavLink to="/" id="logout-btn" onClick = {e => {this.logoutClick(e)}}>Log Out</NavLink></li>
-							<li><NavLink to="/inventory">Inventory</NavLink></li>
-							<li><NavLink to="/checkout">Checkout</NavLink></li>
+							<li><NavLink to="/login/account" activeClassName="header-nav-active">{this.props.accountInfo.USERNAME}</NavLink></li>
+							<li><NavLink exact to="/" id="logout-btn" onClick = {e => {this.logoutClick(e)}}>Log Out</NavLink></li>
+							<li><NavLink to="/inventory" activeClassName="header-nav-active">Inventory</NavLink></li>
+							<li><NavLink to="/checkout" activeClassName="header-nav-active">Checkout</NavLink></li>
 						</ul>)
 						:
 						(<ul>

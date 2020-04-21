@@ -295,9 +295,43 @@ app.get('/inventory/restockHold',(req,res)=>{
 	})
 })
 	
+//*************************************** Checkout **********************************************************************
+app.get("/checkout",(req,res)=> {
+	let sqlQuery = "SELECT * FROM ongoing_order";
+
+	connection.query(sqlQuery, (err,result) => {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data: result}));
+		}
+	});
+});
 
 
 
+//***********************************************************************************************************************
+//receiving Orders from shopify
+app.post("/shopify", (req, res) => {
+	let shopifyData = req.body;
+	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS) VALUES ('${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED');`;
+	sqlQuery += 'INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) VALUES ?';
+
+	let valueItems = [];
+
+	shopifyData.line_items.forEach(item => {
+		valueItems.push([shopifyData.order_number, item.name , item.quantity, 'RECEIVED']);
+	});
+
+	
+	connection.query(sqlQuery,[valueItems],(err,result)=>{
+		if(err){
+			res.send(err);
+		}else {
+			return (res.json({data:result}));
+		}
+	})
+})
 
 app.get('/home', function(req, res) {
 	if (req.session.loggedin) {

@@ -14,24 +14,28 @@ import LoginReset from "./components/login/loginReset/loginReset";
 
 import InventoryMain from './components/inventory/inventoryMain';
 
+import CheckOut from './components/checkout/checkoutMain';
+
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
 
 class App extends React.Component {
+constructor(props){
+  super(props);
 
-
-state = {
-  accountInfo: []
+  this.state = {
+    accountInfo: []
+  }
 }
 
 
 
-checkPermissionBySeconds(){
 
+
+checkPermissionBySeconds(){
   setInterval (()=>{
     if(this.state.accountInfo.ID){
-  
        fetch(`http://localhost:4000/chcekPermission?id=${this.state.accountInfo.ID}`)
        .then(res => res.json())
        .then(data => {
@@ -51,8 +55,9 @@ saveAccountFromLogIn(userLogin){
       time.setHours(time.getHours() + 2);
 
       let cookiesUser = {ACCOUNT: userLogin.ACCOUNT, PASSWORD: userLogin.PASSWORD, expires: time};
-
       cookies.set('RenDeInc-LoggedUser', cookiesUser,{expires:time});
+     
+
       this.checkPermissionBySeconds();
     });
   }
@@ -71,7 +76,6 @@ cookiesUserLogin(cookiesUser) {
         this.saveAccountFromLogIn(data.data[0]);
       }
     });
-  
 }
 
 
@@ -93,7 +97,7 @@ render(){
   <div className="main-wrapper">
     <Router>
       <Header accountInfo = {this.state.accountInfo} logoutBtnClicked = {this.clearAccountInfo.bind(this)}/>
-      <Route exact path="/login" component = {props => <Login getDataFromChildren = {this.saveAccountFromLogIn.bind(this)} clearAccountInfo= {this.clearAccountInfo.bind(this)} />}/>     
+      <Route exact path="/login" component = {props => <Login accountInfo = {this.state.accountInfo} saveAccountFromLogIn = {this.saveAccountFromLogIn.bind(this)} clearAccountInfo= {this.clearAccountInfo.bind(this)} />}/>     
       <Route exact path = "/login/account" component = {props => (<Account accountInfo = {this.state.accountInfo}/>)}/>            
       <Route exact path = "/login/account/resetpassword" component = {(props=><LoginReset/>)}/>
       <Route exact path="/" component = { props => <Home accountInfo = {this.state.accountInfo}/>}/>
@@ -102,6 +106,7 @@ render(){
         <div>
         <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
+        <Route exact path = "/checkout" component = {()=> <CheckOut/>}/>
         </div>
       ):null}
     </Router>     
