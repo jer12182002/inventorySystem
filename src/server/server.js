@@ -310,6 +310,30 @@ app.get("/checkout",(req,res)=> {
 
 
 
+
+
+app.get("/checkout/ongoingorder",(req,res)=>{
+	let {orderId} = req.query;
+	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId}`;
+	let sqlQuery2 = `SELECT * FROM order_item_list WHERE ORDER_ID = ${orderId}`;
+
+	connection.query(sqlQuery1,(err,result1)=>{
+		if(err) {
+			res.send(err);
+		}else{
+			connection.query(sqlQuery2, (err,result2)=>{
+				if(err) {
+					res.send(err);
+				}else{
+					return (res.json({data:{order: result1, orderItems: result2}}));
+				}
+			})
+		}
+	});
+});
+
+
+
 //***********************************************************************************************************************
 //receiving Orders from shopify
 app.post("/shopify", (req, res) => {
