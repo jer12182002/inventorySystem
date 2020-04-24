@@ -1,0 +1,50 @@
+.checkoutMain-wrapper {
+
+	.main-section {
+		.completed-container {
+			background-color: green;
+			padding: 0;
+
+		}
+
+		.ongoing-container {
+			background-color: yellow;
+			padding: 0;
+
+		}
+		
+		.subContinaer-head {
+	
+			h3 {
+				border: 5px solid black;
+				margin: 0;
+				font-size: 30px;
+				padding:10px 0;
+			}
+		}
+
+		.subContinaer-main {
+			height: 195%;
+			display: block;
+			border: 5px solid black;
+			overflow-y:scroll;
+			
+
+			table {
+				width: 100%;
+				td {
+					border: 2px solid black;
+					text-align: center;
+					padding: 10px 0;
+				}
+				thead {
+					font-weight: 900;
+				}
+				tbody {
+				//	font-size: 20px;
+
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,59 @@
+.holditemsdisplay-wrapper {
+	background-color: #D0F0C0;
+
+	.header-section {
+		border-bottom: 3px solid black;
+		display: table;
+		height: 80px;
+			
+		div {
+			vertical-align: middle;
+			display: table-cell; 
+
+			.title {
+				float:left;
+				margin-left: 30px;
+			}
+
+			button[type="button"] {
+				float: right;
+				margin-right: 30px;
+			}
+		}		
+	}
+
+	.main-section {
+		.scroll-container {
+			display:block;
+			width: 100%;
+			border-bottom: 5px solid black;
+			
+			table {
+
+
+				td {
+					border: 2px solid black;
+					vertical-align: middle;
+
+					button[type="button"] {
+						margin: 0 5px;
+					}
+				}
+
+				thead {
+					border: 3px solid black;
+					border-top: 0;
+					font-weight: 900;
+				}
+
+				.number {
+					width: 80px;
+				}
+
+				.name {
+					width: 250px;
+				}
+			}
+		}
+	}
+}

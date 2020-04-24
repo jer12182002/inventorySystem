@@ -15,6 +15,7 @@ import LoginReset from "./components/login/loginReset/loginReset";
 import InventoryMain from './components/inventory/inventoryMain';
 
 import CheckOut from './components/checkout/checkoutMain';
+import OngoingItem from "./components/checkout/ongoingItem/ongoingItem";
 
 import Cookies from 'universal-cookie';
 
@@ -85,6 +86,7 @@ componentDidMount(){
   if(cookiesUser){
     this.cookiesUserLogin(cookiesUser);
   }
+
 }
 
 
@@ -107,6 +109,7 @@ render(){
         <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/checkout" component = {()=> <CheckOut/>}/>
+        <Route exact path = "/checkout/ongoingorder" component = {OngoingItem}/>
         </div>
       ):null}
     </Router>     

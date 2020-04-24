@@ -25,7 +25,7 @@ export default class account extends React.Component {
 
 
 	fetchAllUserInfo(){
-		fetch("http://localhost:4000/login/account")
+		fetch("http://localhost:3000/login/account")
 		.then(res => res.json())
 		.then (data =>{
 			this.setState({users : data.data});		

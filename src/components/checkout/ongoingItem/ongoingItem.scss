@@ -1,0 +1,39 @@
+.ongoingItem-wrapper {
+	.main-section {
+		.row {
+			width: 100%;
+			margin: 0 auto;
+		}
+
+		.order-info {
+			margin-bottom: 30px;
+			h4 {
+				font-weight: 900;
+			}
+		}
+
+		.item-detail {
+			margin-top: 50px;
+			border-bottom: 2px solid black;
+			
+			.row {
+				padding: 10px 0;
+
+				&:first-child {
+					padding-top: 0;
+				}
+			}
+
+			.pickupQty {
+				font-size: 20px;
+				width: 70px;
+			}
+		}
+
+		
+	}
+
+	.warning {
+		background-color: red;
+	}
+}
