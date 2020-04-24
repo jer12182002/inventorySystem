@@ -174,11 +174,13 @@ export default class ongoingItem extends React.Component {
 						</div>
 					)}
 
-
-
 					{/*mobile display*/}
 
-
+					<div className="actionContainer">
+						<label className="block">Note:</label>
+						<textarea className="block"></textarea>
+						<button type="button" className="block btn btn-success">Push</button>
+					</div>
 					
 				</div>
 			</div>

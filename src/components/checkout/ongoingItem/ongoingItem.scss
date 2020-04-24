@@ -29,7 +29,28 @@
 				width: 70px;
 			}
 		}
+	
+		.actionContainer {
+			margin-top: 30px;
+			text-align: center;
 
+			label {
+				font-size: 30px;
+			}
+			textarea {
+				width: 80%;
+				height: 150px;
+				margin: 15px auto;
+				font-size: 20px;
+			}
+			button[type="button"] {
+				width: 30%;
+				height: 50px;
+				font-size: 25px;
+			}
+
+
+		}
 		
 	}
 
