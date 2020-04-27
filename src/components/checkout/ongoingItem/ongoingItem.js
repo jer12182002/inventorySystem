@@ -57,11 +57,20 @@ export default class ongoingItem extends React.Component {
 				}
 				return false;
 				})){
+
 			}else {
+				let chineseName = item.ORDER_ITEM_PRODUCT.split(" ");
+				chineseName = chineseName[chineseName.length-1];
+				
+				let englishName = item.ORDER_ITEM_PRODUCT.split(" " + chineseName);
+				englishName = englishName[0];
+			
 				uniqueData.push(
 					{
 						ORDER_ITEM_ID: item.ORDER_ITEM_ID,
 						ITEMNAME: item.ORDER_ITEM_PRODUCT,
+						ITEMCHNAME: chineseName,
+						ITEMENNAME: englishName,
 						ORDER_ITEM_QTY: item.ORDER_ITEM_QTY,
 						DIFFERENT_TYPE : 
 						[
@@ -158,7 +167,7 @@ export default class ongoingItem extends React.Component {
 
 					{this.state.ORDER_ITEMS.map((item,key)=>
 						<div className="row item-detail" key={key+1}>
-							<div className="col-5 col-md-5"><h4>{item.ITEMNAME}</h4></div>
+							<div className="col-5 col-md-5"><h4>{item.ITEMENNAME}</h4><h4>{item.ITEMCHNAME}</h4></div>
 							<div id={`orderQty${key+1}`} className="col-1 col-md-1"><h4 className="text-center">{item.ORDER_ITEM_QTY}</h4></div>
 							<div className="col-6 col-md-6">
 								{item.DIFFERENT_TYPE.map((diffItem,diffKey)=>
