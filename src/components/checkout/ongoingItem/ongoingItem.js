@@ -11,14 +11,15 @@ export default class ongoingItem extends React.Component {
 	constructor(props) {
 		super(props);	
 		this.state = {
+			accountInfo: this.props.location.state.accountInfo,
 			ORDER_ID : this.props.location.state.ORDER_ID,
 			ONGOING_ORDER:[],
-			ORDER_ITEMS:[]
+			ORDER_ITEMS:[],
+			EMPTY_ITEM: null
 		}
 	}
 
 	loadOrderInfo() {
-		console.log(this.state.ORDER_ID);
 		fetch(`http://localhost:4000/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data=> {
@@ -29,7 +30,27 @@ export default class ongoingItem extends React.Component {
 	}
 
 
+	pushItemToBack(){
+		//update person and status in ongoing_order
+		//update ITEM_ID, ITEM_QTY, STATUS IN order_item_list
+		//insert into checkoutNote
 
+		let today = new Date();
+		today = today.getFullYear() + "-" + today.getMonth() + "-" + today.getDate() + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getMinutes();
+	
+		let orderInfo = {};
+
+		orderInfo.ORDER_NO = this.state.ORDER_ID;
+		orderInfo.ITEMS = this.state.ORDER_ITEMS;
+		orderInfo.NOTE = $(`#note${this.state.ORDER_ID}`).val();
+		orderInfo.ACCOUNTINFO = this.state.accountInfo.USERNAME;
+		orderInfo.PROCESS_TIME = today;
+		
+		console.log(orderInfo);
+		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoback?orderInfo=${JSON.stringify(orderInfo)}`)
+		.then(res => res.json())
+		.then(data => {})
+	}
 
 	componentDidMount() {
 		this.loadOrderInfo()
@@ -87,17 +108,24 @@ export default class ongoingItem extends React.Component {
 			}
 		});
 
-		//SET DEFAULTVALUE
+		//SET PICKUPVALUE
 		uniqueData.map(item=>{
 			let orderQty = item.ORDER_ITEM_QTY;
+
 			item.DIFFERENT_TYPE.map(diffItem=>{
-				diffItem.DEFAULTVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
-				orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+				if(diffItem.ID === null) {
+					this.setState({EMPTY_ITEM : true});
+				}else {
+					diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+				}
 			})
 		});
 
 		return uniqueData;
 	}
+
+
 
 
 	pickUpQtyChange(e,itemId,diffId,diffKey,key) {
@@ -115,7 +143,7 @@ export default class ongoingItem extends React.Component {
 					if(parseInt($(`#${key}pickupQty${diffKey}`).val()) > diffItem.QTY) {
 						$(`#${key}pickupQty${diffKey}`).val(diffItem.QTY);
 					}
-					diffItem.DEFAULTVALUE = parseInt($(`#${key}pickupQty${diffKey}`).val());
+					diffItem.PICKUPVALUE = parseInt($(`#${key}pickupQty${diffKey}`).val());
 				}
 			});
 		});
@@ -123,12 +151,14 @@ export default class ongoingItem extends React.Component {
 		this.setState({ORDER_ITEMS : items},()=>this.wanringChecker(this.state.ORDER_ITEMS,itemId,key));		
 	}
 
+
+
 	wanringChecker(items,itemId,key){
 		console.log(items);
 		items.forEach(item=> {
 			if(itemId === item.ORDER_ITEM_ID){
 				
-				if(item.ORDER_ITEM_QTY != item.DIFFERENT_TYPE.reduce((acc,diffItem)=>acc+diffItem.DEFAULTVALUE,0)) {
+				if(item.ORDER_ITEM_QTY != item.DIFFERENT_TYPE.reduce((acc,diffItem)=>acc+diffItem.PICKUPVALUE,0)) {
 					$(`#orderQty${key}`).addClass("warning");
 				}else {
 					$(`#orderQty${key}`).removeClass("warning");
@@ -136,6 +166,16 @@ export default class ongoingItem extends React.Component {
 			}
 		})
 	}
+
+
+
+	pushBtnClicked(e){
+		console.log(this.state.ORDER_ITEMS);
+		this.pushItemToBack();
+	}
+
+
+
 
 
 	render() {
@@ -176,7 +216,7 @@ export default class ongoingItem extends React.Component {
 									<div className="col-3"><h4 className="text-center">{diffItem.MANUFACTURE}</h4></div>
 									<div className="col-3"><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
 									<div className="col-2"><h4 className="text-center">{diffItem.QTY}</h4></div>
-									<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.DEFAULTVALUE} onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
+									<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
 								</div>
 								)}
 							</div>	
@@ -187,8 +227,16 @@ export default class ongoingItem extends React.Component {
 
 					<div className="actionContainer">
 						<label className="block">Note:</label>
-						<textarea className="block"></textarea>
-						<button type="button" className="block btn btn-success">Push</button>
+						<textarea id={`note${this.state.ORDER_ID}`} className="block"></textarea>
+						{this.state.EMPTY_ITEM? 
+							this.state.accountInfo.VIEW_ITEM &&	this.state.accountInfo.ADD_ITEM?
+								<Link className ="btn btn-warning" to="/inventory">Add Item</Link>
+								:
+								<h3>Please report this problem to the correspondant.</h3>
+
+							:
+							<button type="button" className="block btn btn-success" onClick = {e => this.pushBtnClicked(e)}>Push</button>
+						}
 					</div>
 					
 				</div>

@@ -94,7 +94,6 @@ componentDidMount(){
 
 
 render(){
-
   return (
   <div className="main-wrapper">
     <Router>
@@ -108,7 +107,7 @@ render(){
         <div>
         <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
-        <Route exact path = "/checkout" component = {()=> <CheckOut/>}/>
+        <Route exact path = "/checkout" component = {()=> <CheckOut accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/checkout/ongoingorder" component = {OngoingItem}/>
         </div>
       ):null}

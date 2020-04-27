@@ -22,8 +22,9 @@ export default class checkoutMain extends React.Component {
 			let ongoingOrders = data.data.map(order => {
 				return order.STATUS === 'RECEIVED'? order: null;
 			});
+			console.log(data);
 
-			this.setState({ongoingOrders : ongoingOrders},()=>console.log(this.state.ongoingOrders));
+			this.setState({ongoingOrders : data.data},()=>console.log(this.state.ongoingOrders));
 			
 		});
 	}
@@ -58,6 +59,7 @@ export default class checkoutMain extends React.Component {
 											<td>Order Number</td>
 											<td>Customer</td>
 											<td>Time</td>
+											<td>Status</td>
 											<td>Action</td>
 										</tr>
 									</thead>
@@ -66,11 +68,13 @@ export default class checkoutMain extends React.Component {
 											<tr key={key+1}>
 												<td>{order.ORDER_ID}</td>
 												<td>{order.CUSTOMER}</td>
-												<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  h:mm:s')}</td>
+												<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  h:mm:s')}</td> 
+												<td>{order.STATUS}</td>
 												<td>
 													<Link to={{
 														pathname:`/checkout/ongoingorder`,
 														state: {
+															accountInfo: this.props.accountInfo,
 															ORDER_ID: order.ORDER_ID
 														}
 													}}

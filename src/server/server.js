@@ -335,10 +335,53 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 
 
 
+app.get("/checkout/ongoingorder/pushtoback",(req,res)=>{
+	let orderInfo = JSON.parse(req.query.orderInfo);
+	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = 'PUSHED TO BACK' WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
+		sqlQuery1 += `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','PUSHED TO BACK');`
+	let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = ? , STATUS = 'PUSHED TO BACK' WHERE ID = ?;`;
+	let	sqlQuery3 = `UPDATE item_list SET QTY = (SELECT QTY FROM ITEM_LIST WHERE ID = ?) - ? WHERE ID = ?;`;
+
+	let orderItems = [];
+	let listItems = [];
+	
+	orderInfo.ITEMS.forEach(item=> {
+		orderItems.push([item.DIFFERENT_TYPE, item.ORDER_ITEM_ID]);
+		item.DIFFERENT_TYPE.forEach(diffItem=> listItems.push([diffItem.ID, diffItem.PICKUPVALUE, diffItem.ID]));
+	});
+
+	console.log(listItems);
+
+	connection.query(sqlQuery3,orderItems,(err,result)=>{
+		if(err){
+			console.log(err);
+		}else {
+			console.log("@!!@#good")
+		}
+	});
+	// connection.query(sqlQuery1,[1,2],(err,result1)=>{
+	// 	if(err) {
+	// 		res.send(err);
+	// 	}else {
+	// 		connection.query(sqlQuery2,[orderItems],(err,result2)=>{
+	// 			if(err) {
+	// 				res.send(err);
+	// 			}else {
+	// 				return (res.json({data:result}));
+	// 			}
+	// 		} )
+	// 	}
+	// })
+
+
+
+});
+
 //***********************************************************************************************************************
 //receiving Orders from shopify
 app.post("/shopify", (req, res) => {
 	let shopifyData = req.body;
+	console.log(shopifyData);
 	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS) VALUES ('${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED');`;
 	sqlQuery += 'INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) VALUES ?';
 
@@ -348,9 +391,9 @@ app.post("/shopify", (req, res) => {
 	shopifyData.line_items.forEach(item => {
 
 		valueItems.push([shopifyData.order_number, item.name , item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity), 'RECEIVED']);
+		
 	});
-
-
+	
 	connection.query(sqlQuery,[valueItems],(err,result)=>{
 		if(err){
 			res.send(err);
