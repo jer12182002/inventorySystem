@@ -335,45 +335,48 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 
 
 
+
 app.get("/checkout/ongoingorder/pushtoback",(req,res)=>{
 	let orderInfo = JSON.parse(req.query.orderInfo);
-	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = 'PUSHED TO BACK' WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
-		sqlQuery1 += `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','PUSHED TO BACK');`
-	let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = ? , STATUS = 'PUSHED TO BACK' WHERE ID = ?;`;
-	let	sqlQuery3 = `UPDATE item_list SET QTY = (SELECT QTY FROM ITEM_LIST WHERE ID = ?) - ? WHERE ID = ?;`;
+	let pauseTask = false;
 
-	let orderItems = [];
-	let listItems = [];
-	
-	orderInfo.ITEMS.forEach(item=> {
-		orderItems.push([item.DIFFERENT_TYPE, item.ORDER_ITEM_ID]);
-		item.DIFFERENT_TYPE.forEach(diffItem=> listItems.push([diffItem.ID, diffItem.PICKUPVALUE, diffItem.ID]));
-	});
+	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = 'IN PROCESS' WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
+		sqlQuery1 += `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','IN PROCESS');`
 
-	console.log(listItems);
+	orderInfo.ITEMS.forEach(item => {
+		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = '${JSON.stringify(item.DIFFERENT_TYPE)}',STATUS = 'IN PROCESS' WHERE ID = ${item.ORDER_ITEM_ID};`;
+		console.log(sqlQuery2);
+		connection.query(sqlQuery2,(err,result2) => {
+			if(err) {
+				pauseTask = true;
+			}else {
+				item.DIFFERENT_TYPE.forEach(diffItem => {
+					let sqlQuery3 = `UPDATE item_list SET QTY = (SELECT QTY FROM ITEM_LIST WHERE ID = ${diffItem.ID}) - ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ID}`;
+					connection.query(sqlQuery3,(err,result3)=>{
+						if(err) {
+							pauseTask = true;
+						}
+						else {
+							console.log("good");
+						}
+					});
 
-	connection.query(sqlQuery3,orderItems,(err,result)=>{
-		if(err){
-			console.log(err);
-		}else {
-			console.log("@!!@#good")
-		}
-	});
-	// connection.query(sqlQuery1,[1,2],(err,result1)=>{
-	// 	if(err) {
-	// 		res.send(err);
-	// 	}else {
-	// 		connection.query(sqlQuery2,[orderItems],(err,result2)=>{
-	// 			if(err) {
-	// 				res.send(err);
-	// 			}else {
-	// 				return (res.json({data:result}));
-	// 			}
-	// 		} )
-	// 	}
-	// })
+				});
+			}
+		});
+	})
 
-
+	if (!pauseTask) {
+		connection.query(sqlQuery1,[1,2],(err,result1)=>{
+			if(err) {
+				res.send(err);
+			}else {
+				return res.json({data:'success'});
+			}
+		});
+	}else {
+		return res.json({data: 'fail'});
+	}
 
 });
 
