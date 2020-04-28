@@ -346,7 +346,7 @@ app.get("/checkout/ongoingorder/pushtoback",(req,res)=>{
 	let pauseTask = false;
 
 	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = 'IN PROCESS' WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
-		sqlQuery1 += `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','IN PROCESS');`
+		sqlQuery1 += `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','RECEIVED');`
 
 	orderInfo.ITEMS.forEach(item => {
 		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = '${JSON.stringify(item.DIFFERENT_TYPE)}',STATUS = 'IN PROCESS' WHERE ID = ${item.ORDER_ITEM_ID};`;

@@ -1,5 +1,9 @@
 .ongoingItem-wrapper {
 	.main-section {
+		.container-fluid {
+			padding: 0;
+		}
+
 		.row {
 			width: 100%;
 			margin: 0 auto;
@@ -29,7 +33,26 @@
 				width: 70px;
 			}
 		}
-	
+		
+		.noteContainer {
+			.note-row {
+				border: 2px solid black;
+				height: 130px;
+				margin-top: 30px;
+				.note-header {
+					height: 30%;
+					border-bottom: 2px solid black;
+					background-color: lightblue;
+					padding: 0;
+				}
+				.not-info {
+					height: 70%;
+					background-color: lightyellow;
+				}
+			}
+
+		}
+
 		.actionContainer {
 			margin-top: 30px;
 			text-align: center;

@@ -15,6 +15,7 @@ export default class ongoingItem extends React.Component {
 			ORDER_ID : this.props.location.state.ORDER_ID,
 			ONGOING_ORDER:[],
 			ORDER_ITEMS:[],
+			ORDER_NOTES: [],
 			ITEM_NOT_ENOUGH: null
 		}
 	}
@@ -25,7 +26,7 @@ export default class ongoingItem extends React.Component {
 		.then(data=> {
 			console.log(data);
 			if(data.data) {
-				this.setState({ONGOING_ORDER:data.data.order[0], ORDER_ITEMS: this.organizeData(data.data.orderItems)},()=>console.log(this.state.ORDER_ITEMS));
+				this.setState({ONGOING_ORDER:data.data.order[0], ORDER_ITEMS: this.organizeData(data.data.orderItems), ORDER_NOTES : data.data.notes});
 			}
 		})
 	}
@@ -228,8 +229,22 @@ export default class ongoingItem extends React.Component {
 					)}
 
 					{/*mobile display*/}
-					<div className="noteContainer">
 
+
+
+					<div className="noteContainer">
+						{this.state.ORDER_NOTES.map((note,key) =>
+							<div className="container-fluid note-row" key={`note${key+1}`}>
+								<div className="row note-header">
+									<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD hh:mm:ss')}</h4></div>
+									<div className="col-4 col-md-4 text-center"><h4>Author: {note.PERSON}</h4></div>
+									<div className="col-4 col-md-4 text-center"><h4>Status: {note.STATUS}</h4></div>
+								</div>
+								<div className="not-info">
+									<h4 className="text-center">{note.NOTE}</h4>
+								</div>
+							</div>
+						)}
 					</div>
 
 					<div className="actionContainer">
