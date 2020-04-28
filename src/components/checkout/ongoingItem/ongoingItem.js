@@ -15,7 +15,7 @@ export default class ongoingItem extends React.Component {
 			ORDER_ID : this.props.location.state.ORDER_ID,
 			ONGOING_ORDER:[],
 			ORDER_ITEMS:[],
-			EMPTY_ITEM: null
+			ITEM_NOT_ENOUGH: null
 		}
 	}
 
@@ -73,7 +73,6 @@ export default class ongoingItem extends React.Component {
 							QTY: item.QTY
 						}
 					);
-
 					return true;
 				}
 				return false;
@@ -112,15 +111,19 @@ export default class ongoingItem extends React.Component {
 		uniqueData.map(item=>{
 			let orderQty = item.ORDER_ITEM_QTY;
 
+			let diffItemSum = 0;
 			item.DIFFERENT_TYPE.map(diffItem=>{
-				if(diffItem.ID === null) {
-					this.setState({EMPTY_ITEM : true});
+				diffItemSum += diffItem.QTY;
+				if(diffItem.ID === null || orderQty > diffItemSum) {
+					this.setState({ITEM_NOT_ENOUGH : true});
 				}else {
 					diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 				}
 			})
 		});
+
+		console.log(uniqueData);
 
 		return uniqueData;
 	}
@@ -224,11 +227,14 @@ export default class ongoingItem extends React.Component {
 					)}
 
 					{/*mobile display*/}
+					<div className="noteContainer">
+
+					</div>
 
 					<div className="actionContainer">
 						<label className="block">Note:</label>
 						<textarea id={`note${this.state.ORDER_ID}`} className="block"></textarea>
-						{this.state.EMPTY_ITEM? 
+						{this.state.ITEM_NOT_ENOUGH? 
 							this.state.accountInfo.VIEW_ITEM &&	this.state.accountInfo.ADD_ITEM?
 								<Link className ="btn btn-warning" to="/inventory">Add Item</Link>
 								:
