@@ -23,6 +23,7 @@ export default class ongoingItem extends React.Component {
 		fetch(`http://localhost:4000/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data=> {
+			console.log(data);
 			if(data.data) {
 				this.setState({ONGOING_ORDER:data.data.order[0], ORDER_ITEMS: this.organizeData(data.data.orderItems)},()=>console.log(this.state.ORDER_ITEMS));
 			}

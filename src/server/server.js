@@ -314,23 +314,28 @@ app.get("/checkout",(req,res)=> {
 
 app.get("/checkout/ongoingorder",(req,res)=>{
 	let {orderId} = req.query;
-	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId}`;
-	let sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", O.QTY AS "ORDER_ITEM_QTY", I.ID, I.SHELF_NO,I.MANUFACTURE, I.QTY, I.EXPIRE_DATE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON o.product = CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC`;
-	console.log(sqlQuery2);
+	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId};`;
+	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", O.QTY AS "ORDER_ITEM_QTY", I.ID, I.SHELF_NO,I.MANUFACTURE, I.QTY, I.EXPIRE_DATE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON o.product = CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
+	let	sqlQuery3 = `SELECT * FROM checkout_note WHERE ORDER_ID = ${orderId} ORDER BY TIME ASC`;
 
-	connection.query(sqlQuery1,(err,result1)=>{
+	let data = [];
+	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=>{
 		if(err) {
 			res.send(err);
 		}else{
-			connection.query(sqlQuery2, (err2,result2)=>{
-				if(err2) {
-					res.send(err2);
-				}else{
-					return (res.json({data:{order: result1, orderItems: result2}}));
+			return res.json(
+				{
+					data:{
+						order : result[0],
+						orderItems : result[1],
+						notes : result[2]
+					}
 				}
-			})
+			)
 		}
 	});
+
+
 });
 
 
