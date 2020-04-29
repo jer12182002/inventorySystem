@@ -297,7 +297,7 @@ app.get('/inventory/restockHold',(req,res)=>{
 	
 //*************************************** Checkout **********************************************************************
 app.get("/checkout",(req,res)=> {
-	let sqlQuery = "SELECT * FROM ongoing_order";
+	let sqlQuery = "SELECT * FROM ongoing_order ORDER BY ORDER_TIME DESC";
 
 	connection.query(sqlQuery, (err,result) => {
 		if(err) {
@@ -424,9 +424,11 @@ app.post("/shopify", (req, res) => {
 	let valueItems = [];
 
 	shopifyData.line_items.forEach(item => {
-
-		valueItems.push([shopifyData.order_number, item.name , item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity), 'RECEIVED']);
-		
+		if(item.grams) {
+			valueItems.push([shopifyData.order_number, item.name , item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity), 'RECEIVED']);
+		}else {
+			valueItems.push([shopifyData.order_number, item.name , parseInt(item.quantity), 'RECEIVED']);
+		}
 	});
 	
 	connection.query(sqlQuery,[valueItems],(err,result)=>{
