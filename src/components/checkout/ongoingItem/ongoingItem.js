@@ -32,7 +32,7 @@ export default class ongoingItem extends React.Component {
 					console.log("@@@");
 				}
 					this.setState({ONGOING_ORDER:data.data.order[0],ORDER_NOTES : data.data.notes},()=>{
-						console.log(this.state.ONGOING_ORDER);
+						console.log(this.state.ORDER_NOTES);
 					});
 			}
 		})
@@ -58,7 +58,7 @@ export default class ongoingItem extends React.Component {
 				});
 
 				orderItems = data.data;
-				this.setState({ORDER_ITEMS : orderItems});
+				this.setState({ORDER_ITEMS : orderItems},()=> console.log(this.state.ORDER_ITEMS));
 			}
 		});
 	}
@@ -75,7 +75,6 @@ export default class ongoingItem extends React.Component {
 		orderInfo.ACCOUNTINFO = this.state.accountInfo.USERNAME;
 		orderInfo.PROCESS_TIME = today;
 		
-		console.log(orderInfo);
 		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoback?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
 		.then(data => {
@@ -84,6 +83,8 @@ export default class ongoingItem extends React.Component {
 			}
 		})
 	}
+
+
 
 	componentDidMount() {
 		this.loadOrderInfo()
@@ -140,7 +141,7 @@ export default class ongoingItem extends React.Component {
 			}
 		});
 
-		//SET PICKUPVALUE
+		//SET PICKUPVALUE, SET TABLETQTY = 0, AND CHECK FOR SUFFICIENCY OF ITEMS
 		uniqueData.map(item=>{
 			let orderQty = item.ORDER_ITEM_QTY;
 			let diffItemSum = 0;
@@ -154,6 +155,8 @@ export default class ongoingItem extends React.Component {
 				}else {
 					diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+
+					diffItem.TABLETQTY = 0;
 				}
 			})
 
@@ -202,6 +205,31 @@ export default class ongoingItem extends React.Component {
 	}
 
 
+	tabletQtyChange (e, itemId, diffId, diffKey, key) {
+		e.preventDefault();
+
+		let pickupQty = parseInt($(`#${key}pickupQty${diffKey}`).val());
+		let tabletQty = parseInt($(`#${key}tabletQty${diffKey}`).val());
+
+		if(tabletQty < 0) {
+			$(`#${key}tabletQty${diffKey}`).val(0);			
+		}else if(tabletQty > pickupQty) {
+			$(`#${key}tabletQty${diffKey}`).val(pickupQty);			
+		}
+		
+		let orderItems = this.state.ORDER_ITEMS;
+		orderItems.forEach(item => {
+			if(item.ORDER_ITEM_ID === itemId)
+				item.DIFFERENT_TYPE.forEach(diffItem => {
+					if(diffItem.ID === diffId) {
+						diffItem.TABLETQTY = parseInt($(`#${key}tabletQty${diffKey}`).val());
+					}
+			})
+		});
+
+		this.setState({ORDER_ITEMS : orderItems});
+	}
+
 
 	wanringChecker(items,itemId,key){
 		console.log(items);
@@ -242,23 +270,26 @@ export default class ongoingItem extends React.Component {
 
 					 {/*desktop display*/}
 					<div className="order-detail-head row">
-						<div className="col-5 col-md-5"><h3>Item</h3></div>
+						<div className="col-4 col-md-4"><h3>Item</h3></div>
 						<div className="col-1 col-md-1"><h3 className="text-center">Order Qty</h3></div>
-						<div className="col-6 col-md-6">
+						<div className="col-7 col-md-7">
 							{this.state.ONGOING_ORDER.STATUS === "RECEIVED"? 
 							<div className="row">
 								<div className="col-2"><h3 className="text-center">Shelf No.</h3></div>
-								<div className="col-3"><h3 className="text-center">Manu.</h3></div>
-								<div className="col-3"><h3 className="text-center">Exp Date</h3></div>
+								<div className="col-2"><h3 className="text-center">Manu.</h3></div>
+								<div className="col-2"><h3 className="text-center">Exp Date</h3></div>
 								<div className="col-2"><h3 className="text-center">Stock Qty</h3></div>
 								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
+								<div className="col-2"><h3 className="text-center">Tablet Qty</h3></div>
 							</div>
 							:
 							<div className="row">
 								<div className="col-2"><h3 className="text-center">Shelf No.</h3></div>
-								<div className="col-3"><h3 className="text-center">Manu.</h3></div>
-								<div className="col-3"><h3 className="text-center">Exp Date</h3></div>
-								<div className="col-4"><h3 className="text-center">PickUp Qty</h3></div>
+								<div className="col-2"><h3 className="text-center">Manu.</h3></div>
+								<div className="col-2"><h3 className="text-center">Exp Date</h3></div>
+								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
+								<div className="col-2"><h3 className="text-center">Tablet Qty</h3></div>
+								<div className="col-2"></div>
 							</div>	
 							}
 
@@ -267,22 +298,27 @@ export default class ongoingItem extends React.Component {
 
 					{this.state.ORDER_ITEMS.map((item,key)=>
 						<div className="row item-detail" key={key+1}>
-							<div className="col-5 col-md-5"><h4>{item.ITEMENNAME}</h4><h4>{item.ITEMCHNAME}</h4></div>
+							<div className="col-4 col-md-4"><h4>{item.ITEMENNAME}</h4><h4>{item.ITEMCHNAME}</h4></div>
 							<div id={`orderQty${key+1}`} className="col-1 col-md-1"><h4 className="text-center">{item.ORDER_ITEM_QTY}</h4></div>
-							<div className="col-6 col-md-6">
+							<div className="col-7 col-md-7">
 								{item.DIFFERENT_TYPE.map((diffItem,diffKey)=>
 								<div className="row" key={`diffKey${diffKey}`}>
 									<div className="col-2"><h4 className="text-center">{diffItem.SHELF_NO}</h4></div>
-									<div className="col-3"><h4 className="text-center">{diffItem.MANUFACTURE}</h4></div>
-									<div className="col-3"><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
+									<div className="col-2"><h4 className="text-center">{diffItem.MANUFACTURE}</h4></div>
+									<div className="col-2"><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
 									
 									{this.state.ONGOING_ORDER.STATUS === "RECEIVED"?
-										<div>
+										<>
 											<div className="col-2"><h4 className="text-center">{diffItem.QTY}</h4></div>
-											<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
-										</div>
+											<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} min="0" onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
+											<div className="col-2 text-center"><input id={`${key+1}tabletQty${diffKey+1}`} type="number" className="tabletQty text-center" defaultValue={diffItem.TABLETQTY} min="0" onChange={e => this.tabletQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>		
+										</>
 										:
-										<div className="col-4"><h4 className="text-center">{diffItem.PICKUPVALUE}</h4></div> 
+										<>
+											<div className="col-2"><h4 className="text-center">{diffItem.PICKUPVALUE}</h4></div> 
+											<div className="col-2"><h4 className="text-center">{diffItem.TABLETQTY}</h4></div>
+											<div className="col-2"><h4 className="text-center warning">{diffItem.TABLETQTY > 0 ? "!" : ""}</h4></div> 
+										</>
 									}
 								</div>
 								)}
