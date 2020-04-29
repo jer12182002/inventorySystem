@@ -39,19 +39,28 @@
 				border: 2px solid black;
 				height: 130px;
 				margin-top: 30px;
+
 				.note-header {
 					height: 30%;
 					border-bottom: 2px solid black;
 					background-color: lightblue;
 					padding: 0;
 				}
-				.not-info {
+
+				.note-info {
 					height: 70%;
 					background-color: lightyellow;
+					overflow-y: scroll;
 				}
 			}
-
+			.note-row.firstRow {
+				.note-header {
+					background-color: red;
+				}
+			}
 		}
+
+
 
 		.actionContainer {
 			margin-top: 30px;

@@ -315,9 +315,10 @@ app.get("/checkout",(req,res)=> {
 app.get("/checkout/ongoingorder",(req,res)=>{
 	let {orderId} = req.query;
 	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId};`;
-	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", O.QTY AS "ORDER_ITEM_QTY", I.ID, I.SHELF_NO,I.MANUFACTURE, I.QTY, I.EXPIRE_DATE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON o.product = CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
+	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON o.product = CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
 	let	sqlQuery3 = `SELECT * FROM checkout_note WHERE ORDER_ID = ${orderId} ORDER BY TIME ASC`;
 
+	console.log(sqlQuery2);
 	let data = [];
 	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=>{
 		if(err) {
@@ -334,10 +335,22 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 			)
 		}
 	});
-
-
 });
 
+
+app.get("/check/ongoingorder/inprocess",(req,res)=> {
+	let {orderId} = req.query;
+
+	let sqlQuery = `SELECT ID, PRODUCT AS "ORDER_ITEM_PRODUCT", QTY AS "ORDER_ITEM_QTY",PICKUP_ITEMS AS "DIFFERENT_TYPE" FROM ORDER_ITEM_LIST WHERE ORDER_ID = ${orderId}`;
+	console.log(sqlQuery);
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data: result});
+		}
+	})
+});
 
 
 

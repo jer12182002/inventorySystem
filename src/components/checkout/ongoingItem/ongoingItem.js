@@ -7,7 +7,6 @@ import "./ongoingItem.scss";
 
 
 export default class ongoingItem extends React.Component {
-	
 	constructor(props) {
 		super(props);	
 		this.state = {
@@ -16,7 +15,7 @@ export default class ongoingItem extends React.Component {
 			ONGOING_ORDER:[],
 			ORDER_ITEMS:[],
 			ORDER_NOTES: [],
-			ITEM_NOT_ENOUGH: null
+			ITEM_NOT_ENOUGH: null,
 		}
 	}
 
@@ -26,17 +25,45 @@ export default class ongoingItem extends React.Component {
 		.then(data=> {
 			console.log(data);
 			if(data.data) {
-				this.setState({ONGOING_ORDER:data.data.order[0], ORDER_ITEMS: this.organizeData(data.data.orderItems), ORDER_NOTES : data.data.notes});
+				if(data.data.order[0].STATUS === "RECEIVED") {
+					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
+				}else if(data.data.order[0].STATUS === "IN PROCESS"){
+					this.loadPickupOrderInfo();
+					console.log("@@@");
+				}
+					this.setState({ONGOING_ORDER:data.data.order[0],ORDER_NOTES : data.data.notes},()=>{
+						console.log(this.state.ONGOING_ORDER);
+					});
 			}
 		})
 	}
 
 
-	pushItemToBack(){
-		//update person and status in ongoing_order
-		//update ITEM_ID, ITEM_QTY, STATUS IN order_item_list
-		//insert into checkoutNote
+	loadPickupOrderInfo() {
+		fetch(`http://localhost:4000/check/ongoingorder/inprocess?orderId=${this.state.ORDER_ID}`)
+		.then(res => res.json())
+		.then(data => {
+			if(data.data){
 
+				let orderItems = data.data.map(item => {
+					let chineseName = item.ORDER_ITEM_PRODUCT.split(" ");
+					chineseName = chineseName[chineseName.length-1];
+				
+					let englishName = item.ORDER_ITEM_PRODUCT.split(" " + chineseName);
+					englishName = englishName[0];
+
+					item.ITEMCHNAME = chineseName;
+					item.ITEMENNAME = englishName;
+					item.DIFFERENT_TYPE = JSON.parse(item.DIFFERENT_TYPE);
+				});
+
+				orderItems = data.data;
+				this.setState({ORDER_ITEMS : orderItems});
+			}
+		});
+	}
+
+	pushItemToBack(){
 		let today = new Date();
 		today = today.getFullYear() + "-" + today.getMonth() + "-" + today.getDate() + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getMinutes();
 	
@@ -51,7 +78,11 @@ export default class ongoingItem extends React.Component {
 		console.log(orderInfo);
 		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoback?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
-		.then(data => {})
+		.then(data => {
+			if(data.data && data.data === "success") {
+				this.loadOrderInfo();
+			}
+		})
 	}
 
 	componentDidMount() {
@@ -112,24 +143,38 @@ export default class ongoingItem extends React.Component {
 		//SET PICKUPVALUE
 		uniqueData.map(item=>{
 			let orderQty = item.ORDER_ITEM_QTY;
-
 			let diffItemSum = 0;
+			
 			item.DIFFERENT_TYPE.map(diffItem=>{
+			
+				//CHECK IF WE THERE ARE SUFFICIENT ITEMS IN INVENTORY
 				diffItemSum += diffItem.QTY;
-				if(diffItem.ID === null || orderQty > diffItemSum) {
+				if(diffItem.ID === null) {
 					this.setState({ITEM_NOT_ENOUGH : true});
 				}else {
 					diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 				}
 			})
+
+			//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
+			if(item.ORDER_ITEM_QTY > diffItemSum) {
+				this.setState({ITEM_NOT_ENOUGH : true});
+			}
 		});
-
-		console.log(uniqueData);
-
 		return uniqueData;
 	}
 
+
+	getPickUpData(data){
+		let pickupItems = new Set();
+
+		data.filter(item => !pickupItems.has(item["ORDER_ITEM_ID"]) && pickupItems.add(item));
+		
+		console.log(pickupItems);
+				
+
+	}
 
 
 
@@ -200,6 +245,7 @@ export default class ongoingItem extends React.Component {
 						<div className="col-5 col-md-5"><h3>Item</h3></div>
 						<div className="col-1 col-md-1"><h3 className="text-center">Order Qty</h3></div>
 						<div className="col-6 col-md-6">
+							{this.state.ONGOING_ORDER.STATUS === "RECEIVED"? 
 							<div className="row">
 								<div className="col-2"><h3 className="text-center">Shelf No.</h3></div>
 								<div className="col-3"><h3 className="text-center">Manu.</h3></div>
@@ -207,6 +253,15 @@ export default class ongoingItem extends React.Component {
 								<div className="col-2"><h3 className="text-center">Stock Qty</h3></div>
 								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
 							</div>
+							:
+							<div className="row">
+								<div className="col-2"><h3 className="text-center">Shelf No.</h3></div>
+								<div className="col-3"><h3 className="text-center">Manu.</h3></div>
+								<div className="col-3"><h3 className="text-center">Exp Date</h3></div>
+								<div className="col-4"><h3 className="text-center">PickUp Qty</h3></div>
+							</div>	
+							}
+
 						</div>
 					</div>
 
@@ -220,8 +275,15 @@ export default class ongoingItem extends React.Component {
 									<div className="col-2"><h4 className="text-center">{diffItem.SHELF_NO}</h4></div>
 									<div className="col-3"><h4 className="text-center">{diffItem.MANUFACTURE}</h4></div>
 									<div className="col-3"><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
-									<div className="col-2"><h4 className="text-center">{diffItem.QTY}</h4></div>
-									<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
+									
+									{this.state.ONGOING_ORDER.STATUS === "RECEIVED"?
+										<div>
+											<div className="col-2"><h4 className="text-center">{diffItem.QTY}</h4></div>
+											<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
+										</div>
+										:
+										<div className="col-4"><h4 className="text-center">{diffItem.PICKUPVALUE}</h4></div> 
+									}
 								</div>
 								)}
 							</div>	
@@ -234,13 +296,13 @@ export default class ongoingItem extends React.Component {
 
 					<div className="noteContainer">
 						{this.state.ORDER_NOTES.map((note,key) =>
-							<div className="container-fluid note-row" key={`note${key+1}`}>
+							<div className={`container-fluid note-row ${key === 0? `firstRow`:``}`} key={`note${key+1}`}>
 								<div className="row note-header">
 									<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD hh:mm:ss')}</h4></div>
 									<div className="col-4 col-md-4 text-center"><h4>Author: {note.PERSON}</h4></div>
 									<div className="col-4 col-md-4 text-center"><h4>Status: {note.STATUS}</h4></div>
 								</div>
-								<div className="not-info">
+								<div className="note-info">
 									<h4 className="text-center">{note.NOTE}</h4>
 								</div>
 							</div>
