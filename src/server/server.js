@@ -316,11 +316,10 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 	let {orderId} = req.query;
 	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId};`;
 	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON o.product = CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
-	let	sqlQuery3 = `SELECT * FROM checkout_note WHERE ORDER_ID = ${orderId} ORDER BY TIME ASC`;
 
 	console.log(sqlQuery2);
 	let data = [];
-	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=>{
+	connection.query(sqlQuery1+sqlQuery2,(err,result)=>{
 		if(err) {
 			res.send(err);
 		}else{
@@ -328,8 +327,7 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 				{
 					data:{
 						order : result[0],
-						orderItems : result[1],
-						notes : result[2]
+						orderItems : result[1]
 					}
 				}
 			)
@@ -353,16 +351,32 @@ app.get("/check/ongoingorder/inprocess",(req,res)=> {
 });
 
 
+app.get("/checkout/order/loadnotes",(req,res)=>{
+	let {orderId} = req.query;
 
-app.get("/checkout/ongoingorder/pushtoback",(req,res)=>{
+	let	sqlQuery = `SELECT * FROM checkout_note WHERE ORDER_ID = ${orderId} ORDER BY TIME DESC`;
+
+	connection.query(sqlQuery, (err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data: result});
+		}
+	})
+});
+
+
+
+app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	let orderInfo = JSON.parse(req.query.orderInfo);
 	let pauseTask = false;
 
-	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = 'IN PROCESS' WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
-		sqlQuery1 += orderInfo.NOTE ? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','RECEIVED');` : ``;
+	console.log(orderInfo);
+	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}' WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
+		sqlQuery1 += orderInfo.NOTE ? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','${orderInfo.CURRENTSTATUS}');` : ``;
 
 	orderInfo.ITEMS.forEach(item => {
-		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = '${JSON.stringify(item.DIFFERENT_TYPE)}',STATUS = 'IN PROCESS' WHERE ID = ${item.ORDER_ITEM_ID};`;
+		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = '${JSON.stringify(item.DIFFERENT_TYPE)}',STATUS = '${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;
 		console.log(sqlQuery2);
 		connection.query(sqlQuery2,(err,result2) => {
 			if(err) {

@@ -23,17 +23,15 @@ export default class ongoingItem extends React.Component {
 		fetch(`http://localhost:4000/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data=> {
-			console.log(data);
 			if(data.data) {
+				console.log(data.data);
 				if(data.data.order[0].STATUS === "RECEIVED") {
 					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
 				}else if(data.data.order[0].STATUS === "IN PROCESS"){
 					this.loadPickupOrderInfo();
-					console.log("@@@");
 				}
-					this.setState({ONGOING_ORDER:data.data.order[0],ORDER_NOTES : data.data.notes},()=>{
-						console.log(this.state.ORDER_NOTES);
-					});
+				this.setState({ONGOING_ORDER : data.data.order[0]});
+				this.loadNotes();
 			}
 		})
 	}
@@ -58,15 +56,30 @@ export default class ongoingItem extends React.Component {
 				});
 
 				orderItems = data.data;
-				this.setState({ORDER_ITEMS : orderItems},()=> console.log(this.state.ORDER_ITEMS));
+				this.setState({ORDER_ITEMS : orderItems});
 			}
 		});
 	}
 
+
+	loadNotes() {
+		fetch(`http://localhost:4000/checkout/order/loadnotes?orderId=${this.state.ORDER_ID}`)
+		.then(res => res.json())
+		.then(data => {
+			if(data.data) {
+				this.setState({ORDER_NOTES : data.data});
+			}
+		})
+	}
+
+	
+
+
+
 	pushItemToBack(){
 		let today = new Date();
-		today = today.getFullYear() + "-" + today.getMonth() + "-" + today.getDate() + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getMinutes();
-	
+		today = today.getFullYear() + "-" + ("0" + (today.getMonth() +1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2) + " " + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
+		
 		let orderInfo = {};
 
 		orderInfo.ORDER_NO = this.state.ORDER_ID;
@@ -74,8 +87,20 @@ export default class ongoingItem extends React.Component {
 		orderInfo.NOTE = $(`#note${this.state.ORDER_ID}`).val();
 		orderInfo.ACCOUNTINFO = this.state.accountInfo.USERNAME;
 		orderInfo.PROCESS_TIME = today;
+		orderInfo.CURRENTSTATUS = this.state.ONGOING_ORDER.STATUS;
+
+		if(this.state.ONGOING_ORDER.STATUS === "RECEIVED") {
+			orderInfo.NEXTSTATUS = "IN PROCESS";
+		}
+		else if (this.state.ONGOING_ORDER.STATUS === "IN PROCESS") {
+			orderInfo.NEXTSTATUS = "IN PROCESS";
+		}
+		else if (this.state.ONGOING_ORDER.STATUS === "PUSHED BACK") {
+			orderInfo.NEXTSTATUS = "IN PROCESS";
+		}
 		
-		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoback?orderInfo=${JSON.stringify(orderInfo)}`)
+
+		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data && data.data === "success") {
@@ -87,7 +112,12 @@ export default class ongoingItem extends React.Component {
 
 
 	componentDidMount() {
-		this.loadOrderInfo()
+		this.loadOrderInfo();
+
+		// THIS IS TO MAKE SURE OTHERS CAN RECEIVE THE REAL TIME MESSAGES
+		setInterval(()=>{
+			this.loadNotes()
+		},1000);
 	}
 
 
@@ -246,9 +276,7 @@ export default class ongoingItem extends React.Component {
 	}
 
 
-
 	pushBtnClicked(e){
-		console.log(this.state.ORDER_ITEMS);
 		this.pushItemToBack();
 	}
 
@@ -257,6 +285,7 @@ export default class ongoingItem extends React.Component {
 
 
 	render() {
+
 		return (
 			<div className="ongoingItem-wrapper">
 				<div className="header-section"></div>
