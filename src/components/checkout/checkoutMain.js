@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import Moment from 'moment';
+import $ from 'jquery';
 
 import "./checkoutMain.scss";
 export default class checkoutMain extends React.Component {
@@ -22,8 +23,7 @@ export default class checkoutMain extends React.Component {
 			let ongoingOrders = data.data.map(order => {
 				return order.STATUS === 'RECEIVED'? order: null;
 			});
-			console.log(data);
-
+		
 			this.setState({ongoingOrders : data.data},()=>console.log(this.state.ongoingOrders));
 			
 		});
@@ -32,6 +32,28 @@ export default class checkoutMain extends React.Component {
 
 	componentDidMount() {
 		this.loadOngoingOrder();
+	}
+
+
+
+
+	sortToggleBtnClick(e, target) {
+		e.preventDefault();
+
+		console.log(this.state.ongoingOrders);
+		let sorted = this.state.ongoingOrders;
+		//sorted.forEach(order => order.ORDER_TIME = new Date(order.ORDER_TIME));
+		
+		if($(`#${target}-sort-toggleBtn`).text() === "Asc") {
+			sorted = sorted.sort((a,b) => a[target].localeCompare(b[target]));
+			$(`#${target}-sort-toggleBtn`).text("Desc");
+
+		}else if($(`#${target}-sort-toggleBtn`).text() === "Desc"){
+			sorted = sorted.sort((a,b) => b[target].localeCompare(a[target]));
+			$(`#${target}-sort-toggleBtn`).text("Asc");
+		}	
+
+		this.setState({ongoingOrders : sorted});
 	}
 
 	render() {
@@ -56,10 +78,10 @@ export default class checkoutMain extends React.Component {
 								<table>
 									<thead>
 										<tr>
-											<td>Order Number</td>
-											<td>Customer</td>
-											<td>Time</td>
-											<td>Status</td>
+											<td>Order Number <button id="ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_ID")}>Asc</button></td>
+											<td>Customer <button id="CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CUSTOMER")}>Asc</button></td>
+											<td>Time <button id="ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_TIME")}>Asc</button></td>
+											<td>Status <button id="STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"STATUS")}>Asc</button></td>
 											<td>Action</td>
 										</tr>
 									</thead>
