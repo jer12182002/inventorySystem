@@ -7,6 +7,8 @@ import "./ongoingItem.scss";
 
 
 export default class ongoingItem extends React.Component {
+	intervalName = "chkoutOrderNote";
+
 	constructor(props) {
 		super(props);	
 		this.state = {
@@ -114,12 +116,17 @@ export default class ongoingItem extends React.Component {
 	componentDidMount() {
 		this.loadOrderInfo();
 
-		// THIS IS TO MAKE SURE OTHERS CAN RECEIVE THE REAL TIME MESSAGES
-		// setInterval(()=>{
-		// 	this.loadNotes()
-		// },1000);
+		//THIS IS TO MAKE SURE OTHERS CAN RECEIVE THE REAL TIME MESSAGES
+		this.intervalName = setInterval((e)=>{
+			this.loadNotes();
+			console.log("loadNotes every second");
+		},1000);
 	}
 
+	componentWillUnmount() {
+		console.log("@@@@@@@@@@");
+		clearInterval(this.intervalName);
+	}
 
 	//******************************** Helper Functions *****************************************
 		organizeData(data) {

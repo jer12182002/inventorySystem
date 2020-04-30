@@ -22,6 +22,8 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies();
 
 class App extends React.Component {
+intervalName = "accountCheck";
+
 constructor(props){
   super(props);
 
@@ -35,7 +37,7 @@ constructor(props){
 
 
 checkPermissionBySeconds(){
-  setInterval (()=>{
+  this.intervalId = setInterval (()=>{
     if(this.state.accountInfo.ID){
        fetch(`http://localhost:4000/chcekPermission?id=${this.state.accountInfo.ID}`)
        .then(res => res.json())
@@ -45,6 +47,7 @@ checkPermissionBySeconds(){
           }
        });
     }
+    console.log("load account every second");
   },1000)
 }
 
@@ -86,9 +89,12 @@ componentDidMount(){
   if(cookiesUser){
     this.cookiesUserLogin(cookiesUser);
   }
-
 }
 
+
+componentWillUnmount(){
+  clearInterval(this.intervalId);
+}
 
 
 
