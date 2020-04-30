@@ -55,6 +55,10 @@ export default class account extends React.Component {
 		updateUserInfo.EXP_MODIFY=$(`#exp_modify${id}`).prop("checked")? 1 : 0;
 		updateUserInfo.TAG_VIEW=$(`#tag_view${id}`).prop("checked")||$(`#tag_modify${id}`).prop("checked")? 1 : 0;
 		updateUserInfo.TAG_MODIFY=$(`#tag_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.CHK_VIEW=$(`#chk_view${id}`).prop("checked")||$(`#chk_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.CHK_MODIFY=$(`#chk_modify${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.PICKUP_VIEW=$(`#pickup_view${id}`).prop("checked")||$(`#pickup_resp${id}`).prop("checked")? 1 : 0;
+		updateUserInfo.PICKUP_RESPOND=$(`#pickup_resp${id}`).prop("checked")? 1 : 0;
 		
 
 		fetch(`http://localhost:4000/login/account/saveUpdatedUser?userInfo=${JSON.stringify(updateUserInfo)}`)
@@ -116,7 +120,7 @@ export default class account extends React.Component {
 									<thead>
 										<tr className="userRowHeader">
 											<td>Username</td>
-											<td>Access Level</td>
+											<td>Set Manager</td>
 											<td>View Item</td>
 											<td>Add Item</td>
 											<td>Delete Item</td>
@@ -132,6 +136,10 @@ export default class account extends React.Component {
 											<td>Modify EXP</td>
 											<td className="display-none">View Tags</td>
 											<td className="display-none">Modify Tags</td>
+											<td>View CHK</td>
+											<td>Modify CHK</td>
+											<td>View Pickup</td>
+											<td>Resp Pickup</td>
 											<td>Created By</td>
 											<td>Action</td>
 										</tr>
@@ -156,6 +164,11 @@ export default class account extends React.Component {
 												<td><input id={`exp_modify${user.ID}`} type="checkbox" defaultChecked={user.EXP_MODIFY} onChange = {e => this.toggleView(e,user.ID,true,"exp_modify","exp_view","view_item")}></input></td>
 												<td className="display-none"><input id={`tag_view${user.ID}`} type="checkbox" defaultChecked={user.TAG_VIEW}></input></td>
 												<td className="display-none"><input id={`tag_modify${user.ID}`} type="checkbox" defaultChecked={user.TAG_MODIFY}></input></td>
+												<td><input id={`chk_view${user.ID}`} type="checkbox" defaultChecked={user.CHK_VIEW} onChange = {e => this.toggleView(e,user.ID,false,"chk_view","chk_modify")}></input></td>
+												<td><input id={`chk_modify${user.ID}`} type="checkbox" defaultChecked={user.CHK_MODIFY} onChange = {e => this.toggleView(e,user.ID,true,"chk_modify","chk_view")}></input></td>
+												<td><input id={`pickup_view${user.ID}`} type="checkbox" defaultChecked={user.PICKUP_VIEW} onChange = {e => this.toggleView(e,user.ID,false,"pickup_view","pickup_resp")}></input></td>
+												<td><input id={`pickup_resp${user.ID}`} type="checkbox" defaultChecked={user.PICKUP_RESPOND} onChange = {e => this.toggleView(e,user.ID,true,"pickup_resp","pickup_view")}></input></td>
+
 												<td>{user.CREATEDBY}</td>
 												<td>
 													<button type="button" className="btn btn-success" onClick={(e)=>this.editClick(e,`${user.ID}`)}>Save</button>									
