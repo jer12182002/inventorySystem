@@ -66,16 +66,12 @@ app.get('/login/account',(req,res)=>{
 });
 
 
-app.get('/login/account/register',(req,res) =>{
-	console.log("Received Data from register page " + req.query);
-
-	const {USERNAME, ACCOUNT, PASSWORD, ACCESS_LEVEL, CREATEDBY, VIEW_ITEM, ADD_ITEM, 
-			DELETE_ITEM, NAME_MODIFY, QTY_VIEW, QTY_MODIFY,
-			TYPE_VIEW, TYPE_MODIFY, SHELF_MODIFY, GRAM_VIEW, GRAM_MODIFY,
-			EXP_VIEW, EXP_MODIFY, TAG_VIEW, TAG_MODIFY} = req.query;
-	var sqlQuery = `INSERT INTO account_list(USERNAME, ACCOUNT, PASSWORD, ACCESS_LEVEL, VIEW_ITEM, ADD_ITEM, DELETE_ITEM, NAME_MODIFY, QTY_VIEW, QTY_MODIFY, TYPE_VIEW, TYPE_MODIFY, SHELF_MODIFY, GRAM_VIEW, GRAM_MODIFY, EXP_VIEW, EXP_MODIFY, TAG_VIEW, TAG_MODIFY, CREATEDBY) VALUES ('${USERNAME}','${ACCOUNT}','${PASSWORD}','${ACCESS_LEVEL}','${VIEW_ITEM}','${ADD_ITEM}','${DELETE_ITEM}','${NAME_MODIFY}','${QTY_VIEW}','${QTY_MODIFY}','${TYPE_VIEW}','${TYPE_MODIFY}','${SHELF_MODIFY}','${GRAM_VIEW}','${GRAM_MODIFY}','${EXP_VIEW}','${EXP_MODIFY}','${TAG_VIEW}','${TAG_MODIFY}','${CREATEDBY}')`;
+app.get('/login/account/register',(req,res) =>{	
+	let newUserInfo = JSON.parse(req.query.newUserInfo);
+	console.log(newUserInfo);
 	
-	console.log(sqlQuery);
+	let sqlQuery = `INSERT INTO account_list(USERNAME, ACCOUNT, PASSWORD, CREATEDBY) VALUES ('${newUserInfo.username}', '${newUserInfo.account}', '${newUserInfo.password}', '${newUserInfo.createdBy}');`;
+
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);

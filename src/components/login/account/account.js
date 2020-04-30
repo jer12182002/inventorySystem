@@ -147,7 +147,7 @@ export default class account extends React.Component {
 									<tbody>
 										{this.state.users.map( (user,key) => (
 											<tr key={`user-${key}`} className={`userRow user-${key}`}>
-												<td><strong>{user.USERNAME}{user.ACCESS_LEVEL}</strong></td>
+												<td><strong>{user.USERNAME}</strong></td>
 												<td><input id={`access_level${user.ID}`} type="checkbox" defaultChecked={user.ACCESS_LEVEL < 3? 1 : 0}></input></td>
 												<td><input id={`view_item${user.ID}`} type="checkbox" defaultChecked={user.VIEW_ITEM} onChange = {e => this.toggleView(e,user.ID,false,"view_item","add_item","delete_item","name_modify","qty_view","qty_modify","type_view","type_modify","SHELF_MODIFY","gram_view","gram_modify","exp_view","exp_modify")}></input></td>
 												<td><input id={`add_item${user.ID}`} type="checkbox" defaultChecked={user.ADD_ITEM} onChange = {e => this.toggleView(e,user.ID,true,"add_item","view_item")}></input></td>
