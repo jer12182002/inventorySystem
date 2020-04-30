@@ -115,9 +115,9 @@ export default class ongoingItem extends React.Component {
 		this.loadOrderInfo();
 
 		// THIS IS TO MAKE SURE OTHERS CAN RECEIVE THE REAL TIME MESSAGES
-		setInterval(()=>{
-			this.loadNotes()
-		},1000);
+		// setInterval(()=>{
+		// 	this.loadNotes()
+		// },1000);
 	}
 
 
@@ -290,7 +290,7 @@ export default class ongoingItem extends React.Component {
 
 
 	render() {
-		//console.log(this.state.ORDER_ITEMS);
+		this.loadNotes();
 		return (
 			<div className="ongoingItem-wrapper">
 				<div className="header-section"></div>
