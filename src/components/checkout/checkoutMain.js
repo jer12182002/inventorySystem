@@ -42,7 +42,6 @@ export default class checkoutMain extends React.Component {
 
 		console.log(this.state.ongoingOrders);
 		let sorted = this.state.ongoingOrders;
-		//sorted.forEach(order => order.ORDER_TIME = new Date(order.ORDER_TIME));
 		
 		if($(`#${target}-sort-toggleBtn`).text() === "Asc") {
 			sorted = sorted.sort((a,b) => a[target].localeCompare(b[target]));
