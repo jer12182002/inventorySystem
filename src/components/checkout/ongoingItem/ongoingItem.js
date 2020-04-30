@@ -134,7 +134,8 @@ export default class ongoingItem extends React.Component {
 							EXPIRE_DATE: item.EXPIRE_DATE,
 							SHELF_NO: item.SHELF_NO,
 							MANUFACTURE: item.MANUFACTURE,
-							QTY: item.QTY
+							QTY: item.QTY,
+							TYPE: item.TYPE
 						}
 					);
 					return true;
@@ -163,7 +164,8 @@ export default class ongoingItem extends React.Component {
 								EXPIRE_DATE: item.EXPIRE_DATE,
 								SHELF_NO: item.SHELF_NO,
 								MANUFACTURE: item.MANUFACTURE,
-								QTY: item.QTY
+								QTY: item.QTY,
+								TYPE: item.TYPE
 							}
 						]
 					}
@@ -187,6 +189,7 @@ export default class ongoingItem extends React.Component {
 					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 
 					diffItem.TABLETQTY = 0;
+					
 				}
 			})
 
@@ -195,6 +198,8 @@ export default class ongoingItem extends React.Component {
 				this.setState({ITEM_NOT_ENOUGH : true});
 			}
 		});
+
+		console.log(uniqueData);
 		return uniqueData;
 	}
 
@@ -285,7 +290,7 @@ export default class ongoingItem extends React.Component {
 
 
 	render() {
-
+		//console.log(this.state.ORDER_ITEMS);
 		return (
 			<div className="ongoingItem-wrapper">
 				<div className="header-section"></div>
@@ -340,13 +345,24 @@ export default class ongoingItem extends React.Component {
 										<>
 											<div className="col-2"><h4 className="text-center">{diffItem.QTY}</h4></div>
 											<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} min="0" onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
+											{diffItem.TYPE === "Single" || diffItem.TYPE === "Formula"? 
 											<div className="col-2 text-center"><input id={`${key+1}tabletQty${diffKey+1}`} type="number" className="tabletQty text-center" defaultValue={diffItem.TABLETQTY} min="0" onChange={e => this.tabletQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>		
+											:
+											null
+											}
 										</>
 										:
 										<>
 											<div className="col-2"><h4 className="text-center">{diffItem.PICKUPVALUE}</h4></div> 
-											<div className="col-2"><h4 className="text-center">{diffItem.TABLETQTY}</h4></div>
-											<div className="col-2"><h4 className="text-center warning">{diffItem.TABLETQTY > 0 ? "!" : ""}</h4></div> 
+											
+											{diffItem.TYPE === "Single" || diffItem.TYPE === "Formula"? 
+												<>
+													<div className="col-2"><h4 className="text-center">{diffItem.TABLETQTY}</h4></div>
+													<div className="col-2"><h4 className="text-center warning">{diffItem.TABLETQTY > 0 ? "!" : ""}</h4></div> 
+												</>
+											:
+												<div className="col-2"><h4 className="text-center">{diffItem.TYPE}</h4></div>
+											}
 										</>
 									}
 								</div>
@@ -384,7 +400,9 @@ export default class ongoingItem extends React.Component {
 								<h3>Please report this problem to the correspondant.</h3>
 
 							:
-							<button type="button" className="block btn btn-success" onClick = {e => this.pushBtnClicked(e)}>Push</button>
+							<button type="button" className="block btn btn-success" onClick = {e => this.pushBtnClicked(e)}>
+								{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"? "Push" : "Add Note"}
+							</button>
 						}
 					</div>
 					
