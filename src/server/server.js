@@ -71,10 +71,12 @@ app.get('/login/account/register',(req,res) =>{
 	console.log(newUserInfo);
 	
 	let sqlQuery = `INSERT INTO account_list(USERNAME, ACCOUNT, PASSWORD, CREATEDBY) VALUES ('${newUserInfo.username}', '${newUserInfo.account}', '${newUserInfo.password}', '${newUserInfo.createdBy}');`;
-
+	console.log(sqlQuery);
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);
+			console.log("err");
+			console.log(err);
 		}else {
 			return res.json({data:result})
 		}

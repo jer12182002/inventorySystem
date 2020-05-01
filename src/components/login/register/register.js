@@ -4,16 +4,10 @@ import './register.scss';
 import $ from 'jquery';
 export default class register extends React.Component {
 
-	state = {
-		userInfo:[],
-		userPermission: []
-	}
-
-
 
 	saveUserRecord(){
 		var chk = '';
-
+		let userInfo = {};
 		chk += $.trim($('#login_username').val())? '' : "|Username is empty|"; 
 		
 		chk += $.trim($('#login_acc').val())? '' : " |Account is empty|"; 
@@ -23,14 +17,14 @@ export default class register extends React.Component {
 		}
 
 		if(chk === '') {
-			this.setState({userInfo:
-							{username: $.trim($("#login_username").val()),
-							account: $.trim($("#login_acc").val().toLowerCase()),
-							password: $.trim($("#re_login_pwd").val()),
-							access_level: $("#ACCESS_LEVEL").prop("checked")? "2" : "3",
-							createdBy: this.props.accountInfo.USERNAME
-							}});
+			userInfo = {
+				username: $.trim($("#login_username").val()),
+				account: $.trim($("#login_acc").val().toLowerCase()),
+				password: $.trim($("#re_login_pwd").val()),
+				createdBy: this.props.accountInfo.USERNAME
+			}
 
+			// this.setState({userInfo : userInfo});
 			
 			$('.statusText').addClass('success-status');
 			$('.statusText').removeClass('warning-status');
@@ -39,16 +33,17 @@ export default class register extends React.Component {
 			$('.statusText').removeClass('success-status');
 			$('.statusText').addClass('warning-status');
 		}
-		return chk;
+
+		console.log(userInfo);
+		return {checkInput: chk, userInput: userInfo};
 	}
 
 
 
 
 
-	fetchData(){
-		console.log("@fetchData");
-		fetch(`http://localhost:4000/login/account/register?newUserInfo=${JSON.stringify(this.state.userInfo)}`)
+	fetchData(userInfoInput) {
+		fetch(`http://localhost:4000/login/account/register?newUserInfo=${JSON.stringify(userInfoInput)}`)
 		.then(res => res.json())
 		.then(data =>{
 			console.log(data);
@@ -66,10 +61,12 @@ export default class register extends React.Component {
 
 	createBtnClicked(e) {
 		e.preventDefault();
-		if(this.saveUserRecord() === '') {
-			this.fetchData();
+		let dataPassedCheck = this.saveUserRecord();
+		
+		if(dataPassedCheck.checkInput === '') {
+			this.fetchData(dataPassedCheck.userInput);
 		}
-	}
+ 	}
 
 
 
