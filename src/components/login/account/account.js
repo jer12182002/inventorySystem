@@ -90,7 +90,7 @@ export default class account extends React.Component {
 	render() {
 
 		return (
-			<div className="account-wrapper">
+		<div className="account-wrapper">
 			<div className="header-section">
 
 				<h1>My Account: {this.state.accountInfo.USERNAME}</h1>

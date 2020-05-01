@@ -29,6 +29,7 @@ class header extends React.Component {
 							<li><NavLink to="/login/account" activeClassName="header-nav-active">{this.props.accountInfo.USERNAME}</NavLink></li>
 							<li><NavLink to="/inventory" activeClassName="header-nav-active">Inventory</NavLink></li>
 							<li><NavLink to="/checkout" activeClassName="header-nav-active">Checkout</NavLink></li>
+							<li><NavLink to="/pickup" activeClassName="header-nav-active">Pick Up</NavLink></li>
 						</ul>)
 						:
 						(<ul>

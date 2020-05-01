@@ -11,13 +11,12 @@ import Login from "./components/login/login";
 import Account from "./components/login/account/account";
 import Register from "./components/login/register/register";
 import LoginReset from "./components/login/loginReset/loginReset";
-
-import InventoryMain from './components/inventory/inventoryMain';
-
-import CheckOut from './components/checkout/checkoutMain';
+import InventoryMain from "./components/inventory/inventoryMain";
+import CheckOut from "./components/checkout/checkoutMain";
 import OngoingItem from "./components/checkout/ongoingItem/ongoingItem";
+import Pickup from "./components/pickup/pickupMain";
 
-import Cookies from 'universal-cookie';
+import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
 
@@ -110,12 +109,14 @@ render(){
       <Route exact path = "/login/account" component = {props => (<Account accountInfo = {this.state.accountInfo}/>)}/>            
       <Route exact path = "/login/account/resetpassword" component = {LoginReset}/>
 
+
       {this.state.accountInfo.ACCESS_LEVEL < 3 ? (
         <div>
         <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/checkout" component = {()=> <CheckOut accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/checkout/ongoingorder" component = {OngoingItem}/>
+        <Route exact path = "/pickup" component = {()=> <Pickup accountInfo = {this.state.accountInfo}/>}/>
         </div>
       ):null}
     </Router>     
