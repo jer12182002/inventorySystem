@@ -9,16 +9,9 @@
 			margin-top: 20px;
 		}
 
-
-		label {
-			display: block;
-			font-weight: 800;
-			font-size: 26px;
-			margin-top: 20px;
-
-			&#res_account{
-				border-bottom: 2px solid black;
-			}
+		
+		.block {
+			padding: 20px 0;
 		}
 
 		input {

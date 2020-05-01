@@ -8,26 +8,21 @@ const cookies = new Cookies();
 
 export default class loginReset extends React.Component {
 
-	constructor(props){
-		super(props);
-
-
-		this.state = {
-			user:  cookies.get('user')
-		}
-	}
-
-
 
 	clickChangePwd(e){
 		e.preventDefault();
 		
 		let newUserInfo = {};
+		let inputCheck = false;
 
-		if(($.trim($('#resetPwd').val()) === $.trim($('#resetPwdchk').val())) 
-			&& $.trim($('#resetPwd').val())) {
-			
-			newUserInfo.id = this.state.user.ID;
+		inputCheck = $('#accountCheck').val() === this.props.accountInfo.ACCOUNT
+					&& $('#pwdCheck').val() === this.props.accountInfo.PASSWORD
+					&& $.trim($('#resetPwd').val()) === $.trim($('#resetPwdchk').val())
+					&& $.trim($('#resetPwd').val());
+	
+		if(inputCheck) {
+			console.log(newUserInfo);
+			newUserInfo.id = this.props.accountInfo.ID
 			newUserInfo.newPassword = $.trim($('#resetPwd').val());
 
 			fetch(`http://localhost:4000/login/account/resetpassword?newUserInfo=${JSON.stringify(newUserInfo)}`)
@@ -45,12 +40,11 @@ export default class loginReset extends React.Component {
 					$('.statusText').removeClass('success-status');
 				}
 			});
-			console.log(newUserInfo);
+		}else {
+			$('.statusText').text('Something went wrong. Please check if your input is valid.');
+			$('.statusText').addClass('warning-status');
+			$('.statusText').removeClass('success-status');
 		}
-
-
-
-
 	}
 
 
@@ -66,16 +60,24 @@ export default class loginReset extends React.Component {
 					<p>#We can only reset your password only, if you want to reset your account. Please talk to your technical person#</p>
 
 					<form>
-						<div className="block">
-							<label>Username</label>
-							<label id="res_account">{this.state.user.USERNAME}</label>
+						<div className="block border-bottom">
+							<h1>Username:</h1>
+							<h3>{this.props.accountInfo.USERNAME}</h3>
 						</div>
 						<div className="block">
-							<label>New Password</label>
+							<h1>Your Account</h1>
+							<input id="accountCheck" type="text"></input>
+						</div>
+						<div className="block border-bottom">
+							<h1>Your Password</h1>
+							<input id="pwdCheck" type="password"></input>
+						</div>
+						<div className="block">
+							<h1>New Password</h1>
 							<input id="resetPwd" name="resetPassword" type="password"/>
 						</div>
 						<div className="block">
-							<label>New Password Again</label>
+							<h1>New Password</h1>
 							<input id="resetPwdchk" name="resetPasswordChk" type="password"/>
 						</div>
 						<div className="block">
