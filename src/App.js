@@ -106,7 +106,7 @@ render(){
       <Header accountInfo = {this.state.accountInfo} logoutBtnClicked = {this.clearAccountInfo.bind(this)}/>
       <Route exact path="/login" component = {props => <Login accountInfo = {this.state.accountInfo} saveAccountFromLogIn = {this.saveAccountFromLogIn.bind(this)} clearAccountInfo= {this.clearAccountInfo.bind(this)} />}/>     
       <Route exact path = "/login/account" component = {props => (<Account accountInfo = {this.state.accountInfo}/>)}/>            
-      <Route exact path = "/login/account/resetpassword" component = {() => <LoginReset accountInfo = {this.state.accountInfo}/>}/>
+      <Route exact path = "/login/account/resetpassword" component = {LoginReset}/>
       <Route exact path="/" component = { props => <Home accountInfo = {this.state.accountInfo}/>}/>
 
       {this.state.accountInfo.ACCESS_LEVEL < 3 ? (
