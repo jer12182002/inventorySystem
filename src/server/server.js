@@ -411,6 +411,38 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 });
 
 //***********************************************************************************************************************
+
+//*********************************Pick up*******************************************************************************
+
+app.get('/pickup',(req,res)=> {
+	let sqlQuery = "SELECT * FROM ongoing_order WHERE STATUS = 'IN PROCESS' ORDER BY ORDER_TIME;";
+	console.log("!@##!@");
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data: result});
+		}
+	});
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//***********************************************************************************************************************
+
 //receiving Orders from shopify
 app.post("/shopify", (req, res) => {
 	let shopifyData = req.body;
