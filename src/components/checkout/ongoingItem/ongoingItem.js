@@ -116,15 +116,13 @@ export default class ongoingItem extends React.Component {
 	componentDidMount() {
 		this.loadOrderInfo();
 
-		//THIS IS TO MAKE SURE OTHERS CAN RECEIVE THE REAL TIME MESSAGES
+		//THIS IS TO MAKE SURE RECEIVING THE REAL TIME MESSAGES
 		this.intervalName = setInterval((e)=>{
 			this.loadNotes();
-			console.log("loadNotes every second");
 		},1000);
 	}
 
 	componentWillUnmount() {
-		console.log("@@@@@@@@@@");
 		clearInterval(this.intervalName);
 	}
 

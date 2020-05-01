@@ -58,7 +58,7 @@ export default class pickupMain extends React.Component {
 								<td>Index</td>
 								<td>Order Number</td>
 								<td>Customer</td>
-								<td>Time</td>
+								<td>Order Time</td>
 								{this.props.accountInfo.PICKUP_RESPOND? 
 								<td>Action</td>:null
 								}
