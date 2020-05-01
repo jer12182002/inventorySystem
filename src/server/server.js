@@ -370,9 +370,10 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	let pauseTask = false;
 
 	console.log(orderInfo);
-	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}' WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
+	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_COUNT = NEW_MSG_COUNT + 1 WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
 		sqlQuery1 += orderInfo.NOTE ? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','${orderInfo.CURRENTSTATUS}');` : ``;
 
+		console.log(sqlQuery1);
 	orderInfo.ITEMS.forEach(item => {
 		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = '${JSON.stringify(item.DIFFERENT_TYPE)}',STATUS = '${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;
 		console.log(sqlQuery2);
@@ -415,13 +416,13 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 //*********************************Pick up*******************************************************************************
 
 app.get('/pickup',(req,res)=> {
-	let sqlQuery = "SELECT * FROM ongoing_order WHERE STATUS = 'IN PROCESS' ORDER BY ORDER_TIME;";
-	console.log("!@##!@");
-	connection.query(sqlQuery,(err,result)=>{
+	let sqlQuery1 = "SELECT * FROM ongoing_order WHERE STATUS = 'IN PROCESS' ORDER BY ORDER_TIME DESC;";
+	
+	connection.query(sqlQuery1,(err,result)=>{
 		if(err) {
 			res.send(err);
 		}else {
-			return res.json({data: result});
+			return res.json({orders: result});
 		}
 	});
 });

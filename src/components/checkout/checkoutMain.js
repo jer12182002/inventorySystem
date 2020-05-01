@@ -92,7 +92,7 @@ export default class checkoutMain extends React.Component {
 												<tr key={key+1}>
 													<td>{order.ORDER_ID}</td>
 													<td>{order.CUSTOMER}</td>
-													<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  h:mm:s')}</td> 
+													<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  HH:mm:ss')}</td> 
 													<td>{order.STATUS}</td>
 													{this.props.accountInfo.CHK_MODIFY? 
 													<td>

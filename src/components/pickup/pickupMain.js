@@ -11,7 +11,8 @@ export default class pickupMain extends React.Component {
 		super(props);
 		this.state = {
 			accountInfo: this.props.accountInfo,
-			PICKUP_ORDERS: []
+			PICKUP_ORDERS: [],
+			
 		}
 	}
 
@@ -19,23 +20,37 @@ export default class pickupMain extends React.Component {
 		fetch('http://localhost:4000/pickup')
 		.then(res => res.json())
 		.then(data => {
-			if(data.data) {
-				this.setState({PICKUP_ORDERS : data.data},()=>console.log(this.state.PICKUP_ORDERS));
+			if(data.orders) {
+				this.setState({PICKUP_ORDERS : data.orders},()=> console.log(this.state));
 			}
 		})
 	}
 
-
 	componentDidMount(){
-		this.loadAllPickUpOrder();
+		this.intervalName = setInterval(()=>{
+			this.loadAllPickUpOrder();
+		},1000);
 	}
 
+	componentWillUnmount() {
+		clearInterval(this.intervalName);
+	}
 
 	render() {
 		return (
 			<div className ="pickup-wrapper">
-				<div className="header-section">Pick up page {this.state.accountInfo.USERNAME}</div>
-				<div className="notification-wrapper"></div>
+				<div className="header-section"></div>
+				<div className="notification-wrapper">
+					{this.state.PICKUP_ORDERS.map((order,key)=>
+						order.NEW_MSG_COUNT > 0?
+						<div className="inline-b text-center" key={key+1}>
+							<h4>You have <span>{order.NEW_MSG_COUNT}</span> new message(s) for Order: <span>{order.ORDER_ID}</span> from {order.PERSON}</h4>
+						</div>
+						: null
+					)}
+						
+					
+				</div>
 				<div className="main-section">
 					<table>
 						<thead>
@@ -53,7 +68,7 @@ export default class pickupMain extends React.Component {
 									<td>{key+1}</td>
 									<td>{order.ORDER_ID}</td>
 									<td>{order.CUSTOMER}</td>
-									<td>{order.ORDER_TIME}</td>
+									<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  HH:mm:ss')}</td>
 									<td>
 										<Link className="btn btn-success" to={{
 											pathname: "/pickup/order-detail",
