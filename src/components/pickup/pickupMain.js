@@ -29,7 +29,7 @@ export default class pickupMain extends React.Component {
 	componentDidMount(){
 		this.intervalName = setInterval(()=>{
 			this.loadAllPickUpOrder();
-		},1000);
+		},3000);
 	}
 
 	componentWillUnmount() {
@@ -39,6 +39,8 @@ export default class pickupMain extends React.Component {
 	render() {
 		return (
 			<div className ="pickup-wrapper">
+				{this.props.accountInfo.PICKUP_VIEW? 
+					<>
 				<div className="header-section"></div>
 				<div className="notification-wrapper">
 					{this.state.PICKUP_ORDERS.map((order,key)=>
@@ -47,9 +49,7 @@ export default class pickupMain extends React.Component {
 							<h4>You have <span>{order.NEW_MSG_COUNT}</span> new message(s) for Order: <span>{order.ORDER_ID}</span> from {order.PERSON}</h4>
 						</div>
 						: null
-					)}
-						
-					
+					)}		
 				</div>
 				<div className="main-section">
 					<table>
@@ -59,7 +59,9 @@ export default class pickupMain extends React.Component {
 								<td>Order Number</td>
 								<td>Customer</td>
 								<td>Time</td>
-								<td>Action</td>
+								{this.props.accountInfo.PICKUP_RESPOND? 
+								<td>Action</td>:null
+								}
 							</tr>
 						</thead>
 						<tbody>
@@ -69,6 +71,7 @@ export default class pickupMain extends React.Component {
 									<td>{order.ORDER_ID}</td>
 									<td>{order.CUSTOMER}</td>
 									<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  HH:mm:ss')}</td>
+									{this.props.accountInfo.PICKUP_RESPOND? 
 									<td>
 										<Link className="btn btn-success" to={{
 											pathname: "/pickup/order-detail",
@@ -78,6 +81,9 @@ export default class pickupMain extends React.Component {
 											}
 										}}>Proceed</Link>
 									</td>
+									:
+									null
+									}
 
 								</tr>
 
@@ -85,6 +91,10 @@ export default class pickupMain extends React.Component {
 						</tbody>
 					</table>
 				</div>
+				</>
+				:
+				<h1>You have no permission for this page.</h1>
+				}
 			</div>
 		);
 	}
