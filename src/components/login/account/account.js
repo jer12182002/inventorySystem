@@ -95,10 +95,10 @@ export default class account extends React.Component {
 
 				<h1>My Account: {this.state.accountInfo.USERNAME}</h1>
 				<ul className="nav-bar">
-					<li><a href="/login/account/resetpassword">Reset Password</a></li>
+					<li><Link to="/login/account/resetpassword">Reset Password</Link></li>
 					
 					{this.state.accountInfo.ACCESS_LEVEL < 3 ? 
-					<li><a href="/login/account/register">Add User</a></li>
+					<li><Link to="/login/account/register">Add User</Link></li>
 					: null
 				}
 				</ul>
