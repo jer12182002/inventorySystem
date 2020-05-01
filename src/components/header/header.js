@@ -21,12 +21,12 @@ class header extends React.Component {
 			<div className="header-wrapper">
 				<header>
 
-					<h1><a href="/">Ren De Inc Inventory System</a></h1>
+					<h1><NavLink to="/">Ren De Inc Inventory System</NavLink></h1>
 				
 					{this.props.accountInfo.USERNAME?
 						(<ul>
+							<li><button href="/" id="logout-btn" onClick = {e => {this.logoutClick(e)}}>Log Out</button></li>
 							<li><NavLink to="/login/account" activeClassName="header-nav-active">{this.props.accountInfo.USERNAME}</NavLink></li>
-							<li><NavLink exact to="/" id="logout-btn" onClick = {e => {this.logoutClick(e)}}>Log Out</NavLink></li>
 							<li><NavLink to="/inventory" activeClassName="header-nav-active">Inventory</NavLink></li>
 							<li><NavLink to="/checkout" activeClassName="header-nav-active">Checkout</NavLink></li>
 						</ul>)
