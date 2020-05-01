@@ -17,8 +17,7 @@ export default class loginReset extends React.Component {
 	clickChangePwd(e){
 		e.preventDefault();
 		
-		let newUserInfo = {};
-		console.log(this.state.accountInfo);		
+		let newUserInfo = {};		
 		let inputCheck = $('#accountCheck').val() === this.state.accountInfo.ACCOUNT
 					&& $('#pwdCheck').val() === this.state.accountInfo.PASSWORD
 					&& $.trim($('#resetPwd').val()) === $.trim($('#resetPwdchk').val())
