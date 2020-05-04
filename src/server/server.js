@@ -441,7 +441,20 @@ app.get('/pickup',(req,res)=> {
 });
 
 
+app.get('/pickup/order-detail',(req,res)=> {
+	let {orderId} = req.query;
 
+	let sqlQuery = `SELECT * FROM order_item_list WHERE STATUS = 'IN PROCESS' AND ORDER_ID = ${orderId}`;
+
+	connection.query(sqlQuery,(err,result)=> {
+		if (err) {
+			res.send(err);
+		}else {
+			return res.json({orderDetail:result});
+		}
+	})
+
+})
 
 
 

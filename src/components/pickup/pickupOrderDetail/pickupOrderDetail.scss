@@ -1,0 +1,53 @@
+.pickupOrderDetail-wrapper {
+	.head-section {
+		height: 100px;
+		background-color: lightblue;
+		border: 3px solid gray;
+
+		.order-info {
+			width: 100%;
+			text-align: center;
+		}
+	}
+
+	.main-section {
+		margin: 15px 0;
+
+		.header-container {
+			border-bottom: 5px solid black;
+			div {
+				text-align: center;
+			}
+
+		}
+
+		.item-container {
+			padding-top: 50px;
+			border-bottom: 2px solid black;
+
+			&.itemChecked {
+				background-color: lightgreen;
+			}
+
+			div {
+				text-align: center;
+
+				input[type="checkbox"] {
+					width: 80px;
+					height: 80px;
+				}
+			}
+
+			.pickupItem-container {
+				padding-bottom: 15px;
+				
+				.tablet-warning {
+					background-color: red;
+					border-radius: 25px;
+				}
+			}
+		}
+	}
+
+
+}

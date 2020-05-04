@@ -76,7 +76,7 @@ export default class pickupMain extends React.Component {
 										<Link className="btn btn-success" to={{
 											pathname: "/pickup/order-detail",
 											state: {
-												orderId: order,
+												orderInfo: order,
 												accountInfo: this.state.accountInfo
 											}
 										}}>Proceed</Link>
