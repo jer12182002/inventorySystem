@@ -44,9 +44,9 @@ export default class pickupMain extends React.Component {
 				<div className="header-section"></div>
 				<div className="notification-wrapper">
 					{this.state.PICKUP_ORDERS.map((order,key)=>
-						order.NEW_MSG_COUNT > 0?
+						order.NEW_MSG_PICKUP > 0?
 						<div className="inline-b text-center" key={key+1}>
-							<h4>You have <span>{order.NEW_MSG_COUNT}</span> new message(s) for Order: <span>{order.ORDER_ID}</span> from {order.PERSON}</h4>
+							<h4>You have <span>{order.NEW_MSG_PICKUP}</span> new message(s) for Order: <span>{order.ORDER_ID}</span> from {order.PERSON}</h4>
 						</div>
 						: null
 					)}		

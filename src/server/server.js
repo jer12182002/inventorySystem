@@ -370,7 +370,7 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	let pauseTask = false;
 
 	console.log(orderInfo);
-	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_COUNT = NEW_MSG_COUNT + 1 WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
+	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_PICKUP = NEW_MSG_PICKUP + 1 WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
 		sqlQuery1 += orderInfo.NOTE ? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','${orderInfo.CURRENTSTATUS}');` : ``;
 
 		console.log(sqlQuery1);
