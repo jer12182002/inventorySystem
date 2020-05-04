@@ -35,7 +35,7 @@ export default class checkoutMain extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {
-				this.setState({ongoinOrdersNotifications : data.data},()=> console.log(this.state.ongoinOrdersNotifications));
+				this.setState({ongoinOrdersNotifications : data.data});
 			}
 		});
 
@@ -101,7 +101,6 @@ export default class checkoutMain extends React.Component {
 											</div>
 											:
 											null
-											
 										)}
 									</div>
 								</div>
