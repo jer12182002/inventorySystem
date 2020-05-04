@@ -11,10 +11,35 @@
 			background-color: yellow;
 			padding: 0;
 
+			.notification-container{
+				background-color: pink;
+				.notification-head {
+					border: 5px solid black;
+					margin: 0 auto;
+				}
+				.notification-main {
+					border: 2px solid black;
+					text-align: center;
+					height: 150px;
+					overflow-y:scroll;
+					
+					.row {
+						margin: 0;
+						border-bottom: 1px solid lightgray;
+					}
+
+					h2 {
+						margin: 0 auto;
+					}
+				}
+			}
+		
+
 		}
 		
+		
+
 		.subContinaer-head {
-	
 			h3 {
 				border: 5px solid black;
 				margin: 0;

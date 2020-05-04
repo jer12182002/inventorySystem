@@ -307,6 +307,19 @@ app.get("/checkout",(req,res)=> {
 });
 
 
+app.get("/checkout/ongoingordernotifications",(req,res)=>{
+	let sqlQuery = 'SELECT ORDER_ID, NEW_MSG_CHKOUT FROM ONGOING_ORDER';  
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:result});
+		}
+	})
+})
+
+
 
 
 

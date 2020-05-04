@@ -5,12 +5,13 @@ import $ from 'jquery';
 
 import "./checkoutMain.scss";
 export default class checkoutMain extends React.Component {
-
+	intervalName = 'orderNotifiactions';
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			ongoingOrders: [],
+			ongoinOrdersNotifications: [],
 			completedOrders: []
 		}
 	}
@@ -24,14 +25,29 @@ export default class checkoutMain extends React.Component {
 				return order.STATUS === 'RECEIVED'? order: null;
 			});
 		
-			this.setState({ongoingOrders : data.data},()=>console.log(this.state.ongoingOrders));
+			this.setState({ongoingOrders : data.data});
 			
 		});
+	}
+
+	loadOrdersNotification() {
+		fetch(`http://localhost:4000/checkout/ongoingordernotifications`)
+		.then(res => res.json())
+		.then(data => {
+			if(data.data) {
+				this.setState({ongoinOrdersNotifications : data.data},()=> console.log(this.state.ongoinOrdersNotifications));
+			}
+		});
+
 	}
 
 
 	componentDidMount() {
 		this.loadOngoingOrder();
+
+		this.intervalName = setInterval(()=>{
+			this.loadOrdersNotification();
+		},3000);
 	}
 
 
@@ -63,14 +79,33 @@ export default class checkoutMain extends React.Component {
 				</div>
 				{this.props.accountInfo.CHK_VIEW?
 					<div className = "main-section container-fluid">
+						
 						<div className="row">
 							<div className="col-12 col-md-6 completed-container">
+
 								<div className="subContinaer-head">
 									<h3 className="text-center">Completed Order</h3>
 								</div>
 								<div className="subContinaer-main">completed</div>
 							</div>
 							<div className="col-12 col-md-6 ongoing-container">
+								<div className = "notification-container">
+									<div className="notification-head">
+										<h2 className="text-center">Notification</h2>
+									</div>
+									<div className="notification-main">
+										{this.state.ongoinOrdersNotifications.map((notification,key)=>
+											notification.NEW_MSG_CHKOUT > 0 ?
+											<div className="row" key={key+1}>
+												<h2 className="text-center">You have {notification.NEW_MSG_CHKOUT} notification for Order: {notification.ORDER_ID}</h2>
+											</div>
+											:
+											null
+											
+										)}
+									</div>
+								</div>
+
 								<div className="subContinaer-head">
 									<h3 className="text-center">Ongoing Order</h3>
 								</div>
