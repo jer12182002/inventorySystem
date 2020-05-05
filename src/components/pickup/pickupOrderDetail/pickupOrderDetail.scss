@@ -67,10 +67,14 @@
 				background-color: lightblue;
 				border-bottom: 2px solid black;
 				text-align: center;
+				height: 30%;
 
 			}
 
 			.note-content {
+				height: 70%;
+				padding-left: 2%;
+				padding-right: 2%;
 				overflow-y: scroll;
 			}
 		}
