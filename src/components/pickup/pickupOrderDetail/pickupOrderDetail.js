@@ -5,13 +5,15 @@ import './pickupOrderDetail.scss';
 import $ from 'jquery';
 
 export default class pickupOrderDetail extends React.Component {
+	interValName = "pickupOrderDetailNotes";
 
 	constructor(props) {
 		super(props);
 		this.state = {
 			accountInfo : this.props.location.state.accountInfo,
 			ORDER_INFO: this.props.location.state.orderInfo,
-			ORDER_ITEMS: []
+			ORDER_ITEMS: [],
+			NOTES: []
 		}
 
 		console.log(this.props.location.state);
@@ -27,8 +29,26 @@ export default class pickupOrderDetail extends React.Component {
 		});
 	}
 
+
+	loadNotes() {
+		fetch(`http://localhost:4000/checkout/order/loadnotes?orderId=${this.state.ORDER_INFO.ORDER_ID}`)
+		.then(res => res.json())
+		.then(data => {
+			if(data.data) {
+				console.log(data.data);
+				this.setState({NOTES: data.data});
+			}
+		})
+	}
+
+
 	componentDidMount() {
 		this.loadOrderInfo();
+		this.interValName = setInterval(()=>this.loadNotes(),2000);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.intervalName);
 	}
 
 
@@ -76,49 +96,65 @@ export default class pickupOrderDetail extends React.Component {
 						<div className="col-6 col-md-5"><h1>Order Received: {Moment(this.state.ORDER_INFO.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h1></div>
 					</div>
 				</div>
-				<div className="main-section container-fluid">
-					<div className="row header-container">
-						<div className="col-1"><h3>Index</h3></div>
-						<div className="col-3 text-left"><h3>Item</h3></div>
-						<div className="col-1"><h3>QTY</h3></div>
-						<div className="col-6">
-							<div className="row">
-								<div className="col-1"><h3>Shelf No.</h3></div>
-								<div className="col-3"><h3>Manu.</h3></div>
-								<div className="col-4"><h3>Exp Date</h3></div>
-								<div className="col-2"><h3>Pick Up Qty</h3></div>
-								<div className="col-1"><h3>Tablet Qty</h3></div>
-							</div>
-						</div>
-						<div className="col-1"><h3>Check</h3></div>
-					</div>
-					{this.state.ORDER_ITEMS.map((item, key)=>
-						<div id={`item${key+1}`}className="row item-container" key={key+1}>
-							<div className="col-1"><h3>{key+1}</h3></div>
-							<div className="col-3 text-left">
-								<h3>{item.ENGLISHNAME}</h3>
-								<h3>{item.CHINESENAME}</h3>
-							</div>
-							<div className="col-1"><h3>{item.QTY}</h3></div>
+				<div className="main-section">
+					<div className="container-fluid">
+						<div className="row header-container">
+							<div className="col-1"><h3>Index</h3></div>
+							<div className="col-3 text-left"><h3>Item</h3></div>
+							<div className="col-1"><h3>QTY</h3></div>
 							<div className="col-6">
-								{item.PICKUP_ITEMS.map((pickUpItem, pickUpkey)=> 
-									pickUpItem.PICKUPVALUE > 0 ? 
-									<div className="row pickupItem-container" key={`pickUpkey${pickUpkey+1}`}>
-										<div className="col-1"><h3>{pickUpItem.SHELF_NO}</h3></div>
-										<div className="col-3"><h3>{pickUpItem.MANUFACTURE}</h3></div>
-										<div className="col-4"><h3>{Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM-DD  HH:mm:s')}</h3></div>
-										<div className="col-2"><h3>{pickUpItem.PICKUPVALUE}</h3></div>
-										<div className={`col-1 ${pickUpItem.TABLETQTY > 0 ? 'tablet-warning' : null}`}><h3>{pickUpItem.TABLETQTY}</h3></div>
-									</div>
-									:
-									null
-									)}
+								<div className="row">
+									<div className="col-1"><h3>Shelf No.</h3></div>
+									<div className="col-3"><h3>Manu.</h3></div>
+									<div className="col-4"><h3>Exp Date</h3></div>
+									<div className="col-2"><h3>Pick Up Qty</h3></div>
+									<div className="col-1"><h3>Tablet Qty</h3></div>
+								</div>
 							</div>
-							<div className="col-1"><input id={`checkbox${key+1}`} type="checkbox" onChange = {e => this.itemChecked(e,key+1)}></input></div>
+							<div className="col-1"><h3>Check</h3></div>
+						</div>
+						{this.state.ORDER_ITEMS.map((item, key)=>
+							<div id={`item${key+1}`}className="row item-container" key={key+1}>
+								<div className="col-1"><h3>{key+1}</h3></div>
+								<div className="col-3 text-left">
+									<h3>{item.ENGLISHNAME}</h3>
+									<h3>{item.CHINESENAME}</h3>
+								</div>
+								<div className="col-1"><h3>{item.QTY}</h3></div>
+								<div className="col-6">
+									{item.PICKUP_ITEMS.map((pickUpItem, pickUpkey)=> 
+										pickUpItem.PICKUPVALUE > 0 ? 
+										<div className="row pickupItem-container" key={`pickUpkey${pickUpkey+1}`}>
+											<div className="col-1"><h3>{pickUpItem.SHELF_NO}</h3></div>
+											<div className="col-3"><h3>{pickUpItem.MANUFACTURE}</h3></div>
+											<div className="col-4"><h3>{Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM-DD  HH:mm:s')}</h3></div>
+											<div className="col-2"><h3>{pickUpItem.PICKUPVALUE}</h3></div>
+											<div className={`col-1 ${pickUpItem.TABLETQTY > 0 ? 'tablet-warning' : null}`}><h3>{pickUpItem.TABLETQTY}</h3></div>
+										</div>
+										:
+										null
+										)}
+								</div>
+								<div className="col-1"><input id={`checkbox${key+1}`} type="checkbox" onChange = {e => this.itemChecked(e,key+1)}></input></div>
+							</div>
+						)}
+					</div>
+					
+
+					{this.state.NOTES.map((note,key)=>
+						<div className={`container-fluid notes-container ${key === 0? 'first-note': ''}`}  key={`note${key+1}`}>
+							<div className="row note-header">
+								<div className="col-4"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD  HH:mm:s')}</h4></div>
+								<div className="col-4"><h4>Auther: {note.PERSON}</h4></div>
+								<div className="col-4"><h4>Status: {note.STATUS}</h4></div>
+							</div>
+							<div className="row note-content">
+								<h4>{note.NOTE}</h4>
+							</div>
 						</div>
 					)}
 				</div>
-			</div>
+		 	</div>
 		);
 	}
 }

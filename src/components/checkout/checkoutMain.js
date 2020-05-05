@@ -51,6 +51,9 @@ export default class checkoutMain extends React.Component {
 	}
 
 
+	componentWillUnmount() {
+		clearInterval(this.intervalName);
+	}
 
 
 	sortToggleBtnClick(e, target) {

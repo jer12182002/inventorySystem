@@ -1,8 +1,9 @@
 .pickupOrderDetail-wrapper {
+	
 	.head-section {
-		height: 100px;
 		background-color: lightblue;
 		border: 3px solid gray;
+		height: 100px;
 
 		.order-info {
 			width: 100%;
@@ -22,8 +23,8 @@
 		}
 
 		.item-container {
-			padding-top: 50px;
 			border-bottom: 2px solid black;
+			padding-top: 50px;
 
 			&.itemChecked {
 				background-color: lightgreen;
@@ -47,7 +48,31 @@
 				}
 			}
 		}
+
+
+		.notes-container {
+			background-color: lightyellow;
+			border: 2px solid black;
+			height: 130px;
+			width: 95%;
+			margin-top: 30px;
+
+			&.first-note {
+				.note-header {
+					background-color: red;
+				}
+			}
+
+			.note-header {
+				background-color: lightblue;
+				border-bottom: 2px solid black;
+				text-align: center;
+
+			}
+
+			.note-content {
+				overflow-y: scroll;
+			}
+		}
 	}
-
-
 }
