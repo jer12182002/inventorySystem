@@ -13,10 +13,9 @@ export default class pickupOrderDetail extends React.Component {
 			accountInfo : this.props.location.state.accountInfo,
 			ORDER_INFO: this.props.location.state.orderInfo,
 			ORDER_ITEMS: [],
+			ORDER_ITEMS_COUNT: 0,
 			NOTES: []
 		}
-
-		console.log(this.props.location.state);
 	}
 
 	loadOrderInfo () {
@@ -24,7 +23,7 @@ export default class pickupOrderDetail extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.orderDetail) {
-				this.setState({ORDER_ITEMS: this.organizeData(data.orderDetail)});
+				this.setState({ORDER_ITEMS: this.organizeData(data.orderDetail), ORDER_ITEMS_COUNT : data.orderDetail.length},()=>console.log(this.state.ORDER_ITEMS_COUNT));
 			}
 		});
 	}
@@ -35,7 +34,6 @@ export default class pickupOrderDetail extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {
-				console.log(data.data);
 				this.setState({NOTES: data.data});
 			}
 		})
@@ -44,7 +42,7 @@ export default class pickupOrderDetail extends React.Component {
 
 	componentDidMount() {
 		this.loadOrderInfo();
-		this.interValName = setInterval(()=>this.loadNotes(),2000);
+		this.interValName = setInterval(()=>this.loadNotes(),1000);
 	}
 
 	componentWillUnmount() {
@@ -80,9 +78,49 @@ export default class pickupOrderDetail extends React.Component {
 	itemChecked(e,key) {
 		e.stopPropagation();
 
-		$(`#checkbox${key}`).prop("checked")? $(`#item${key}`).addClass("itemChecked") : $(`#item${key}`).removeClass("itemChecked");
-		
+		if($(`#checkbox${key}`).prop("checked")){
+			$(`#item${key}`).addClass("itemChecked");
+			this.setState({ORDER_ITEMS_COUNT : this.state.ORDER_ITEMS_COUNT - 1},()=>console.log(this.state.ORDER_ITEMS_COUNT));
+		} else {
+			$(`#item${key}`).removeClass("itemChecked");
+			this.setState({ORDER_ITEMS_COUNT : this.state.ORDER_ITEMS_COUNT + 1},()=>console.log(this.state.ORDER_ITEMS_COUNT));
+		}
+	}
 
+
+	noteInputBtnToggle() {
+		$.trim($("#noteInput").val())? $("#pushBackBtn").removeClass("disabled") :  $("#pushBackBtn").addClass("disabled")
+	}
+
+	btnsToggle(e,btnAction) {
+		e.preventDefault();
+
+		if(btnAction === "PUSHED BACK" && $.trim($("#noteInput").val()) || btnAction === "COMPLETED") {
+
+			let today = new Date();
+			today = today.getFullYear() + "-" + ("0" + (today.getMonth() +1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2) + " " + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
+
+			let actionInstr = {
+				action: btnAction,
+				orderNo: this.state.ORDER_INFO.ORDER_ID,
+				note: $("#noteInput").val(),
+				PERSON: this.state.accountInfo.USERNAME,
+				PROCESS_TIME: today
+			}
+
+			fetch(`http://localhost:4000/pickup/order-detail/pushprocess?actionInstr=${JSON.stringify(actionInstr)}`)
+			.then(res => res.json())
+			.then(data => {
+				if(data.data && data.data === 'success') {
+					window.location.href="/pickup";
+				}else {
+					alert("something went wrong");
+				}
+			});
+
+		}else{
+			alert("You must leave a note !!!");
+		}
 	}
 
 
@@ -153,6 +191,14 @@ export default class pickupOrderDetail extends React.Component {
 							</div>
 						</div>
 					)}
+
+					<div className="actionContainer">
+						<label className="block">Note:</label>
+						<textarea id="noteInput" className="block" onKeyUp={this.noteInputBtnToggle()}></textarea>
+						<button id="pushBackBtn" className="btn btn-warning disabled" onClick={e => this.btnsToggle(e,"PUSHED BACK")}>Push Back</button>
+						<button className={`btn btn-success ${this.state.ORDER_ITEMS_COUNT === 0? "": "disabled"}`} onClick={e=>this.btnsToggle(e, "COMPLETED")}>Finish</button>
+					</div>
+
 				</div>
 		 	</div>
 		);

@@ -453,8 +453,25 @@ app.get('/pickup/order-detail',(req,res)=> {
 			return res.json({orderDetail:result});
 		}
 	})
-
 })
+
+
+app.get('/pickup/order-detail/pushprocess',(req,res)=>{
+	let actionInstr = JSON.parse(req.query.actionInstr);
+
+	let sqlQueries = `UPDATE ongoing_order SET STATUS = '${actionInstr.action}' WHERE ORDER_ID = ${actionInstr.orderNo};`;
+		sqlQueries += `UPDATE order_item_list SET STATUS = '${actionInstr.action}' WHERE ORDER_ID = ${actionInstr.orderNo};`;
+
+		sqlQueries += actionInstr.note? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES (${actionInstr.orderNo}, '${actionInstr.PERSON}','${actionInstr.PROCESS_TIME}','${actionInstr.note}', '${actionInstr.action}');`: ``;
+
+	connection.query(sqlQueries,(err,result)=> {
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:'success'});
+		}
+	})
+});
 
 
 
