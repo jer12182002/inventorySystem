@@ -26,14 +26,19 @@ export default class ongoingItem extends React.Component {
 		.then(res => res.json())
 		.then(data=> {
 			if(data.data) {
-				console.log(data.data);
-				if(data.data.order[0].STATUS === "RECEIVED") {
-					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
-				}else if(data.data.order[0].STATUS === "IN PROCESS"){
-					this.loadPickupOrderInfo();
-				}
 				this.setState({ONGOING_ORDER : data.data.order[0]});
 				this.loadNotes();
+
+				if(data.data.order[0].STATUS === "RECEIVED") {
+					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
+				}else if(data.data.order[0].STATUS === "PUSHED BACK"){
+					this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});
+					
+				}
+				else if(data.data.order[0].STATUS === "IN PROCESS"){
+					this.loadPickupOrderInfo();
+				}
+				
 			}
 		})
 	}
@@ -127,7 +132,7 @@ export default class ongoingItem extends React.Component {
 	}
 
 	//******************************** Helper Functions *****************************************
-		organizeData(data) {
+	organizeData(data) {
 		let uniqueData = [];
 
 		data.forEach(item=> {
@@ -184,7 +189,6 @@ export default class ongoingItem extends React.Component {
 			let diffItemSum = 0;
 			
 			item.DIFFERENT_TYPE.map(diffItem=>{
-			
 				//CHECK IF WE THERE ARE SUFFICIENT ITEMS IN INVENTORY
 				diffItemSum += diffItem.QTY;
 				if(diffItem.ID === null) {
@@ -194,7 +198,6 @@ export default class ongoingItem extends React.Component {
 					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 
 					diffItem.TABLETQTY = 0;
-					
 				}
 			})
 
@@ -204,9 +207,41 @@ export default class ongoingItem extends React.Component {
 			}
 		});
 
-		console.log(uniqueData);
 		return uniqueData;
 	}
+
+
+
+
+
+	organizeDataForPushBack (data) {
+		let uniqueData = {};
+
+		uniqueData = data.reduce((acc, item)=>{
+			if(!acc.find(el=>el["ORDER_ITEM_PRODUCT"] === item["ORDER_ITEM_PRODUCT"])) {
+				acc.push(item);
+			}
+			return acc;
+		},[]);
+
+		uniqueData.forEach(item => {
+			let chineseName = item.ORDER_ITEM_PRODUCT.split(" ");
+				chineseName = chineseName[chineseName.length-1];
+				
+			let englishName = item.ORDER_ITEM_PRODUCT.split(" " + chineseName);
+				englishName = englishName[0];
+			
+			item.ITEMCHNAME = chineseName;
+			item.ITEMENNAME = englishName;
+			item.DIFFERENT_TYPE = JSON.parse(item.PICKUP_ITEMS);
+
+		}); 
+		console.log(uniqueData);
+		
+		return uniqueData;
+	} 
+
+
 
 
 	getPickUpData(data){
@@ -346,7 +381,7 @@ export default class ongoingItem extends React.Component {
 									<div className="col-2"><h4 className="text-center">{diffItem.MANUFACTURE}</h4></div>
 									<div className="col-2"><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
 									
-									{this.state.ONGOING_ORDER.STATUS === "RECEIVED"?
+									{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
 										<>
 											<div className="col-2"><h4 className="text-center">{diffItem.QTY}</h4></div>
 											<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} min="0" onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>

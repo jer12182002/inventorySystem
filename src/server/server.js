@@ -325,8 +325,9 @@ app.get("/checkout/ongoingordernotifications",(req,res)=>{
 
 app.get("/checkout/ongoingorder",(req,res)=>{
 	let {orderId} = req.query;
+	
 	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId};`;
-	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE, i.TYPE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON o.product = CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
+	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY",O.PICKUP_ITEMS AS "PICKUP_ITEMS", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE, i.TYPE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON o.product = CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
 	let sqlQuery3 = `UPDATE ONGOING_ORDER SET NEW_MSG_CHKOUT = 0 WHERE ORDER_ID = ${orderId}`;
 	console.log(sqlQuery2);
 	let data = [];
