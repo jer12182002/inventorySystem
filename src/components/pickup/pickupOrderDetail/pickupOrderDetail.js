@@ -103,6 +103,7 @@ export default class pickupOrderDetail extends React.Component {
 			let actionInstr = {
 				action: btnAction,
 				orderNo: this.state.ORDER_INFO.ORDER_ID,
+				orderItems: this.state.ORDER_ITEMS,
 				note: $("#noteInput").val(),
 				PERSON: this.state.accountInfo.USERNAME,
 				PROCESS_TIME: today
@@ -165,7 +166,7 @@ export default class pickupOrderDetail extends React.Component {
 										<div className="row pickupItem-container" key={`pickUpkey${pickUpkey+1}`}>
 											<div className="col-1"><h3>{pickUpItem.SHELF_NO}</h3></div>
 											<div className="col-3"><h3>{pickUpItem.MANUFACTURE}</h3></div>
-											<div className="col-4"><h3>{Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM-DD  HH:mm:s')}</h3></div>
+											<div className="col-4"><h3>{Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h3></div>
 											<div className="col-2"><h3>{pickUpItem.PICKUPVALUE}</h3></div>
 											<div className={`col-1 ${pickUpItem.TABLETQTY > 0 ? 'tablet-warning' : null}`}><h3>{pickUpItem.TABLETQTY}</h3></div>
 										</div>

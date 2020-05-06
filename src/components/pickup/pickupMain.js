@@ -29,7 +29,7 @@ export default class pickupMain extends React.Component {
 	componentDidMount(){
 		this.intervalName = setInterval(()=>{
 			this.loadAllPickUpOrder();
-		},3000);
+		},1000);
 	}
 
 	componentWillUnmount() {

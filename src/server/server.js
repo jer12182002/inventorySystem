@@ -466,6 +466,16 @@ app.get('/pickup/order-detail/pushprocess',(req,res)=>{
 
 		sqlQueries += actionInstr.note? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES (${actionInstr.orderNo}, '${actionInstr.PERSON}','${actionInstr.PROCESS_TIME}','${actionInstr.note}', '${actionInstr.action}');`: ``;
 
+		if(actionInstr.action === 'PUSHED BACK') {
+
+			actionInstr.orderItems.forEach(item => {
+				item.PICKUP_ITEMS.forEach(diffItem => {
+					sqlQueries += `UPDATE item_list SET QTY = QTY + ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ID};`;
+				})
+			})
+		}
+
+	
 	connection.query(sqlQueries,(err,result)=> {
 		if(err) {
 			res.send(err);
