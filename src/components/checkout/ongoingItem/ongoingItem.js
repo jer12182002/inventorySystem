@@ -27,7 +27,6 @@ export default class ongoingItem extends React.Component {
 		.then(data=> {
 			if(data.data) {
 				this.setState({ONGOING_ORDER : data.data.order[0]});
-				this.loadNotes();
 
 				if(data.data.order[0].STATUS === "RECEIVED") {
 					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
@@ -232,7 +231,7 @@ export default class ongoingItem extends React.Component {
 			item.ITEMCHNAME = chineseName;
 			item.ITEMENNAME = englishName;
 			item.DIFFERENT_TYPE = JSON.parse(item.PICKUP_ITEMS);
-
+			console.log(item.DIFFERENT_TYPE);
 
 		//This is to give the inventory QTY to diffItem
 			item.DIFFERENT_TYPE.forEach(diffItem => {
@@ -245,22 +244,8 @@ export default class ongoingItem extends React.Component {
 		}); 	
 
 		uniqueData.map(item=>{
-			let orderQty = item.ORDER_ITEM_QTY;
-			let diffItemSum = 0;
 			
-			item.DIFFERENT_TYPE.map(diffItem=>{
-				//CHECK IF WE THERE ARE SUFFICIENT ITEMS IN INVENTORY
-				diffItemSum += diffItem.QTY;
-				if(diffItem.ID === null) {
-					this.setState({ITEM_NOT_ENOUGH : true});
-				}else {
-					diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
-					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
-
-					diffItem.TABLETQTY = 0;
-				}
-			})
-
+			let diffItemSum =  item.DIFFERENT_TYPE.reduce((acc, diffItem)=>acc + diffItem.QTY);
 			//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
 			if(item.ORDER_ITEM_QTY > diffItemSum) {
 				this.setState({ITEM_NOT_ENOUGH : true});
