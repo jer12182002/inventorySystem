@@ -391,20 +391,18 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 
 		console.log(sqlQuery1);
 	orderInfo.ITEMS.forEach(item => {
-		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS = '${JSON.stringify(item.DIFFERENT_TYPE)}',STATUS = '${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;
+		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;
 		console.log(sqlQuery2);
 		connection.query(sqlQuery2,(err,result2) => {
 			if(err) {
 				pauseTask = true;
 			}else {
 				item.DIFFERENT_TYPE.forEach(diffItem => {
-					let sqlQuery3 = `UPDATE item_list SET QTY = (SELECT QTY FROM ITEM_LIST WHERE ID = ${diffItem.ID}) - ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ID}`;
+					let sqlQuery3 = `UPDATE item_list SET QTY = QTY - ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ID};`;
+					console.log(sqlQuery3);
 					connection.query(sqlQuery3,(err,result3)=>{
 						if(err) {
 							pauseTask = true;
-						}
-						else {
-							console.log("good");
 						}
 					});
 
