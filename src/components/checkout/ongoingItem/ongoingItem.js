@@ -238,15 +238,18 @@ export default class ongoingItem extends React.Component {
 				data.forEach(originalItem => {
 					if(diffItem.ID === originalItem.ID) {
 						diffItem.QTY = originalItem.QTY;
+
 					}
 				})
 			})
 		}); 	
 
+
 		uniqueData.map(item=>{
 			
-			let diffItemSum =  item.DIFFERENT_TYPE.reduce((acc, diffItem)=>acc + diffItem.QTY);
 			//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
+			let diffItemSum =  item.DIFFERENT_TYPE.reduce((acc, diffItem)=>acc + diffItem.QTY,0);
+
 			if(item.ORDER_ITEM_QTY > diffItemSum) {
 				this.setState({ITEM_NOT_ENOUGH : true});
 			}
@@ -272,6 +275,10 @@ export default class ongoingItem extends React.Component {
 
 		if(parseInt($(`#${key}pickupQty${diffKey}`).val()) < 0 ) {
 			$(`#${key}pickupQty${diffKey}`).val(0);
+		}
+
+		if($(`#${key}tabletQty${diffKey}`).val() && parseInt($(`#${key}pickupQty${diffKey}`).val()) < parseInt($(`#${key}tabletQty${diffKey}`).val())) {
+			$(`#${key}tabletQty${diffKey}`).val($(`#${key}pickupQty${diffKey}`).val());
 		}
 
 		let items = this.state.ORDER_ITEMS;
