@@ -33,7 +33,6 @@ export default class ongoingItem extends React.Component {
 					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
 				}else if(data.data.order[0].STATUS === "PUSHED BACK"){
 					this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});
-					
 				}
 				else if(data.data.order[0].STATUS === "IN PROCESS"){
 					this.loadPickupOrderInfo();
@@ -49,7 +48,6 @@ export default class ongoingItem extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.data){
-
 				let orderItems = data.data.map(item => {
 					let chineseName = item.ORDER_ITEM_PRODUCT.split(" ");
 					chineseName = chineseName[chineseName.length-1];
@@ -109,11 +107,7 @@ export default class ongoingItem extends React.Component {
 
 		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
-		.then(data => {
-			if(data.data && data.data === "success") {
-				this.loadOrderInfo();
-			}
-		})
+		.then(data => {})
 	}
 
 
@@ -134,7 +128,6 @@ export default class ongoingItem extends React.Component {
 	//******************************** Helper Functions *****************************************
 	organizeData(data) {
 		let uniqueData = [];
-
 		data.forEach(item=> {
 			if(uniqueData.some((uniqueItem,index)=>{
 				if(uniqueItem.ORDER_ITEM_ID === item.ORDER_ITEM_ID) {
@@ -216,7 +209,8 @@ export default class ongoingItem extends React.Component {
 
 	organizeDataForPushBack (data) {
 		let uniqueData = {};
-
+		
+		// This is to kill duplicates
 		uniqueData = data.reduce((acc, item)=>{
 			if(!acc.find(el=>el["ORDER_ITEM_PRODUCT"] === item["ORDER_ITEM_PRODUCT"])) {
 				acc.push(item);
@@ -235,9 +229,39 @@ export default class ongoingItem extends React.Component {
 			item.ITEMENNAME = englishName;
 			item.DIFFERENT_TYPE = JSON.parse(item.PICKUP_ITEMS);
 
-		}); 
-		console.log(uniqueData);
-		
+
+		//This is to give the inventory QTY to diffItem
+			item.DIFFERENT_TYPE.forEach(diffItem => {
+				data.forEach(originalItem => {
+					if(diffItem.ID === originalItem.ID) {
+						diffItem.QTY = originalItem.QTY;
+					}
+				})
+			})
+		}); 	
+
+		uniqueData.map(item=>{
+			let orderQty = item.ORDER_ITEM_QTY;
+			let diffItemSum = 0;
+			
+			item.DIFFERENT_TYPE.map(diffItem=>{
+				//CHECK IF WE THERE ARE SUFFICIENT ITEMS IN INVENTORY
+				diffItemSum += diffItem.QTY;
+				if(diffItem.ID === null) {
+					this.setState({ITEM_NOT_ENOUGH : true});
+				}else {
+					diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+
+					diffItem.TABLETQTY = 0;
+				}
+			})
+
+			//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
+			if(item.ORDER_ITEM_QTY > diffItemSum) {
+				this.setState({ITEM_NOT_ENOUGH : true});
+			}
+		});
 		return uniqueData;
 	} 
 
@@ -248,9 +272,7 @@ export default class ongoingItem extends React.Component {
 		let pickupItems = new Set();
 
 		data.filter(item => !pickupItems.has(item["ORDER_ITEM_ID"]) && pickupItems.add(item));
-		
-		console.log(pickupItems);
-				
+	
 
 	}
 
@@ -307,7 +329,7 @@ export default class ongoingItem extends React.Component {
 
 
 	wanringChecker(items,itemId,key){
-		console.log(items);
+
 		items.forEach(item=> {
 			if(itemId === item.ORDER_ITEM_ID){
 				
