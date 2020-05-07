@@ -21,11 +21,19 @@ export default class checkoutMain extends React.Component {
 		fetch(`http://localhost:4000/checkout`)
 		.then(res => res.json())
 		.then(data => {
-			let ongoingOrders = data.data.map(order => {
-				return order.STATUS === 'RECEIVED'? order: null;
+			
+			let saveOngoingOrders = [];
+			let saveCompletedOrders= [];
+
+			data.data.forEach(order => {
+				if(order.STATUS === 'RECEIVED' || order.STATUS === 'IN PROCESS' || order.STATUS === 'PUSHED BACK') {
+					saveOngoingOrders.push(order);
+				}else if(order.STATUS === 'COMPLETED') {
+					saveCompletedOrders.push(order);
+				}
 			});
-		
-			this.setState({ongoingOrders : data.data});
+
+			this.setState({ongoingOrders : saveOngoingOrders, completedOrders : saveCompletedOrders});
 			
 		});
 	}
@@ -56,11 +64,17 @@ export default class checkoutMain extends React.Component {
 	}
 
 
-	sortToggleBtnClick(e, target) {
+	sortToggleBtnClick(e, target, sortPanelSide) {
 		e.preventDefault();
 
-		console.log(this.state.ongoingOrders);
-		let sorted = this.state.ongoingOrders;
+		let sorted;
+		
+		if(sortPanelSide === "LEFT") {
+			sorted = this.state.completedOrders;
+		}else {
+			sorted = this.state.ongoingOrders;
+		} 
+	
 		
 		if($(`#${target}-sort-toggleBtn`).text() === "Asc") {
 			sorted = sorted.sort((a,b) => a[target].localeCompare(b[target]));
@@ -71,7 +85,12 @@ export default class checkoutMain extends React.Component {
 			$(`#${target}-sort-toggleBtn`).text("Asc");
 		}	
 
-		this.setState({ongoingOrders : sorted});
+		if(sortPanelSide === "LEFT") {
+			this.setState({completedOrders : sorted});
+		}else {
+			this.setState({ongoingOrders : sorted});
+		} 
+		
 	}
 
 	render() {
@@ -82,22 +101,68 @@ export default class checkoutMain extends React.Component {
 				</div>
 				{this.props.accountInfo.CHK_VIEW?
 					<div className = "main-section container-fluid">
-						
 						<div className="row">
-							<div className="col-12 col-md-6 completed-container">
+						{/**********************************************Left Panel*****************************************************/}
 
+							<div className="col-12 col-md-6 completed-container">
 								<div className="subContinaer-head">
 									<h3 className="text-center">Completed Order</h3>
 								</div>
-								<div className="subContinaer-main">completed</div>
+								<div className="subContinaer-main">
+									<table>
+										<thead>
+											<tr>
+												<td>Order Number <button id="ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_ID","LEFT")}>Asc</button></td>
+												<td>Customer <button id="CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CUSTOMER","LEFT")}>Asc</button></td>
+												<td>Time <button id="ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_TIME","LEFT")}>Asc</button></td>
+												<td>Status</td>
+												{this.props.accountInfo.CHK_MODIFY? 
+													<td>Action</td>:null
+												}
+											</tr>
+										</thead>
+										<tbody>
+											{this.state.completedOrders.map((order, key) => 
+												<tr key={key+1}>
+													<td>{order.ORDER_ID}</td>
+													<td>{order.CUSTOMER}</td>
+													<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  HH:mm:ss')}</td> 
+													<td>{order.STATUS}</td>
+													{this.props.accountInfo.CHK_MODIFY? 
+													<td>
+														<Link to={{
+															pathname:`/checkout/ongoingorder`,
+															state: {
+																accountInfo: this.props.accountInfo,
+																ORDER_ID: order.ORDER_ID
+															}
+														}}
+														className="btn btn-primary">Porceed</Link>
+													
+														<button type="button" className="btn btn-danger">Delete</button>
+													</td>
+													:
+													null
+													}
+												</tr>
+											)}										
+										</tbody>
+									</table>	
+								</div>
 							</div>
+							
+
+
+
+
+						{/**********************************************Right Panel*****************************************************/}
 							<div className="col-12 col-md-6 ongoing-container">
 								<div className = "notification-container">
 									<div className="notification-head">
 										<h2 className="text-center">Notification</h2>
 									</div>
 									<div className="notification-main">
-										{this.state.ongoinOrdersNotifications.map((notification,key)=>
+										{this.state.completedOrders.map((notification,key)=>
 											notification.NEW_MSG_CHKOUT > 0 ?
 											<div className="row" key={key+1}>
 												<h2 className="text-center">You have {notification.NEW_MSG_CHKOUT} notification for Order: {notification.ORDER_ID}</h2>
@@ -115,10 +180,10 @@ export default class checkoutMain extends React.Component {
 									<table>
 										<thead>
 											<tr>
-												<td>Order Number <button id="ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_ID")}>Asc</button></td>
-												<td>Customer <button id="CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CUSTOMER")}>Asc</button></td>
-												<td>Time <button id="ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_TIME")}>Asc</button></td>
-												<td>Status <button id="STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"STATUS")}>Asc</button></td>
+												<td>Order Number <button id="ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_ID","RIGHT")}>Asc</button></td>
+												<td>Customer <button id="CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CUSTOMER","RIGHT")}>Asc</button></td>
+												<td>Time <button id="ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_TIME","RIGHT")}>Asc</button></td>
+												<td>Status <button id="STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"STATUS","RIGHT")}>Asc</button></td>
 												{this.props.accountInfo.CHK_MODIFY? 
 													<td>Action</td>:null
 												}

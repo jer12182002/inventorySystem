@@ -93,18 +93,8 @@ export default class ongoingItem extends React.Component {
 		orderInfo.PROCESS_TIME = today;
 		orderInfo.CURRENTSTATUS = this.state.ONGOING_ORDER.STATUS;
 
-		if(this.state.ONGOING_ORDER.STATUS === "RECEIVED") {
-			orderInfo.NEXTSTATUS = "IN PROCESS";
-		}
-		else if (this.state.ONGOING_ORDER.STATUS === "IN PROCESS") {
-			orderInfo.NEXTSTATUS = "IN PROCESS";
-		}
-		else if (this.state.ONGOING_ORDER.STATUS === "PUSHED BACK") {
-			orderInfo.NEXTSTATUS = "IN PROCESS";
-		}
+		orderInfo.NEXTSTATUS = "IN PROCESS";
 		
-
-		console.log(orderInfo);
 		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
 		.then(data => {
