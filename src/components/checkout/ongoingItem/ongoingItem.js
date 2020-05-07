@@ -104,6 +104,7 @@ export default class ongoingItem extends React.Component {
 		}
 		
 
+		console.log(orderInfo);
 		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
 		.then(data => {

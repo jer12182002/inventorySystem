@@ -17,6 +17,25 @@ var app = express();
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(function (req, res, next) {
+  /*var err = new Error('Not Found');
+   err.status = 404;
+   next(err);*/
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers,X-Access-Token,XKey,Authorization');
+
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+  // Pass to next layer of middleware
+  next();
+});
 
 connection.connect();
 
@@ -411,6 +430,7 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 		});
 	})
 
+
 	if (!pauseTask) {
 		connection.query(sqlQuery1,[1,2],(err,result1)=>{
 			if(err) {
@@ -420,6 +440,7 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 			}
 		});
 	}else {
+
 		return res.json({data: 'fail'});
 	}
 
@@ -500,7 +521,7 @@ app.get('/pickup/order-detail/pushprocess',(req,res)=>{
 //***********************************************************************************************************************
 
 //receiving Orders from shopify
-app.post("/shopify", (req, res) => {
+app.use("/shopify", (req, res) => {
 	let shopifyData = req.body;
 	console.log(shopifyData);
 	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS) VALUES ('${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED');`;
@@ -527,6 +548,7 @@ app.post("/shopify", (req, res) => {
 })
 
 app.get('/home', function(req, res) {
+	console.log("@@@@@");
 	if (req.session.loggedin) {
 		res.send('Welcome back, ' + req.session.username + '!');
 	} else {
