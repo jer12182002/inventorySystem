@@ -1,14 +1,52 @@
 .checkoutMain-wrapper {
 
 	.main-section {
-		.completed-container {
-			background-color: green;
-			padding: 0;
+		padding: 0;
+		.notification-container{
+			background-color: pink;
+			
+			.notification-head {
+				border: 5px solid black;
+				margin: 0 auto;
+			}
+			
+			.notification-main {
+				border: 5px solid black;
+				text-align: center;
+				height: 150px;
+				overflow-y:scroll;
+					
+				.row {
+					margin: 0;
+					border-bottom: 1px solid lightgray;
+				}
 
+				h2 {
+					margin: 0 auto;
+				}
+			}
+		}
+
+	
+		.completed-container {
+			background-color: lightgreen;
+			
+			.subContainer-main {
+				background-color: lightgreen;
+			}
 		}
 
 		.ongoing-container {
-			background-color: yellow;
+			background-color: lightyellow;
+
+			.subContainer-main {
+				background-color: lightyellow;
+			}
+		}
+			
+
+		
+		.ongoing-container,.completed-container {
 			padding: 0;
 
 			.notification-container{
@@ -39,7 +77,7 @@
 		
 		
 
-		.subContinaer-head {
+		.subContainer-head {
 			h3 {
 				border: 5px solid black;
 				margin: 0;
@@ -48,7 +86,7 @@
 			}
 		}
 
-		.subContinaer-main {
+		.subContainer-main {
 			height: 195%;
 			display: block;
 			border: 5px solid black;
@@ -64,11 +102,12 @@
 				}
 				thead {
 					font-weight: 900;
+					
+					button {
+						width: 50px;
+					}
 				}
-				tbody {
-				//	font-size: 20px;
-
-				}
+				
 			}
 		}
 	}

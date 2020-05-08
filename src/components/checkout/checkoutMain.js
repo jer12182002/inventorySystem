@@ -99,16 +99,34 @@ export default class checkoutMain extends React.Component {
 				<div className = "header-section">
 					<h1>Check Out </h1>
 				</div>
+				
 				{this.props.accountInfo.CHK_VIEW?
-					<div className = "main-section container-fluid">
+				<div className = "main-section container-fluid">
+				
+					<div className = "notification-container">
+						<div className="notification-head">
+							<h2 className="text-center">Notification</h2>
+						</div>
+						<div className="notification-main">
+							{this.state.completedOrders.map((notification,key)=>
+							notification.NEW_MSG_CHKOUT > 0 ?
+								<div className="row" key={key+1}>
+									<h2 className="text-center">You have {notification.NEW_MSG_CHKOUT} notification for Order: {notification.ORDER_ID}</h2>
+								</div>
+								:
+								null
+							)}
+						</div>
+					</div>
+
 						<div className="row">
 						{/**********************************************Left Panel*****************************************************/}
 
 							<div className="col-12 col-md-6 completed-container">
-								<div className="subContinaer-head">
+								<div className="subContainer-head">
 									<h3 className="text-center">Completed Order</h3>
 								</div>
-								<div className="subContinaer-main">
+								<div className="subContainer-main">
 									<table>
 										<thead>
 											<tr>
@@ -157,26 +175,10 @@ export default class checkoutMain extends React.Component {
 
 						{/**********************************************Right Panel*****************************************************/}
 							<div className="col-12 col-md-6 ongoing-container">
-								<div className = "notification-container">
-									<div className="notification-head">
-										<h2 className="text-center">Notification</h2>
-									</div>
-									<div className="notification-main">
-										{this.state.completedOrders.map((notification,key)=>
-											notification.NEW_MSG_CHKOUT > 0 ?
-											<div className="row" key={key+1}>
-												<h2 className="text-center">You have {notification.NEW_MSG_CHKOUT} notification for Order: {notification.ORDER_ID}</h2>
-											</div>
-											:
-											null
-										)}
-									</div>
-								</div>
-
-								<div className="subContinaer-head">
+								<div className="subContainer-head">
 									<h3 className="text-center">Ongoing Order</h3>
 								</div>
-								<div className="subContinaer-main">
+								<div className="subContainer-main">
 									<table>
 										<thead>
 											<tr>
