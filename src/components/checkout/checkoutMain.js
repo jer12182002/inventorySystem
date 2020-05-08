@@ -131,7 +131,7 @@ export default class checkoutMain extends React.Component {
 													{this.props.accountInfo.CHK_MODIFY? 
 													<td>
 														<Link to={{
-															pathname:`/checkout/ongoingorder`,
+															pathname:`/checkout/completedOrder`,
 															state: {
 																accountInfo: this.props.accountInfo,
 																ORDER_ID: order.ORDER_ID

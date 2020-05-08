@@ -1,0 +1,55 @@
+.completedOrder-wrapper {
+	.head-section {
+		background-color: lightblue;
+		border-bottom: 3px solid black;
+
+		.order-info {
+			width: 100%;
+		}
+	}
+
+	.main-section {
+		div {
+			text-align: center;
+		}
+		
+		.item-container {
+			margin-top: 15px;
+			border-bottom: 2px solid black;
+			padding: 15px 0;
+		}
+	
+		.noteContainer {
+			width: 95%;
+			margin: 0 auto;
+
+
+			.note-row {
+				border: 2px solid black;
+				height: 130px;
+				margin-top: 30px;
+				padding: 0;
+
+				.note-header {
+					height: 30%;
+					border-bottom: 2px solid black;
+					background-color: lightblue;
+					padding: 0;
+					margin: 0;
+				}
+
+				.note-info {
+					height: 70%;
+					width:100%;
+					background-color: lightyellow;
+					overflow-y: scroll;
+				}
+			}
+			.note-row.firstRow {
+				.note-header {
+					background-color: red;
+				}
+			}
+		}
+	}
+}

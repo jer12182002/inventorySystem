@@ -14,6 +14,7 @@ import LoginReset from "./components/login/loginReset/loginReset";
 import InventoryMain from "./components/inventory/inventoryMain";
 import CheckOut from "./components/checkout/checkoutMain";
 import OngoingItem from "./components/checkout/ongoingItem/ongoingItem";
+import CompletedOrder from "./components/checkout/completedOrder/completedOrder";
 import Pickup from "./components/pickup/pickupMain";
 import PickupOrderDetail from "./components/pickup/pickupOrderDetail/pickupOrderDetail";
 
@@ -117,6 +118,7 @@ render(){
         <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/checkout" component = {()=> <CheckOut accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/checkout/ongoingorder" component = {OngoingItem}/>
+        <Route exact path = "/checkout/completedOrder" component = {CompletedOrder}/>
         <Route exact path = "/pickup" component = {()=> <Pickup accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path ="/pickup/order-detail" component = {PickupOrderDetail}/>
         </div>
