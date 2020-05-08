@@ -14,7 +14,6 @@ export default class completedOrder extends React.Component {
 			ORDER_ITEMS: [],
 			ORDER_NOTES: []
 		}
-
 	}
 	
 
@@ -38,7 +37,7 @@ export default class completedOrder extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {
-				this.setState({ORDER_NOTES : data.data},()=>console.log(this.state.ORDER_NOTES));
+				this.setState({ORDER_NOTES : data.data});
 			}
 		});
 	}
@@ -76,7 +75,6 @@ export default class completedOrder extends React.Component {
 			item.PICKUP_ITEMS = JSON.parse(item.PICKUP_ITEMS);
 		}); 	
 
-		console.log(uniqueData);
 		return uniqueData;
 	}
 
