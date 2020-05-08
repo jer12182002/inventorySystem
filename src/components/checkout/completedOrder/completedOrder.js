@@ -86,9 +86,11 @@ export default class completedOrder extends React.Component {
 			<div className="completedOrder-wrapper">
 				<div className="head-section container-fluid">
 					<div className="order-info row">
-						<div className="col-6 col-md-3"><h1>Order No: {this.state.COMPLETED_ORDER.ORDER_ID}</h1></div>
-						<div className="col-6 col-md-4"><h1>Customer: {this.state.COMPLETED_ORDER.CUSTOMER}</h1></div>
-						<div className="col-6 col-md-5"><h1>Order Received: {Moment(this.state.COMPLETED_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h1></div>
+						<div className="col-3 col-md-2"><h3>Order No: {this.state.COMPLETED_ORDER.ORDER_ID}</h3></div>
+						<div className="col-3 col-md-2"><h3>Customer: {this.state.COMPLETED_ORDER.CUSTOMER}</h3></div>
+						<div className="col-6 col-md-4"><h3>Order Received: {Moment(this.state.COMPLETED_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h3></div>
+						<div className="col-6 col-md-2"><h3>Sales: {this.state.COMPLETED_ORDER.PERSON}</h3></div>
+						<div className="col-6 col-md-2"><h3>Pickup: {this.state.COMPLETED_ORDER.PICKUP_PERSON}</h3></div>
 					</div>
 				</div>
 				<div className="main-section">
