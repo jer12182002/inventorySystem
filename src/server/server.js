@@ -446,6 +446,26 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 
 });
 
+
+
+app.get("/checkout/ongoingorder/deleteorder",(req,res)=> {
+	let orderInfo = JSON.parse(req.query.orderInfo);
+	
+	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = "${orderInfo.PROCESS_TIME}", PERSON = "${orderInfo.PERSON}", STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
+	let sqlQuery2 = `UPDATE order_item_list SET STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
+	let sqlQuery3 = `INSERT INTO checkout_note (ORDER_ID, PERSON,TIME, NOTE, STATUS) VALUES (${orderInfo.ORDER_ID}, '${orderInfo.PERSON}','${orderInfo.NOTE}', '${orderInfo.PROCESS_TIME}', 'DELETED');`;
+
+	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=> {
+		if(err) {
+			console.log(err);
+			res.send(err);
+		}else {
+			return res.json({data: 'success'});
+		}
+	});
+
+})
+
 //***********************************************************************************************************************
 
 //*********************************Pick up*******************************************************************************

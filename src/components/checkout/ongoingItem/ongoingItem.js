@@ -81,8 +81,6 @@ export default class ongoingItem extends React.Component {
 
 
 	pushItemToBack(){
-		let today = new Date();
-		today = today.getFullYear() + "-" + ("0" + (today.getMonth() +1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2) + " " + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
 		
 		let orderInfo = {};
 
@@ -90,7 +88,7 @@ export default class ongoingItem extends React.Component {
 		orderInfo.ITEMS = this.state.ORDER_ITEMS;
 		orderInfo.NOTE = $(`#note${this.state.ORDER_ID}`).val();
 		orderInfo.ACCOUNTINFO = this.state.accountInfo.USERNAME;
-		orderInfo.PROCESS_TIME = today;
+		orderInfo.PROCESS_TIME = this.getTime();
 		orderInfo.CURRENTSTATUS = this.state.ONGOING_ORDER.STATUS;
 
 		orderInfo.NEXTSTATUS = "IN PROCESS";
@@ -222,7 +220,6 @@ export default class ongoingItem extends React.Component {
 			item.ITEMCHNAME = chineseName;
 			item.ITEMENNAME = englishName;
 			item.DIFFERENT_TYPE = JSON.parse(item.PICKUP_ITEMS);
-			console.log(item.DIFFERENT_TYPE);
 
 		//This is to give the inventory QTY to diffItem
 			item.DIFFERENT_TYPE.forEach(diffItem => {
@@ -314,6 +311,12 @@ export default class ongoingItem extends React.Component {
 		this.setState({ORDER_ITEMS : orderItems});
 	}
 
+	getTime() {
+		let today = new Date();
+		today = today.getFullYear() + "-" + ("0" + (today.getMonth() +1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2) + " " + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
+		
+		return today;
+	}
 
 	wanringChecker(items,itemId,key){
 
@@ -335,6 +338,28 @@ export default class ongoingItem extends React.Component {
 	}
 
 
+	deleteBtnClicked(e) {
+		let note = $(`#note${this.state.ORDER_ID}`).val();
+
+		if(!$.trim(note)) {
+			alert("You must leave a note to delete this order");
+		}else {
+			let orderInfo = {};
+			orderInfo.ORDER_ID = this.state.ORDER_ID;
+			orderInfo.NOTE = note;
+			orderInfo.PERSON = this.state.accountInfo.USERNAME;
+			orderInfo.PROCESS_TIME = this.getTime();
+			
+			fetch (`http://localhost:4000/checkout/ongoingorder/deleteorder?orderInfo=${JSON.stringify(orderInfo)}`)
+			.then(res=> res.json)
+			.then(data => {
+				if(data.data && data.data === 'success') {
+					window.location.href="/checkout";
+				}
+			});
+		}
+
+	}
 
 
 
@@ -453,6 +478,7 @@ export default class ongoingItem extends React.Component {
 								{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"? "Push" : "Add Note"}
 							</button>
 						}
+						<button type="button" className="block btn btn-danger" onClick = {e => this.deleteBtnClicked(e)}>Delete</button>
 					</div>
 					
 				</div>

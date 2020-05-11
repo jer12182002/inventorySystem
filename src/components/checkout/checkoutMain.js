@@ -102,7 +102,7 @@ export default class checkoutMain extends React.Component {
 				
 				{this.props.accountInfo.CHK_VIEW?
 				<div className = "main-section container-fluid">
-				
+
 					<div className = "notification-container">
 						<div className="notification-head">
 							<h2 className="text-center">Notification</h2>
@@ -156,8 +156,6 @@ export default class checkoutMain extends React.Component {
 															}
 														}}
 														className="btn btn-primary">Porceed</Link>
-													
-														<button type="button" className="btn btn-danger">Delete</button>
 													</td>
 													:
 													null
@@ -208,8 +206,6 @@ export default class checkoutMain extends React.Component {
 															}
 														}}
 														className="btn btn-primary">Porceed</Link>
-													
-														<button type="button" className="btn btn-danger">Delete</button>
 													</td>
 													:
 													null
