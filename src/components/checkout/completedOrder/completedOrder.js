@@ -80,6 +80,7 @@ export default class completedOrder extends React.Component {
 
 
 	render() {
+		console.log(this.state.ORDER_ITEMS);
 		return (
 			<div className="completedOrder-wrapper">
 				<div className="head-section container-fluid">
@@ -92,6 +93,7 @@ export default class completedOrder extends React.Component {
 					</div>
 				</div>
 				<div className="main-section">
+					{this.state.COMPLETED_ORDER.STATUS === "COMPLETED"? 
 					<div className="container-fluid">
 						<div className="row header-container">
 							<div className="col-1"><h3>Index</h3></div>
@@ -113,6 +115,7 @@ export default class completedOrder extends React.Component {
 								<div className="col-4 text-left"><h3>{item.ITEMENNAME}</h3><h3>{item.ITEMCHNAME}</h3></div>
 								<div className="col-1"><h3>{item.ORDER_ITEM_QTY}</h3></div>
 								<div className="col-6">
+				
 								{item.PICKUP_ITEMS.map((diffItem,diffKey)=>
 									diffItem.PICKUPVALUE > 0 ?
 									<div className="row" key={`diffItem${diffKey+1}`}>
@@ -124,12 +127,28 @@ export default class completedOrder extends React.Component {
 									</div>
 									:
 									null
-
 									)}
 								</div>
+								
 							</div>
 						)}
 					</div>
+					:
+					<div className="container-fluid">
+						<div className="row header-container">
+							<div className="col-1"><h3>Index</h3></div>
+							<div className="col-8 text-left"><h3>Item</h3></div>
+							<div className="col-3"><h3>QTY</h3></div>
+						</div>
+						{this.state.ORDER_ITEMS.map((item,key)=>
+							<div className="row item-container" key={`item${key}`}>
+								<div className="col-1"><h3>{key+1}</h3></div>
+								<div className="col-8 text-left"><h3>{item.ITEMENNAME}</h3><h3>{item.ITEMCHNAME}</h3></div>
+								<div className="col-3"><h3>{item.ORDER_ITEM_QTY}</h3></div>
+							</div>
+						)}
+					</div>
+					}
 					<div className="noteContainer">
 						{this.state.ORDER_NOTES.map((note,key) =>
 							

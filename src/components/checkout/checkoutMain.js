@@ -133,7 +133,7 @@ export default class checkoutMain extends React.Component {
 												<td>Order Number <button id="ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_ID","LEFT")}>Asc</button></td>
 												<td>Customer <button id="CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CUSTOMER","LEFT")}>Asc</button></td>
 												<td>Time <button id="ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_TIME","LEFT")}>Asc</button></td>
-												<td>Status</td>
+												<td>Status <button id="STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"STATUS","LEFT")}>Asc</button></td>
 												{this.props.accountInfo.CHK_MODIFY? 
 													<td>Action</td>:null
 												}
