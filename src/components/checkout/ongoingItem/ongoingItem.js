@@ -314,7 +314,7 @@ export default class ongoingItem extends React.Component {
 	getTime() {
 		let today = new Date();
 		today = today.getFullYear() + "-" + ("0" + (today.getMonth() +1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2) + " " + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
-		
+
 		return today;
 	}
 
@@ -456,12 +456,12 @@ export default class ongoingItem extends React.Component {
 						{this.state.ORDER_NOTES.map((note,key) =>
 							<div className={`container-fluid note-row ${key === 0? `firstRow`:``}`} key={`note${key+1}`}>
 								<div className="row note-header">
-									<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD hh:mm:ss')}</h4></div>
+									<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD HH:mm:ss')}</h4></div>
 									<div className="col-4 col-md-4 text-center"><h4>Author: {note.PERSON}</h4></div>
 									<div className="col-4 col-md-4 text-center"><h4>Status: {note.STATUS}</h4></div>
 								</div>
 								<div className="note-info">
-									<h4 className="text-center">{note.NOTE}</h4>
+									<h4>{note.NOTE}</h4>
 								</div>
 							</div>
 						)}

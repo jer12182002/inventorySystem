@@ -154,7 +154,7 @@ export default class completedOrder extends React.Component {
 							
 							<div className={`container-fluid note-row ${key === 0? `firstRow`:``}`} key={`note${key+1}`}>
 								<div className="row note-header">
-									<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD hh:mm:ss')}</h4></div>
+									<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD HH:mm:ss')}</h4></div>
 									<div className="col-4 col-md-4 text-center"><h4>Author: {note.PERSON}</h4></div>
 									<div className="col-4 col-md-4 text-center"><h4>Status: {note.STATUS}</h4></div>
 								</div>
