@@ -28,7 +28,7 @@ export default class checkoutMain extends React.Component {
 			data.data.forEach(order => {
 				if(order.STATUS === 'RECEIVED' || order.STATUS === 'IN PROCESS' || order.STATUS === 'PUSHED BACK') {
 					saveOngoingOrders.push(order);
-				}else if(order.STATUS === 'COMPLETED') {
+				}else if(order.STATUS === 'COMPLETED' || order.STATUS === 'DELETED') {
 					saveCompletedOrders.push(order);
 				}
 			});
@@ -108,7 +108,7 @@ export default class checkoutMain extends React.Component {
 							<h2 className="text-center">Notification</h2>
 						</div>
 						<div className="notification-main">
-							{this.state.completedOrders.map((notification,key)=>
+							{this.state.ongoinOrdersNotifications.map((notification,key)=>
 							notification.NEW_MSG_CHKOUT > 0 ?
 								<div className="row" key={key+1}>
 									<h2 className="text-center">You have {notification.NEW_MSG_CHKOUT} notification for Order: {notification.ORDER_ID}</h2>

@@ -43,3 +43,8 @@
 .margin-center {
 	margin: 0 auto;
 }
+
+.disabled {
+	cursor: not-allowed;
+	pointer-events: none;
+}

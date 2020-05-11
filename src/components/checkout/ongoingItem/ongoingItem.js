@@ -351,14 +351,17 @@ export default class ongoingItem extends React.Component {
 			orderInfo.PROCESS_TIME = this.getTime();
 			
 			fetch (`http://localhost:4000/checkout/ongoingorder/deleteorder?orderInfo=${JSON.stringify(orderInfo)}`)
-			.then(res=> res.json)
+			.then(res=> res.json())
 			.then(data => {
 				if(data.data && data.data === 'success') {
 					window.location.href="/checkout";
 				}
 			});
 		}
+	}
 
+	noteInputBtnToggle() {
+		$.trim($(`#note${this.state.ORDER_ID}`).val())? $("#deleteBtn").removeClass("disabled") :  $("#deleteBtn").addClass("disabled");
 	}
 
 
@@ -466,7 +469,7 @@ export default class ongoingItem extends React.Component {
 
 					<div className="actionContainer">
 						<label className="block">Note:</label>
-						<textarea id={`note${this.state.ORDER_ID}`} className="block"></textarea>
+						<textarea id={`note${this.state.ORDER_ID}`} className="block" onKeyUp={this.noteInputBtnToggle()}></textarea>
 						{this.state.ITEM_NOT_ENOUGH? 
 							this.state.accountInfo.VIEW_ITEM &&	this.state.accountInfo.ADD_ITEM?
 								<Link className ="btn btn-warning" to="/inventory">Add Item</Link>
@@ -478,7 +481,10 @@ export default class ongoingItem extends React.Component {
 								{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"? "Push" : "Add Note"}
 							</button>
 						}
-						<button type="button" className="block btn btn-danger" onClick = {e => this.deleteBtnClicked(e)}>Delete</button>
+						{this.state.ONGOING_ORDER.STATUS === "IN PROCESS"? 
+							null: <button id="deleteBtn" type="button" className="block btn btn-danger disabled" onClick = {e => this.deleteBtnClicked(e)}>Delete</button>
+						}
+						
 					</div>
 					
 				</div>

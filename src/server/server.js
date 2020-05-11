@@ -455,12 +455,13 @@ app.get("/checkout/ongoingorder/deleteorder",(req,res)=> {
 	let sqlQuery2 = `UPDATE order_item_list SET STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
 	let sqlQuery3 = `INSERT INTO checkout_note (ORDER_ID, PERSON,TIME, NOTE, STATUS) VALUES (${orderInfo.ORDER_ID}, '${orderInfo.PERSON}','${orderInfo.NOTE}', '${orderInfo.PROCESS_TIME}', 'DELETED');`;
 
+	//console.log(sqlQuery1+sqlQuery2+sqlQuery3);	
 	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=> {
 		if(err) {
 			console.log(err);
 			res.send(err);
 		}else {
-			return res.json({data: 'success'});
+			return res.json({data:'success'});
 		}
 	});
 
