@@ -11,12 +11,13 @@ export default class inventoryControlPanel extends React.Component {
 		super(props);
 
 		this.state = {
+			loggedUser: this.props.loggedUser,
 			defaultAllItems:[],
 			allItems:[],
 			checkedId:[]
 		}
 		this.loadAllItem('',true);
-
+		console.log(this.props.loggedUser);
 	}
 
 	
@@ -219,7 +220,9 @@ export default class inventoryControlPanel extends React.Component {
 						{this.state.allItems.map((item,key)=>
 							<li key={`${key}${item.ID}`}>
 								<input key={`${key}${item.ID}`} id={`checkbox${item.ID}`} className="checkBoxDisplay inline-b" type="checkbox" defaultChecked={item.checked} onChange={e=>this.selectCheckBox(e,item.ID)}/>	
-								<p className="inline-b">{item.ENGLISH_NAME}-{item.CHINESE_NAME}<br/><strong>{item.EXPIRE_DATE}-{item.MANUFACTURE}</strong></p>
+								<p className="inline-b">{item.ENGLISH_NAME}-{item.CHINESE_NAME}<br/>
+								{this.state.loggedUser.EXP_VIEW?<strong>{item.EXPIRE_DATE}-</strong>: null}
+								<strong>{item.MANUFACTURE}</strong></p>
 							</li>					
 						)}						
 
