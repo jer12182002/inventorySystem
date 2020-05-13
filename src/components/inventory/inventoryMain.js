@@ -110,6 +110,7 @@ export default class inventoryMain extends React.Component {
 		restockInfo.ID = item.ID;
 		restockInfo.ITEM_ID = item.ITEM_ID;
 		restockInfo.HOLD_QTY = item.HOLD_QTY;
+		restockInfo.PERSON = this.state.accountInfo.USERNAME;
 
 		fetch(`http://localhost:4000/inventory/restockHold?restockInfo=${JSON.stringify(restockInfo)}`)
 		.then(res => res.json())

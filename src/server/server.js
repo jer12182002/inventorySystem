@@ -304,7 +304,7 @@ app.get('/inventory/addhold',(req,res)=>{
 			let itemInfo = selectResult[0];
 			let sqlQueries = `INSERT INTO hold_item_list (ITEM_ID, PERSON, HOLD_QTY, DATE) VALUES ('${holdItem.ITEM_ID}', '${holdItem.RECIPIENT}','${holdItem.HOLD_QTY}', '${holdItem.DATE}');`;
 				sqlQueries+= `UPDATE item_list set HOLD_QTY = HOLD_QTY + ${holdItem.HOLD_QTY} where ID = ${holdItem.ITEM_ID};`; 
-				sqlQueries+= `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES('${holdItem.PERSON}', 'Hold Item','Item(${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME}-${itemInfo.TYPE}-${itemInfo.EXPIRE_DATE}) is hold Qty: ${holdItem.HOLD_QTY} for ${holdItem.RECIPIENT} ${holdItem.DATE===''?`with no expiry date`:`untill ${holdItem.DATE}`}');`;
+				sqlQueries+= `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES('${holdItem.PERSON}', 'Hold Item','Item(${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME}-${itemInfo.TYPE}-${moment(itemInfo.EXPIRE_DATE).format("YYYY-MM-DD")}) Qty: ${holdItem.HOLD_QTY} for ${holdItem.RECIPIENT} ${holdItem.DATE===''?`with no expiry date`:`with expiry date: ${holdItem.DATE}`} is holded');`;
 
 			connection.query(sqlQueries, (err,result)=>{
 				if(err) {
@@ -324,27 +324,25 @@ app.get('/inventory/restockHold',(req,res)=>{
 
 	let restockItem = JSON.parse(req.query.restockInfo);
 	
-	let sqlQuery = `UPDATE item_list set HOLD_QTY = (SELECT HOLD_QTY FROM item_list where ID = ${restockItem.ITEM_ID}) - ${restockItem.HOLD_QTY} where ID = ${restockItem.ITEM_ID}`;
-	console.log(sqlQuery);
-	connection.query(sqlQuery,(err,result)=>{
-		if(err){
-			res.send(err);
-		}
-		else {
-			console.log(restockItem);
-			sqlQuery = `DELETE FROM hold_item_list WHERE ID = ${restockItem.ID}`;
-			
-			console.log(sqlQuery);
-			connection.query(sqlQuery,(err,result)=>{
+	connection.query(`SELECT * FROM item_list WHERE ID = ${restockItem.ITEM_ID}`,(selectErr,selectResult)=>{
+		if(selectResult[0]) {
+			let itemInfo = selectResult[0];
+
+			let sqlQueries = `UPDATE item_list set HOLD_QTY = (SELECT HOLD_QTY FROM item_list where ID = ${restockItem.ITEM_ID}) - ${restockItem.HOLD_QTY} where ID = ${restockItem.ITEM_ID};`;
+				sqlQueries+= `DELETE FROM hold_item_list WHERE ID = ${restockItem.ID};`;
+				sqlQueries+= `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${restockItem.PERSON}','Restock Item','Item(${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME}-${itemInfo.TYPE}-${moment(itemInfo.EXPIRE_DATE).format("YYYY-MM-DD")}) has been restocked');`;
+
+
+			connection.query(sqlQueries,(err,result)=> {
 				if(err) {
+					console.log(err);
 					res.send(err);
-				}
-				else {
+				}else {
 					return (res.json({data:'success'}));
 				}
-			});
+			})
 		}
-	})
+	});
 })
 	
 //*************************************** Checkout **********************************************************************
