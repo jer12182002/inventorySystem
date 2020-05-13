@@ -531,22 +531,24 @@ app.get('/pickup/order-detail',(req,res)=> {
 
 app.get('/pickup/order-detail/pushprocess',(req,res)=>{
 	let actionInstr = JSON.parse(req.query.actionInstr);
-
+	
 	let sqlQueries = `UPDATE ongoing_order SET PICKUP_PERSON = '${actionInstr.PERSON}' ,STATUS = '${actionInstr.action}' ,NEW_MSG_CHKOUT = NEW_MSG_CHKOUT+1 WHERE ORDER_ID = ${actionInstr.orderNo};`;
 		sqlQueries += `UPDATE order_item_list SET STATUS = '${actionInstr.action}' WHERE ORDER_ID = ${actionInstr.orderNo};`;
 
 		sqlQueries += actionInstr.note? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES (${actionInstr.orderNo}, '${actionInstr.PERSON}','${actionInstr.PROCESS_TIME}','${actionInstr.note}', '${actionInstr.action}');`: ``;
 
 		if(actionInstr.action === 'PUSHED BACK') {
-
+			sqlQueries+= `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${actionInstr.PERSON}', 'PUSH BACK ORDER', 'Push back Order: ${actionInstr.orderNo} From Pick Up Station');`;
 			actionInstr.orderItems.forEach(item => {
 				item.PICKUP_ITEMS.forEach(diffItem => {
 					sqlQueries += `UPDATE item_list SET QTY = QTY + ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ID};`;
 				})
 			})
+		}else {
+			sqlQueries+= `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${actionInstr.PERSON}', 'Complete ORDER', 'Complete Order: ${actionInstr.orderNo} From Pick Up Station');`;
 		}
 
-
+	
 	connection.query(sqlQueries,(err,result)=> {
 		if(err) {
 			res.send(err);
