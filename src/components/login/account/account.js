@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import './account.scss';
 
-
+import Moment from 'moment';
 import $ from 'jquery';
 
 
@@ -13,14 +13,13 @@ export default class account extends React.Component {
 
 		this.state = {
 			accountInfo: this.props.accountInfo,
-			users: []
+			users: [],
+			inventoryLogs:[],
+			chk_pickupLogs:[]
 		}
 
 
-		if(this.props.accountInfo.ACCESS_LEVEL < 3) {
-		 	this.fetchAllUserInfo();
-		}	
-
+	
 	}
 
 
@@ -32,6 +31,28 @@ export default class account extends React.Component {
 		});
 	}
 
+
+	fetchAllLogs() {
+		fetch("http://localhost:4000/login/account/displayActivities")
+		.then(res=>res.json())
+		.then(data=> {
+			if(data && (data.inventoryLog[0] || data.chk_pickupLog[0])) {
+				this.setState({inventoryLogs: data.inventoryLog, chk_pickupLogs: data.chk_pickupLog},()=>{
+					console.log(this.state.inventoryLogs);
+					console.log(this.state.chk_pickupLogs);
+				});
+			}
+		})
+	}
+
+
+
+	componentDidMount() {
+		if(this.state.accountInfo.ACCESS_LEVEL < 3) {
+		 	this.fetchAllUserInfo();
+		 	this.fetchAllLogs();
+		}	
+	}
 
 
 	editClick(event,id){
@@ -88,7 +109,6 @@ export default class account extends React.Component {
 
 
 	render() {
-
 		return (
 		<div className="account-wrapper">
 			<div className="header-section">
@@ -111,8 +131,70 @@ export default class account extends React.Component {
 				</ul>
 			</div>
 			<div className="main-section">
-				<div className="block activityLog-container">
-					<h1>Activity Log{this.state.accountInfo.USERNAME}</h1>
+				<div className="block inventoryActivityLog-container">
+					
+					{this.state.inventoryLogs.length >0 ?
+						<>
+						<h3>Inventory Logs</h3>
+						<table>
+						<thead>
+							<tr>
+								<td>Index</td>
+								<td>Time</td>
+								<td>Action</td>
+								<td>Detail</td>
+								<td>Person</td>
+							</tr>
+						</thead>
+						<tbody>
+						{this.state.inventoryLogs.map((log, key)=>
+							<tr key={`invLog-${key+1}`}>
+								<td>{key+1}</td>
+								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:MM:SS')}</td>
+								<td className="logAction">{log.ACTION}</td>
+								<td className="logDetail">{log.DETAIL}</td>
+								<td>{log.PERSON}</td>
+							
+							</tr>
+						)}
+						</tbody>
+						</table>
+						</>
+						:null
+					}
+				</div>
+
+				<div className="block chk_pickupActivityLog-container">
+			
+					{this.state.chk_pickupLogs.length >0 ?
+						<>
+						<h3>Checkout & Pickup Logs</h3>
+						<table>
+						<thead>
+							<tr>
+								<td>Index</td>
+								<td>Time</td>
+								<td>Action</td>
+								<td>Detail</td>
+								<td>Person</td>
+							</tr>
+						</thead>
+						<tbody>
+						{this.state.chk_pickupLogs.map((log, key)=>
+							<tr key={`chk_pickupLog-${key+1}`}>
+								<td>{key+1}</td>
+								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:MM:SS')}</td>
+								<td className="logAction">{log.ACTION}</td>
+								<td className="logDetail">{log.DETAIL}</td>
+								<td>{log.PERSON}</td>
+							
+							</tr>
+						)}
+						</tbody>
+						</table>
+						</>
+						:null
+					}
 				</div>
 				{this.state.accountInfo.ACCESS_LEVEL < 3 ? 
 					(

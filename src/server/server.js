@@ -122,11 +122,28 @@ app.get('/login/account/resetpassword',(req,res)=>{
 
 });
 
+app.get('/login/account/displayActivities',(req,res)=> {
+	let sqlQueries = 'SELECT * FROM inventory_activity_logs ORDER BY TIME DESC;';
+	    sqlQueries+= 'SELECT * FROM chk_pickup_activity_logs ORDER BY TIME DESC;';
+
+	connection.query(sqlQueries,(err,result)=>{
+		if(err){
+			res.send(err);
+		}else {
+			return res.json(
+				{
+					inventoryLog: result[0],
+					chk_pickupLog: result[1]
+				}
+			)
+		}
+	});
+});
+
+
 
 
 app.get('/login/account/displayUsers',(req,res) =>{
-	console.log("Get Target User" + req.query);
-
 	var sqlQuery = `SELECT * FROM account_list where ID = ${req.query.id}`;
 	console.log(sqlQuery);
 	connection.query(sqlQuery,(err,result)=>{
