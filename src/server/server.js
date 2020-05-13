@@ -268,18 +268,29 @@ app.get('/inventory/updateItems',(req,res)=>{
 });
 
 app.get('/inventory/deleteItem',(req,res)=>{
-	let {itemId} = req.query;
+	let deleteInfo = JSON.parse(req.query.deleteInfo);
 
-	let sqlQuery = `DELETE FROM hold_item_list WHERE ITEM_ID = ${itemId}; DELETE FROM item_list where ID = ${itemId}`;
-	
-	connection.query(sqlQuery,[1,2],(err,result)=>{
-		if(err){
-			res.send(err);
+	connection.query(`SELECT * FROM item_list WHERE ID = ${deleteInfo.ITEM_ID}`,(selectErr,selectResult)=>{
+		if(selectResult[0]) {
+			let itemInfo = selectResult[0];
+			
+			let sqlQueries = `DELETE FROM hold_item_list WHERE ITEM_ID = ${deleteInfo.ITEM_ID};`; 
+				sqlQueries+= `DELETE FROM item_list where ID = ${deleteInfo.ITEM_ID};`;
+				
+			let actionDetails = `${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME} Type: ${itemInfo.TYPE}, Shelf No: ${itemInfo.SHELF_NO}, Manu.: ${itemInfo.MANUFACTURE}, QTY: ${itemInfo.QTY}, Exp.: ${moment(itemInfo.EXPIRE_DATE).format('YYYY-MM-DD')}, Gram: ${itemInfo.GRAM}`;
+			sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${deleteInfo.PERSON}','Delete Item' ,'${actionDetails}');`;
+
+			connection.query(sqlQueries,(err,result)=>{
+				if(err){
+					console.log(err);
+					res.send(err);
+				}
+				else {
+					return (res.json({data:'success'}));
+				} 
+			})
 		}
-		else {
-			return (res.json({data:'success'}));
-		} 
-	})
+	})	
 })
 
 

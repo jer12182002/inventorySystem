@@ -83,7 +83,11 @@ export default class inventoryMain extends React.Component {
 	}
 
 	deleteItem (id){
-		fetch(`http://localhost:4000/inventory/deleteItem?itemId=${id}`)
+		let deleteInfo = {};
+		deleteInfo.ITEM_ID = id;
+		deleteInfo.PERSON = this.state.accountInfo.USERNAME;
+		console.log(deleteInfo);
+		fetch(`http://localhost:4000/inventory/deleteItem?deleteInfo=${JSON.stringify(deleteInfo)}`)
 		.then(res => res.json())
 		.then(data =>{
 			console.log(data);
