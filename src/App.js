@@ -122,7 +122,7 @@ render(){
         <div>
         <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
-        <Route exact path = "/checkout" component = {()=> <CheckOut/>}/>
+        <Route exact path = "/checkout" component = {()=> <CheckOut accountInfo = {this.state.accountInfo}/>}/>
         <Route exact path = "/checkout/ongoingorder" component = {OngoingItem}/>
         <Route exact path = "/checkout/completedOrder" component = {CompletedOrder}/>
         <Route exact path = "/pickup" component = {()=> <Pickup accountInfo = {this.state.accountInfo}/>}/>

@@ -321,7 +321,6 @@ app.get('/inventory/addhold',(req,res)=>{
 
 
 app.get('/inventory/restockHold',(req,res)=>{
-
 	let restockItem = JSON.parse(req.query.restockInfo);
 	
 	connection.query(`SELECT * FROM item_list WHERE ID = ${restockItem.ITEM_ID}`,(selectErr,selectResult)=>{
@@ -434,8 +433,9 @@ app.get("/checkout/order/loadnotes",(req,res)=>{
 app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	let orderInfo = JSON.parse(req.query.orderInfo);
 	let pauseTask = false;
+	console.log(orderInfo);
 
-
+	let actvityLogQuery = `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.ACCOUNTINFO}', 'PUSH TO IN PROCESS', 'Push Order: ${orderInfo.ORDER_NO} from ${orderInfo.CURRENTSTATUS} to IN PROCESS');`;
 	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_PICKUP = NEW_MSG_PICKUP + 1 WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
 		sqlQuery1 += orderInfo.NOTE ? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','${orderInfo.CURRENTSTATUS}');` : ``;
 
@@ -463,7 +463,7 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 
 
 	if (!pauseTask) {
-		connection.query(sqlQuery1,[1,2],(err,result1)=>{
+		connection.query(sqlQuery1+actvityLogQuery,(err,result1)=>{
 			if(err) {
 				res.send(err);
 			}else {
@@ -471,7 +471,6 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 			}
 		});
 	}else {
-
 		return res.json({data: 'fail'});
 	}
 
