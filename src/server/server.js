@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require ('mysql');
+const moment = require('moment');
 
 const connection = mysql.createConnection({
 	host: 'localhost',
@@ -178,12 +179,15 @@ app.get('/inventory/loadSelect',(req,res)=>{
 
 app.get('/inventory/addNewItem',(req,res)=>{
 	let newItem = JSON.parse(req.query.newItem);
-	console.log('Get request to add newItem');
 
-	let sqlQuery = `INSERT INTO item_list(TYPE, SHELF_NO,MANUFACTURE,ENGLISH_NAME,CHINESE_NAME, QTY,EXPIRE_DATE,GRAM,CREATED_BY,LAST_MODIFIED_BY) VALUES ('${newItem.type}', '${newItem.shelfNo}', '${newItem.manufacturer}', '${newItem.ENname}','${newItem.CHname}', '${newItem.qty}', '${newItem.exp}','${newItem.gram}', '${newItem.createdBy}', '${newItem.createdBy}')`;
-	console.log(sqlQuery);
-	connection.query(sqlQuery,(err,result)=>{
+	let sqlQueries = `INSERT INTO item_list(TYPE, SHELF_NO,MANUFACTURE,ENGLISH_NAME,CHINESE_NAME, QTY,EXPIRE_DATE,GRAM,CREATED_BY,LAST_MODIFIED_BY) VALUES ('${newItem.type}', '${newItem.shelfNo}', '${newItem.manufacturer}', '${newItem.ENname}','${newItem.CHname}', '${newItem.qty}', '${newItem.exp}','${newItem.gram}', '${newItem.createdBy}', '${newItem.createdBy}');`;
+
+	let actionDetails = `${newItem.ENname} ${newItem.CHname} Type: ${newItem.type}, Shelf No: ${newItem.shelfNo}, Manu.: ${newItem.manufacturer}, QTY: ${newItem.qty}, Exp.: ${newItem.exp}, Gram: ${newItem.gram}`;
+		sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${newItem.createdBy}','Add New Item' ,'${actionDetails}');`;
+
+	connection.query(sqlQueries,(err,result)=>{
 		if(err){
+			console.log(err);
 			res.send(err);
 		}else {
 			return (res.json({data: 'success'}));
@@ -212,7 +216,7 @@ app.get('/inventory/loadAllItem',(req,res)=>{
 app.get('/inventory/loadAllHoldItem',(req,res)=>{
 
 	let sqlQuery = 'SELECT I.ID, H.ID, H.ITEM_ID, I.CHINESE_NAME, I.ENGLISH_NAME, I.TYPE, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE, I.GRAM, I.MANUFACTURE, H.PERSON, H.HOLD_QTY, DATE_FORMAT(H.DATE, "%Y-%m-%d") AS DATE from item_list I INNER JOIN hold_item_list H ON I.ID = H.ITEM_ID';
-	
+
 	console.log('Get hold items');
 	console.log(sqlQuery);
 
@@ -228,21 +232,39 @@ app.get('/inventory/loadAllHoldItem',(req,res)=>{
 
 app.get('/inventory/updateItems',(req,res)=>{
 	let updatedItem = JSON.parse(req.query.updatedItem);
-	let sqlQuery = `UPDATE item_list SET ENGLISH_NAME = '${updatedItem.ENGLISH_NAME}',CHINESE_NAME = '${updatedItem.CHINESE_NAME}',TYPE = '${updatedItem.TYPE}',SHELF_NO = '${updatedItem.SHELF_NO}' ,QTY = '${updatedItem.QTY}'`;
-		sqlQuery += updatedItem.EXPIRE_DATE? `,EXPIRE_DATE = '${updatedItem.EXPIRE_DATE}'`:``
-		sqlQuery += `,GRAM = '${updatedItem.GRAM}' WHERE ID = '${updatedItem.ID}'`;
 
-	console.log(updatedItem);
-	console.log(sqlQuery);
-	connection.query(sqlQuery,(err,result)=>{
-		if(err) {
-			res.send(err);
-		}
-		else {
-			console.log(result);
-			return (res.json({data:result}));
+	connection.query(`SELECT * FROM item_list WHERE ID = ${updatedItem.ID}`,(selectErr,selectResult)=>{
+		if(selectResult[0]) {
+			let itemInfo = selectResult[0];
+			
+			let actionDetails = `${itemInfo.TYPE !== updatedItem.TYPE? `Change Item Type From ${itemInfo.TYPE} To ${updatedItem.TYPE}.`: ""}`
+							  +	`${itemInfo.SHELF_NO !== updatedItem.SHELF_NO? `Change ShelfNo From ${itemInfo.SHELF_NO} To ${updatedItem.SHELF_NO}.`:""}`
+							  + `${itemInfo.MANUFACTURE !== updatedItem.MANUFACTURE? `Change Manu. From ${itemInfo.MANUFACTURE} To ${updatedItem.MANUFACTURE}`: ""}`
+							  + `${itemInfo.ENGLISH_NAME + itemInfo.CHINESE_NAME !== updatedItem.ENGLISH_NAME + updatedItem.CHINESE_NAME? `Change Item Name From ${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME} To ${updatedItem.ENGLISH_NAME} ${updatedItem.CHINESE_NAME}.`: ""}`
+							  + `${itemInfo.QTY !== updatedItem.QTY? `Change Item Qty From ${itemInfo.QTY} To ${updatedItem.QTY}.`: ""}`
+							  +	`${moment(itemInfo.EXPIRE_DATE).format('YYYY-MM-DD') !== updatedItem.EXPIRE_DATE? `Change Item Exp. Date From ${moment(itemInfo.EXPIRE_DATE).format('YYYY-MM-DD')} To ${updatedItem.EXPIRE_DATE}.`:""}`
+							  +	`${itemInfo.GRAM.toString() !== updatedItem.GRAM.toString()? `Change Item Gram from ${itemInfo.GRAM} To ${updatedItem.GRAM}.`:""}`;		
+
+			if(actionDetails !== '') {
+				let sqlQueries = `UPDATE item_list SET ENGLISH_NAME = '${updatedItem.ENGLISH_NAME}',CHINESE_NAME = '${updatedItem.CHINESE_NAME}',TYPE = '${updatedItem.TYPE}',SHELF_NO = '${updatedItem.SHELF_NO}' ,QTY = '${updatedItem.QTY}'`;
+					sqlQueries += updatedItem.EXPIRE_DATE? `,EXPIRE_DATE = '${updatedItem.EXPIRE_DATE}'`:``
+					sqlQueries += `,GRAM = '${updatedItem.GRAM}', LAST_MODIFIED_BY = '${updatedItem.LAST_MODIFIED_BY}' WHERE ID = '${updatedItem.ID}';`;
+					sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${updatedItem.LAST_MODIFIED_BY}','Update Item' ,'${updatedItem.ENGLISH_NAME} ${updatedItem.CHINESE_NAME}: ${actionDetails}');`;
+	
+				connection.query(sqlQueries,(err,result)=>{
+					if(err) {
+						res.send(err);
+					}
+					else {
+						return (res.json({data:result[0]}));
+					}
+				})
+			}
 		}
 	})
+
+
+
 });
 
 app.get('/inventory/deleteItem',(req,res)=>{
@@ -404,11 +426,11 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	let orderInfo = JSON.parse(req.query.orderInfo);
 	let pauseTask = false;
 
-	console.log(orderInfo);
+
 	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_PICKUP = NEW_MSG_PICKUP + 1 WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
 		sqlQuery1 += orderInfo.NOTE ? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','${orderInfo.CURRENTSTATUS}');` : ``;
 
-		console.log(sqlQuery1);
+		
 	orderInfo.ITEMS.forEach(item => {
 		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;
 		console.log(sqlQuery2);

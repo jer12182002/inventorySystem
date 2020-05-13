@@ -17,7 +17,7 @@ export default class ongoingItem extends React.Component {
 			ONGOING_ORDER:[],
 			ORDER_ITEMS:[],
 			ORDER_NOTES: [],
-			ITEM_NOT_ENOUGH: null,
+			ITEM_NOT_ENOUGH: null
 		}
 	}
 
@@ -100,6 +100,7 @@ export default class ongoingItem extends React.Component {
 				window.location.reload();
 			}
 		})
+
 	}
 
 

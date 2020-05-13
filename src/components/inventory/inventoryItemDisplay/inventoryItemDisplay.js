@@ -111,6 +111,8 @@ insertHoldItem (id,key) {
 			updatedItemInfo.GRAM = $("#GRAM_M" + id).val();
 		}
 
+		updatedItemInfo.LAST_MODIFIED_BY = this.state.loggedUser.USERNAME;
+		
 		this.props.updateItem(updatedItemInfo);
 		this.setInvisible(key);
 		$("#hold-btn"+key).removeClass("display-none");

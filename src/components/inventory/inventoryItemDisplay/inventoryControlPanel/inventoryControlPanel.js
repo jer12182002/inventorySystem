@@ -44,7 +44,7 @@ export default class inventoryControlPanel extends React.Component {
 		   	newItem.qty = $.trim($("#addQty").val());
 		   	newItem.exp = $.trim($("#addExp").val());
 		    newItem.gram = $.trim($("#addGram").val()); 
-		    newItem.createdBy = this.props.loggedUser;
+		    newItem.createdBy = this.props.loggedUser.USERNAME;
 
 		    fetch(`http://localhost:4000/inventory/addNewItem?newItem=${JSON.stringify(newItem)}`)
 		    .then(res => res.json())
