@@ -64,7 +64,6 @@ export default class activityLogs extends React.Component {
 								<td className="logAction">{log.ACTION}</td>
 								<td className="logDetail">{log.DETAIL}</td>
 								<td>{log.PERSON}</td>
-							
 							</tr>
 						)}
 						</tbody>
@@ -147,7 +146,6 @@ export default class activityLogs extends React.Component {
 								<th>Time</th>
 								<th>Action</th>
 								<th>Detail</th>
-								<th>Person</th>
 							</tr>
 						</thead>
 						<tbody>

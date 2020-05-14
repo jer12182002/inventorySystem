@@ -62,6 +62,7 @@ insertHoldItem (id,key) {
 		.then(data=> {
 			if(data.data === 'success') {
 				this.props.loadAllItem();
+				this.props.loadAllHoldItems();
 			} 
 		})
 	}
