@@ -64,33 +64,32 @@ export default class checkoutMain extends React.Component {
 	}
 
 
-	sortToggleBtnClick(e, target, sortPanelSide) {
+	sortToggleBtnClick(e, type, field) {
 		e.preventDefault();
 
-		let sorted;
+		let btnText = $(`#${type}-${field}-sort-toggleBtn`).text();
+		let sortData;
 		
-		if(sortPanelSide === "LEFT") {
-			sorted = this.state.completedOrders;
+		if(type === "LEFT") {
+			sortData = this.state.completedOrders;
 		}else {
-			sorted = this.state.ongoingOrders;
+			sortData = this.state.ongoingOrders;
 		} 
-	
+
+		console.log(`#${type}-${field}-sort-toggleBtn`);
 		
-		if($(`#${target}-sort-toggleBtn`).text() === "Asc") {
-			sorted = sorted.sort((a,b) => a[target].localeCompare(b[target]));
-			$(`#${target}-sort-toggleBtn`).text("Desc");
+		sortData = sortData.sort((a,b)=>{
+			return btnText === "ASC"? a[field].localeCompare(b[field]) : b[field].localeCompare(a[field]);
+		})
 
-		}else if($(`#${target}-sort-toggleBtn`).text() === "Desc"){
-			sorted = sorted.sort((a,b) => b[target].localeCompare(a[target]));
-			$(`#${target}-sort-toggleBtn`).text("Asc");
-		}	
-
-		if(sortPanelSide === "LEFT") {
-			this.setState({completedOrders : sorted});
+		$(`#${type}-${field}-sort-toggleBtn`).text(btnText === "ASC"? "DESC" : "ASC");
+		
+		if(type === "LEFT") {
+			this.setState({completedOrders:sortData});
 		}else {
-			this.setState({ongoingOrders : sorted});
+			this.setState({ongoingOrders:sortData});
 		} 
-		
+
 	}
 
 	render() {
@@ -130,10 +129,10 @@ export default class checkoutMain extends React.Component {
 									<table>
 										<thead>
 											<tr>
-												<td>Order Number <button id="ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_ID","LEFT")}>Asc</button></td>
-												<td>Customer <button id="CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CUSTOMER","LEFT")}>Asc</button></td>
-												<td>Time <button id="ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_TIME","LEFT")}>Asc</button></td>
-												<td>Status <button id="STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"STATUS","LEFT")}>Asc</button></td>
+												<td>Order Number <button id="LEFT-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","ORDER_ID")}>ASC</button></td>
+												<td>Customer <button id="LEFT-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","CUSTOMER")}>ASC</button></td>
+												<td>Time <button id="LEFT-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","ORDER_TIME")}>ASC</button></td>
+												<td>Status <button id="LEFT-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","STATUS")}>ASC</button></td>
 												{this.props.accountInfo.CHK_MODIFY? 
 													<td>Action</td>:null
 												}
@@ -180,10 +179,10 @@ export default class checkoutMain extends React.Component {
 									<table>
 										<thead>
 											<tr>
-												<td>Order Number <button id="ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_ID","RIGHT")}>Asc</button></td>
-												<td>Customer <button id="CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CUSTOMER","RIGHT")}>Asc</button></td>
-												<td>Time <button id="ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ORDER_TIME","RIGHT")}>Asc</button></td>
-												<td>Status <button id="STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"STATUS","RIGHT")}>Asc</button></td>
+												<td>Order Number <button id="RIGHT-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","ORDER_ID")}>ASC</button></td>
+												<td>Customer <button id="RIGHT-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","CUSTOMER")}>ASC</button></td>
+												<td>Time <button id="RIGHT-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","ORDER_TIME")}>ASC</button></td>
+												<td>Status <button id="RIGHT-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","STATUS")}>ASC</button></td>
 												{this.props.accountInfo.CHK_MODIFY? 
 													<td>Action</td>:null
 												}
