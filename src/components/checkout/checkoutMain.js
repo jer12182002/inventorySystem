@@ -10,8 +10,10 @@ export default class checkoutMain extends React.Component {
 		super(props);
 
 		this.state = {
-			ongoingOrders: [],
 			ongoinOrdersNotifications: [],
+			ongoingOrders_BACKUP: [],
+			completedOrders_BACKUP: [],
+			ongoingOrders: [],
 			completedOrders: []
 		}
 	}
@@ -33,7 +35,15 @@ export default class checkoutMain extends React.Component {
 				}
 			});
 
-			this.setState({ongoingOrders : saveOngoingOrders, completedOrders : saveCompletedOrders});
+			this.setState(
+				{
+					ongoingOrders : saveOngoingOrders, 
+					completedOrders : saveCompletedOrders,
+					ongoingOrders_BACKUP : saveOngoingOrders, 
+					completedOrders_BACKUP : saveCompletedOrders
+			
+				},()=>{console.log(this.state.ongoingOrders_BACKUP);}
+			);
 			
 		});
 	}
@@ -64,13 +74,46 @@ export default class checkoutMain extends React.Component {
 	}
 
 
+	searchKeyword (e,type) {
+		e.preventDefault();
+		
+		if(type==="COMPLETED") {
+			let keyupValue = $.trim($("#COMPLETED-search").val()).toLowerCase();
+			if(keyupValue === "") {
+				this.setState({completedOrders:this.state.completedOrders_BACKUP});
+			}else {
+				let filterData = this.state.completedOrders_BACKUP.filter(f => 
+					f.ORDER_ID.includes(keyupValue) ||
+					f.CUSTOMER.toLowerCase().includes(keyupValue) ||
+					Moment(f.ORDER_TIME).format('YYYY-MM-DD HH:mm:ss').includes(keyupValue) ||
+					f.STATUS.toLowerCase().includes(keyupValue)
+				);
+				this.setState({completedOrders: filterData});
+			}
+		}else {
+			let keyupValue = $.trim($("#ONGOING-search").val()).toLowerCase();
+			if(keyupValue === "") {
+				this.setState({ongoingOrders:this.state.ongoingOrders_BACKUP});
+			}else {
+				let filterData = this.state.ongoingOrders_BACKUP.filter(f => 
+					f.ORDER_ID.includes(keyupValue) ||
+					f.CUSTOMER.toLowerCase().includes(keyupValue) ||
+					Moment(f.ORDER_TIME).format('YYYY-MM-DD HH:mm:ss').includes(keyupValue) ||
+					f.STATUS.toLowerCase().includes(keyupValue)
+				);
+				this.setState({ongoingOrders: filterData});
+			}
+		}
+	}
+
+
 	sortToggleBtnClick(e, type, field) {
 		e.preventDefault();
 
 		let btnText = $(`#${type}-${field}-sort-toggleBtn`).text();
 		let sortData;
 		
-		if(type === "LEFT") {
+		if(type === "COMPLETED") {
 			sortData = this.state.completedOrders;
 		}else {
 			sortData = this.state.ongoingOrders;
@@ -84,7 +127,7 @@ export default class checkoutMain extends React.Component {
 
 		$(`#${type}-${field}-sort-toggleBtn`).text(btnText === "ASC"? "DESC" : "ASC");
 		
-		if(type === "LEFT") {
+		if(type === "COMPLETED") {
 			this.setState({completedOrders:sortData});
 		}else {
 			this.setState({ongoingOrders:sortData});
@@ -119,20 +162,24 @@ export default class checkoutMain extends React.Component {
 					</div>
 
 						<div className="row">
-						{/**********************************************Left Panel*****************************************************/}
+						{/**********************************************COMPLETED Panel*****************************************************/}
 
 							<div className="col-12 col-md-6 completed-container">
 								<div className="subContainer-head">
 									<h3 className="text-center">Completed Order</h3>
+									<div className="search-container inline-b">
+										<h4>Filter: </h4>
+										<input id="COMPLETED-search" type="text" onKeyUp={e=>this.searchKeyword(e,"COMPLETED")}/>
+									</div>
 								</div>
 								<div className="subContainer-main">
 									<table>
 										<thead>
 											<tr>
-												<td>Order Number <button id="LEFT-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","ORDER_ID")}>ASC</button></td>
-												<td>Customer <button id="LEFT-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","CUSTOMER")}>ASC</button></td>
-												<td>Time <button id="LEFT-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","ORDER_TIME")}>ASC</button></td>
-												<td>Status <button id="LEFT-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"LEFT","STATUS")}>ASC</button></td>
+												<td>Order Number <button id="COMPLETED-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","ORDER_ID")}>ASC</button></td>
+												<td>Customer <button id="COMPLETED-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","CUSTOMER")}>ASC</button></td>
+												<td>Time <button id="COMPLETED-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","ORDER_TIME")}>ASC</button></td>
+												<td>Status <button id="COMPLETED-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","STATUS")}>ASC</button></td>
 												{this.props.accountInfo.CHK_MODIFY? 
 													<td>Action</td>:null
 												}
@@ -170,19 +217,23 @@ export default class checkoutMain extends React.Component {
 
 
 
-						{/**********************************************Right Panel*****************************************************/}
+						{/**********************************************ONGOING Panel*****************************************************/}
 							<div className="col-12 col-md-6 ongoing-container">
 								<div className="subContainer-head">
 									<h3 className="text-center">Ongoing Order</h3>
+									<div className="search-container inline-b">
+										<h4>Filter: </h4>
+										<input id="ONGOING-search" type="text" onKeyUp={e=>this.searchKeyword(e,"ONGOING")}/>
+									</div>
 								</div>
 								<div className="subContainer-main">
 									<table>
 										<thead>
 											<tr>
-												<td>Order Number <button id="RIGHT-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","ORDER_ID")}>ASC</button></td>
-												<td>Customer <button id="RIGHT-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","CUSTOMER")}>ASC</button></td>
-												<td>Time <button id="RIGHT-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","ORDER_TIME")}>ASC</button></td>
-												<td>Status <button id="RIGHT-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"RIGHT","STATUS")}>ASC</button></td>
+												<td>Order Number <button id="ONGOING-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ONGOING","ORDER_ID")}>ASC</button></td>
+												<td>Customer <button id="ONGOING-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ONGOING","CUSTOMER")}>ASC</button></td>
+												<td>Time <button id="ONGOING-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ONGOING","ORDER_TIME")}>ASC</button></td>
+												<td>Status <button id="ONGOING-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ONGOING","STATUS")}>ASC</button></td>
 												{this.props.accountInfo.CHK_MODIFY? 
 													<td>Action</td>:null
 												}

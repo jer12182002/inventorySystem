@@ -78,11 +78,26 @@
 		
 
 		.subContainer-head {
+			border: 5px solid black;
+			text-align: center;
 			h3 {
-				border: 5px solid black;
 				margin: 0;
 				font-size: 30px;
 				padding:10px 0;
+			}
+
+			.search-container {
+				position: absolute;
+				height: 100%;
+				top:0;
+				right: 15px;
+
+				h4,input[type="text"]{
+					margin: 15px 0;
+					padding: 0 5px;
+					height: 35px;
+					display: inline-block;
+				}
 			}
 		}
 
