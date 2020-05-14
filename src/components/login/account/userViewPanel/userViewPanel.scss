@@ -1,0 +1,31 @@
+.userViewPanel-wrapper {
+	.userView-container {
+		.usersView-display {
+			.user-displayTable {
+				.userRowHeader {
+					
+					td {
+						font-weight: 900;
+						padding: 10px;
+						border: 2px solid black;
+						text-align: center;
+					}
+				}
+
+				.userRow {
+					td {
+						padding: 10px;
+						border: 2px solid black;
+						text-align: center;
+					}
+
+					input {
+						width: 25px;
+						height: 25px;
+					}
+				}
+					
+			}				
+		}
+	}
+}

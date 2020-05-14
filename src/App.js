@@ -116,17 +116,17 @@ render(){
       <Route exact path="/login" component = {props => <Login accountInfo = {this.state.accountInfo} saveAccountFromLogIn = {this.saveAccountFromLogIn.bind(this)} clearAccountInfo= {this.clearAccountInfo.bind(this)} />}/>     
       <Route exact path = "/login/account" component = {props => (<Account accountInfo = {this.state.accountInfo}/>)}/>            
       <Route exact path = "/login/account/resetpassword" component = {LoginReset}/>
+      <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
+      <Route exact path = "/checkout" component = {()=> <CheckOut accountInfo = {this.state.accountInfo}/>}/>
+      <Route exact path = "/checkout/ongoingorder" component = {OngoingItem}/>
+      <Route exact path = "/checkout/completedOrder" component = {CompletedOrder}/>
+      <Route exact path = "/pickup" component = {()=> <Pickup accountInfo = {this.state.accountInfo}/>}/>
+      <Route exact path ="/pickup/order-detail" component = {PickupOrderDetail}/>
 
 
       {this.state.accountInfo.ACCESS_LEVEL < 3 ? (
         <div>
-        <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/>
-        <Route exact path = "/inventory" component = {()=> <InventoryMain accountInfo = {this.state.accountInfo}/>}/>
-        <Route exact path = "/checkout" component = {()=> <CheckOut accountInfo = {this.state.accountInfo}/>}/>
-        <Route exact path = "/checkout/ongoingorder" component = {OngoingItem}/>
-        <Route exact path = "/checkout/completedOrder" component = {CompletedOrder}/>
-        <Route exact path = "/pickup" component = {()=> <Pickup accountInfo = {this.state.accountInfo}/>}/>
-        <Route exact path ="/pickup/order-detail" component = {PickupOrderDetail}/>
+        <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/> 
         </div>
       ):null}
     </Router>     
