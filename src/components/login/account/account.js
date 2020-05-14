@@ -15,7 +15,9 @@ export default class account extends React.Component {
 			accountInfo: this.props.accountInfo,
 			users: [],
 			inventoryLogs:[],
-			chk_pickupLogs:[]
+			chk_pickupLogs:[], 
+			self_inventoryLogs:[],
+			self_chk_pickupLogs:[]
 		}
 
 
@@ -37,10 +39,15 @@ export default class account extends React.Component {
 		.then(res=>res.json())
 		.then(data=> {
 			if(data && (data.inventoryLog[0] || data.chk_pickupLog[0])) {
-				this.setState({inventoryLogs: data.inventoryLog, chk_pickupLogs: data.chk_pickupLog},()=>{
-					console.log(this.state.inventoryLogs);
-					console.log(this.state.chk_pickupLogs);
-				});
+
+				this.setState(
+					{
+						inventoryLogs: data.inventoryLog, 
+						chk_pickupLogs: data.chk_pickupLog,
+						self_inventoryLogs: data.inventoryLog.filter(f=> f.PERSON === this.state.accountInfo.USERNAME), 
+						self_chk_pickupLogs: data.chk_pickupLog.filter(f=> f.PERSON === this.state.accountInfo.USERNAME)
+					}
+				);
 			}
 		})
 	}
@@ -50,8 +57,8 @@ export default class account extends React.Component {
 	componentDidMount() {
 		if(this.state.accountInfo.ACCESS_LEVEL < 3) {
 		 	this.fetchAllUserInfo();
-		 	this.fetchAllLogs();
 		}	
+		this.fetchAllLogs();
 	}
 
 
@@ -131,19 +138,19 @@ export default class account extends React.Component {
 				</ul>
 			</div>
 			<div className="main-section">
+				{this.state.accountInfo.ACCESS_LEVEL < 3 ? 
+				<>
+				{this.state.inventoryLogs.length >0 ?
 				<div className="block inventoryActivityLog-container">
-					
-					{this.state.inventoryLogs.length >0 ?
-						<>
-						<h3>Inventory Logs</h3>
-						<table>
+					<h3>Inventory Logs</h3>
+					<table>
 						<thead>
 							<tr>
-								<td>Index</td>
-								<td>Time</td>
-								<td>Action</td>
-								<td>Detail</td>
-								<td>Person</td>
+								<th>Index</th>
+								<th>Time</th>
+								<th>Action</th>
+								<th>Detail</th>
+								<th>Person</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -158,25 +165,23 @@ export default class account extends React.Component {
 							</tr>
 						)}
 						</tbody>
-						</table>
-						</>
-						:null
-					}
+					</table>
 				</div>
+				:
+				null
+				}
 
+				{this.state.chk_pickupLogs.length >0 ?
 				<div className="block chk_pickupActivityLog-container">
-			
-					{this.state.chk_pickupLogs.length >0 ?
-						<>
-						<h3>Checkout & Pickup Logs</h3>
-						<table>
+					<h3>Checkout & Pickup Logs</h3>
+					<table>
 						<thead>
 							<tr>
-								<td>Index</td>
-								<td>Time</td>
-								<td>Action</td>
-								<td>Detail</td>
-								<td>Person</td>
+								<th>Index</th>
+								<th>Time</th>
+								<th>Action</th>
+								<th>Detail</th>
+								<th>Person</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -191,14 +196,14 @@ export default class account extends React.Component {
 							</tr>
 						)}
 						</tbody>
-						</table>
-						</>
-						:null
-					}
+					</table>
 				</div>
-				{this.state.accountInfo.ACCESS_LEVEL < 3 ? 
-					(
-						<div className="block userView-container">
+				:
+				null
+				}
+			
+				
+				<div className="block userView-container">
 							<h1>User overview</h1>
 								<div className = "statusText-container block">
         							<h3 className = "statusText warning-status text-center"></h3>
@@ -273,15 +278,71 @@ export default class account extends React.Component {
 
 								
 							</div>
-						</div>
-					)
+				</div>
+				</>
+				:
+
+				<>
+				{this.state.self_inventoryLogs.length > 0 ?
+				<div className="block inventoryActivityLog-container">
+					<h3>Inventory Logs</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Index</th>
+								<th>Time</th>
+								<th>Action</th>
+								<th>Detail</th>
+							</tr>
+						</thead>
+						<tbody>
+						{this.state.self_inventoryLogs.map((log, key)=>
+							<tr key={`invLog-${key+1}`}>
+								<td>{key+1}</td>
+								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:MM:SS')}</td>
+								<td className="logAction">{log.ACTION}</td>
+								<td className="logDetail">{log.DETAIL}</td>
+							</tr>
+						)}
+						</tbody>
+					</table>
+				</div>
 				:
 				null
 				}
-			</div>
 
-			
+				{this.state.self_chk_pickupLogs.length >0 ?
+				<div className="block chk_pickupActivityLog-container">
+					<h3>Checkout & Pickup Logs</h3>
+					<table>
+						<thead>
+							<tr>
+								<th>Index</th>
+								<th>Time</th>
+								<th>Action</th>
+								<th>Detail</th>
+								<th>Person</th>
+							</tr>
+						</thead>
+						<tbody>
+						{this.state.self_chk_pickupLogs.map((log, key)=>
+							<tr key={`chk_pickupLog-${key+1}`}>
+								<td>{key+1}</td>
+								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:MM:SS')}</td>
+								<td className="logAction">{log.ACTION}</td>
+								<td className="logDetail">{log.DETAIL}</td>							
+							</tr>
+						)}
+						</tbody>
+					</table>
+				</div>
+				:
+				null
+				}
+				</>
+				}
 			</div>
+		</div>
 		);
 	}
 }
