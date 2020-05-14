@@ -63,7 +63,7 @@ export default class activityLogs extends React.Component {
 				this.setState({inventoryLogs: filterData});
 			}
 		}else {
-			let keyupValue =  $.trim($("#chk_PickLogs-search").val()).toLowerCase();
+			let keyupValue = $.trim($("#chk_PickLogs-search").val()).toLowerCase();
 			if(keyupValue === "") {
 				this.setState({chk_pickupLogs:this.state.chk_pickupLogs_BACKUP});
 			}else {
@@ -79,13 +79,39 @@ export default class activityLogs extends React.Component {
 	}
 
 
-	sortLogs(e, type) {
+	sortLogs(e, type, field) {
+		e.preventDefault();
+		let btnText = $(`#${type}-${field}-sortToggle`).text();
+		let sortData = [];
+
+		if(type === "inventory") {
+			sortData = this.state.inventoryLogs;
+		}else {
+			sortData = this.state.chk_pickupLogs;
+		}
+
+		sortData = sortData.sort((a,b)=>{
+			return btnText === "ASC"? a[field.toUpperCase()].localeCompare(b[field.toUpperCase()]) : b[field.toUpperCase()].localeCompare(a[field.toUpperCase()]);
+		})
+
+		 $(`#${type}-${field}-sortToggle`).text(btnText === "ASC"? "DESC" : "ASC");
+		
+		if(type === "inventory") {
+			this.setState({inventoryLogs:sortData});
+		}else {
+			this.setState({chk_pickupLogs:sortData});
+		}
 
 	}
+
+
 
 	componentDidMount() {
 		this.fetchAllLogs();
 	}
+
+
+
 
 	render() {
 		return (
@@ -95,19 +121,19 @@ export default class activityLogs extends React.Component {
 					<div className="log-header">
 						<h3>Inventory Logs</h3>
 						<div className="search-container inline-b">
+							<h4>Filter: </h4>
 							<input id="inventroyLogs-search" type="text" onKeyUp={e=>this.searchKeyword(e,"inventory")}/>
-							<button type="button">Clear</button>
 						</div>
 					</div>
 					<table>
 						<thead>
 							<tr>
 								<th>Index</th>
-								<th>Time<button></button></th>
-								<th>Action<button></button></th>
-								<th>Detail<button></button></th>
+								<th>Time<button id="inventory-time-sortToggle" onClick={e=> this.sortLogs(e,"inventory","time")}>ASC</button></th>
+								<th>Action<button id="inventory-action-sortToggle" onClick={e=> this.sortLogs(e,"inventory","action")}>ASC</button></th>
+								<th>Detail<button id="inventory-detail-sortToggle" onClick={e=> this.sortLogs(e,"inventory","detail")}>ASC</button></th>
 								{this.state.accountInfo.ACCESS_LEVEL<3?
-								<th>Person<button></button></th>:null
+								<th>Person<button id="inventory-person-sortToggle" onClick={e=> this.sortLogs(e,"inventory","person")}>ASC</button></th>:null
 								}
 							</tr>
 						</thead>
@@ -134,19 +160,19 @@ export default class activityLogs extends React.Component {
 					<div className="log-header">
 						<h3>Checkout & Pickup Logs</h3>
 						<div className="search-container inline-b">
+							<h4>Filter: </h4>
 							<input id="chk_PickLogs-search" type="text" onKeyUp={e=>this.searchKeyword(e,"chk_pickup")}/>
-							<button type="button">Clear</button>
 						</div>
 					</div>
 					<table>
 						<thead>
 							<tr>
 								<th>Index</th>
-								<th>Time</th>
-								<th>Action</th>
-								<th>Detail</th>
+								<th>Time<button id="chk_pickup-time-sortToggle" onClick={e=> this.sortLogs(e,"chk_pickup","time")}>ASC</button></th>
+								<th>Action<button id="chk_pickup-action-sortToggle" onClick={e=> this.sortLogs(e,"chk_pickup","action")}>ASC</button></th>
+								<th>Detail<button id="chk_pickup-detail-sortToggle" onClick={e=> this.sortLogs(e,"chk_pickup","detail")}>ASC</button></th>
 								{this.state.accountInfo.ACCESS_LEVEL<3?
-								<th>Person</th>:null
+								<th>Person<button id="chk_pickup-person-sortToggle" onClick={e=> this.sortLogs(e,"chk_pickup","person")}>ASC</button></th>:null
 								}
 							</tr>
 						</thead>
