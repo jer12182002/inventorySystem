@@ -235,39 +235,39 @@ export default class inventoryItemDisplay extends React.Component {
 							<td className="margin-center text-center number">RowSpan</td>
 							
 
-							<td className="name">En_Name<button id="invENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
+							<td className="name">Name<br/><button id="invENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
 
-							<td className="name">商品名稱<button id="invCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
+							<td className="name">商品名稱<br/><button id="invCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
 
 							{this.state.loggedUser.TYPE_VIEW || this.state.loggedUser.TYPE_MODIFY ?
-								<td className="margin-center text-center">Type<button id="invTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
+								<td className="margin-center text-center">Type<br/><button id="invTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
 							}
 
-							<td className="margin-center text-center number">Shelf No<button id="invSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
+							<td className="margin-center text-center number">Shelf No<br/><button id="invSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
 							
-							<td>Manufacturer<button id="invMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
+							<td>Manufacturer<br/><button id="invMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">Hold QTY<button id="invHOLD_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"HOLD_QTY")}>ASC</button></td> : null
+								<td className="margin-center text-center number">Hold QTY<br/><button id="invHOLD_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"HOLD_QTY")}>ASC</button></td> : null
 							}
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">QTY<button id="invQTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"QTY")}>ASC</button></td> : null
+								<td className="margin-center text-center number">QTY<br/><button id="invQTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"QTY")}>ASC</button></td> : null
 							} 
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">Total QTY<button id="invT_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"T_QTY")}>ASC</button></td> : null 
+								<td className="margin-center text-center number">Total QTY<br/><button id="invT_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"T_QTY")}>ASC</button></td> : null 
 							} 
 
 
 	 						{this.state.loggedUser.EXP_VIEW || this.state.loggedUser.EXP_MODIFY ?
-								<td className="margin-center text-center">Exp<button id="invEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td>: null
+								<td className="margin-center text-center">Exp<br/><button id="invEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td>: null
 							}
 
 
 							{this.state.loggedUser.GRAM_VIEW || this.state.loggedUser.GRAM_MODIFY ?
-								<td className="margin-center text-center">Gram<button id="invGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td>: null
+								<td className="margin-center text-center">Gram<br/><button id="invGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td>: null
 							}
 
 							{this.state.loggedUser.NAME_MODIFY  || this.state.loggedUser.TYPE_MODIFY ||
