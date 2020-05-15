@@ -382,7 +382,7 @@ export default class inventoryItemDisplay extends React.Component {
 
 									{this.state.loggedUser.EXP_VIEW ?
 										this.state.loggedUser.EXP_MODIFY? 
-											<td className="bg-width">
+											<td className="bbg-width">
 												<p>{item.EXPIRE_DATE}</p>
 												<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} sm-input display-none `} defaultValue={item.EXPIRE_DATE}/>
 											</td>
@@ -395,11 +395,11 @@ export default class inventoryItemDisplay extends React.Component {
 
 									{this.state.loggedUser.GRAM_VIEW ?
 										this.state.loggedUser.GRAM_MODIFY?
-											<td className="margin-center text-center sm-width">
+											<td className="sm-width">
 												<p>{item.GRAM}</p>
 												<input key={`${item.GRAM}${key+1}`} id={`GRAM_M${item.ID}`} type="number" className={`editToggle${key} sm-input display-none`} defaultValue={item.GRAM}/>
 											</td>
-											:<td className="margin-center text-center sm-width">
+											:<td className="sm-width">
 												<p>{item.GRAM}</p>
 											</td>	
 										:null

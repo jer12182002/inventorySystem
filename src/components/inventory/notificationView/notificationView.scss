@@ -1,7 +1,6 @@
 @import 'sass-mq';
 .notificationview-wrapper {
 	background-color: pink;
-	width: fit-content;
 	
 	.header-section {
 		border-bottom: 3px solid black;
@@ -44,6 +43,7 @@
 				td {
 					border: 2px solid black;
 					vertical-align: middle;
+					text-align: center;
 
 					p {
 						margin: 0;
@@ -54,7 +54,6 @@
 					border: 3px solid black;
 					border-top: 0;
 					font-weight: 900;
-					text-align: center;
 
 					td {
 						vertical-align: bottom;

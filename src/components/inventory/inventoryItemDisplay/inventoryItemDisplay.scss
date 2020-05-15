@@ -19,13 +19,13 @@
 	
 	.main-section {
 		.items-table {
-			.sm-width {
-				padding:0;
-			}
+			// .sm-width {
+			// 	padding:0;
+			// }
 
-			.btns,.bg-width {
-				padding: 0 10px;
-			}
+			// .btns,.bg-width {
+			// 	padding: 0 10px;
+			// }
 
 			td {
 				border: 2px solid black;
@@ -80,7 +80,7 @@
 
 			
 				button[type="button"] {
-					margin: 0 10px;
+					margin:2px 10px;
 				}
 
 				.btn-danger {
@@ -104,10 +104,15 @@
 				.bg-width {
 					padding: 0 5px;
 				}
+				
+				.bbg-width {
+					padding: 0 5px;
+					width: 10%;
+				}
 
 				td {
 					font-size: 1.5vw;
-					padding: 0px;
+					padding: 10px 0;
 
 					button {
 						font-size: 10px;
