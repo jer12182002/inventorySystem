@@ -1,3 +1,4 @@
+@import 'sass-mq';
 .holditemsdisplay-wrapper {
 	background-color: #D0F0C0;
 
@@ -29,14 +30,26 @@
 			border-bottom: 5px solid black;
 			
 			table {
+				.sm-width {
+					padding:0;
+				}
 
+				.btns,.bg-width {
+					padding: 0 10px;
+				}
 
 				td {
 					border: 2px solid black;
 					vertical-align: middle;
+					text-align: center;
+					
+					&:last-child {
+							width: 10%;
+					}
 
-					button[type="button"] {
-						margin: 0 5px;
+					button {
+						width: 80px;
+						margin: 5px;
 					}
 				}
 
@@ -48,7 +61,7 @@
 
 					td {
 						vertical-align: bottom;
-
+						
 						&.verticalMiddle {
 							vertical-align: middle;
 						}
@@ -62,6 +75,30 @@
 				.name {
 					width: 15%;
 				}
+			}
+		}
+	}
+
+	@include mq($until: desktop) {
+		.main-section {
+			.scroll-container {
+				table {
+					td {
+						padding: 10px 0;
+						font-size: 1.5vw;
+						
+						button {
+							width: 50px;
+							height: 25px;
+							font-size: 10px;
+							padding: 0;
+						}
+					}
+				}
+				.bg-width {
+					padding: 0 5px;
+				}
+
 			}
 		}
 	}

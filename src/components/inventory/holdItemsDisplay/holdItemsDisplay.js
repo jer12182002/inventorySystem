@@ -88,35 +88,35 @@ export default class holdItemsDisplay extends React.Component {
 						<table className="block items-table table">
 							<thead>
 								<tr>
-									<td className="margin-center text-center verticalMiddle number">Index</td>
-									<td>name<br/><button id="invholdENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
+									<td className="verticalMiddle number">Index</td>
+									<td>Name<br/><button id="invholdENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
 									<td>商品名稱<br/><button id="invholdCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
 									{this.props.loggedUser.TYPE_VIEW ? 
-										<td className="margin-center text-center">Type<br/><button id="invholdTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
+										<td>Type<br/><button id="invholdTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
 									}
 
-									<td>Manufacturer<br/><button id="invholdMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
+									<td>Manu.<br/><button id="invholdMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 									
 									{this.props.loggedUser.EXP_VIEW ?
-										<td className="margin-center text-center">Expiry Date<br/><button id="invholdEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td> : null
+										<td>Expiry Date<br/><button id="invholdEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td> : null
 									}
 
 									{this.props.loggedUser.GRAM_VIEW ? 
-										<td className="margin-center text-center number">Gram<br/><button id="invholdGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td> :null
+										<td className="number">Gram<br/><button id="invholdGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td> :null
 									}
 									<td>Hold For<br/><button id="invholdPERSON-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"PERSON")}>ASC</button></td>
 
 									{this.props.loggedUser.QTY_VIEW ?
-										<td className="margin-center text-center number">Hold Qty<br/><button id="invholdHOLD_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"HOLD_QTY")}>ASC</button></td> : null
+										<td className="number">Hold Qty<br/><button id="invholdHOLD_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"HOLD_QTY")}>ASC</button></td> : null
 									}
 
 
 									{this.props.loggedUser.EXP_VIEW ?
-										<td className="margin-center text-center">Hold Exp<br/><button id="invholdDATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"DATE")}>ASC</button></td> : null
+										<td>Hold Exp<br/><button id="invholdDATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"DATE")}>ASC</button></td> : null
 									}
 
 									{this.props.loggedUser.QTY_MODIFY? 
-										<td className="margin-center text-center verticalMiddle">Action</td> : null
+										<td className="verticalMiddle">Action</td> : null
 									}
 
 								</tr>
@@ -130,33 +130,33 @@ export default class holdItemsDisplay extends React.Component {
 									:
 
 									<tr key={key+1}>
-										<td className="margin-center text-center">{key+1}</td>
-										<td>{item.ENGLISH_NAME}</td>
-										<td>{item.CHINESE_NAME}</td>
+										<td>{key+1}</td>
+										<td className="text-left bg-width">{item.ENGLISH_NAME}</td>
+										<td className="text-left bg-width">{item.CHINESE_NAME}</td>
 										{this.props.loggedUser.TYPE_VIEW ?
-											<td className="margin-center text-center">{item.TYPE}</td> : null
+											<td>{item.TYPE}</td> : null
 										}
 										<td>{item.MANUFACTURE}</td>
 
 										{this.props.loggedUser.EXP_VIEW ?
-											<td className="margin-center text-center">{item.EXPIRE_DATE}</td> : null
+											<td>{item.EXPIRE_DATE}</td> : null
 										}
 
 										{this.props.loggedUser.GRAM_VIEW ?
-											<td className="margin-center text-center number">{item.GRAM}</td> : null
+											<td>{item.GRAM}</td> : null
 										}
 										<td>{item.PERSON}</td>
 
 										{this.props.loggedUser.QTY_VIEW ? 
-											<td className="margin-center text-center number">{item.HOLD_QTY}</td> : null
+											<td>{item.HOLD_QTY}</td> : null
 										}
 
 										{this.props.loggedUser.EXP_VIEW ?
-											<td className="margin-center text-center">{item.DATE === '0000-00-00'? '' : item.DATE}</td> : null
+											<td>{item.DATE === '0000-00-00'? '' : item.DATE}</td> : null
 										}
 
 										{this.props.loggedUser.QTY_MODIFY ?
-											<td className="margin-center text-center">
+											<td>
 												<div id={`holdRe-stock-container${key}`}>
 													<button className="btn btn-primary" stype="button" onClick = {e =>this.restockBtnsFunction(e,key,"restock")}>Restock</button>
 												</div>
