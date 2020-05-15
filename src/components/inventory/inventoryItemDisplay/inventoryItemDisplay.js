@@ -45,34 +45,65 @@ export default class inventoryItemDisplay extends React.Component {
 
 
 
-insertHoldItem (id,key) {
-	let holdItem = {};
-	holdItem.ITEM_ID = id;
-	holdItem.RECIPIENT = $(`#holdName${key}`).val();
-	holdItem.HOLD_QTY = $(`#holdQty${key}`).val();
-	holdItem.DATE = $(`#holdDate${key}`).val();
-	holdItem.PERSON = this.state.loggedUser.USERNAME;
-	if(holdItem.PERSON === '' || holdItem.HOLD_QTY <= 0 || (holdItem.DATE != '' && holdItem.DATE <= this.props.today)) {
-		alert("Error! You are missed some infomation for hold item !!");
+	insertHoldItem (id,key) {
+		let holdItem = {};
+		holdItem.ITEM_ID = id;
+		holdItem.RECIPIENT = $(`#holdName${key}`).val();
+		holdItem.HOLD_QTY = $(`#holdQty${key}`).val();
+		holdItem.DATE = $(`#holdDate${key}`).val();
+		holdItem.PERSON = this.state.loggedUser.USERNAME;
+		if(holdItem.PERSON === '' || holdItem.HOLD_QTY <= 0 || (holdItem.DATE != '' && holdItem.DATE <= this.props.today)) {
+			alert("Error! You are missed some infomation for hold item !!");
+		}
+
+		else {
+			fetch(`http://localhost:4000/inventory/addhold?holdItem=${JSON.stringify(holdItem)}`)
+			.then(res => res.json())
+			.then(data=> {
+				if(data.data === 'success') {
+					this.props.loadAllItem();
+					this.props.loadAllHoldItems();
+				} 
+			})
+		}
 	}
 
-	else {
-		fetch(`http://localhost:4000/inventory/addhold?holdItem=${JSON.stringify(holdItem)}`)
-		.then(res => res.json())
-		.then(data=> {
-			if(data.data === 'success') {
-				this.props.loadAllItem();
-				this.props.loadAllHoldItems();
-			} 
-		})
-	}
-}
-//=================================================================================
 
-//============================== All btns click ===================================
+
+
+
+
+
 	setTypeDefault(id,type){
 		$("#TYPE_MODIFY"+id).val(type);
 	}
+
+
+
+
+
+	sortToggleBtnClick(e, field) {
+		e.preventDefault();
+
+		let fieldBtnText = $(`#inv${field}-sortToggleBtn`).text();
+		let sortedData = this.state.allItems;
+			
+		if(fieldBtnText === 'ASC') {
+			sortedData = sortedData.sort((a,b)=>a[field].toString().localeCompare(b[field].toString()));
+			$(`#inv${field}-sortToggleBtn`).text('DESC');
+		}else {
+			sortedData = sortedData.sort((a,b)=>b[field].toString().localeCompare(a[field].toString()));
+			$(`#inv${field}-sortToggleBtn`).text('ASC');
+		}
+
+		this.setState({allItems:this.props.setStateWithRowSpan(sortedData)});
+	}
+//=================================================================================
+
+//============================== All btns click ===================================
+	
+
+
 
 	clickEdit(e, key){
 		e.preventDefault();
@@ -119,6 +150,7 @@ insertHoldItem (id,key) {
 		$("#hold-btn"+key).removeClass("display-none");
 
 		this.props.loadAllNotificationItems();
+		this.props.loadAllHoldItems();
 	}
 
 	clickCancel(e,key) {
@@ -182,7 +214,6 @@ insertHoldItem (id,key) {
 	}
 
 
-
 	render() {
 
 		return (
@@ -204,39 +235,39 @@ insertHoldItem (id,key) {
 							<td className="margin-center text-center number">RowSpan</td>
 							
 
-							<td className="name">En_Name</td>
+							<td className="name">En_Name<button id="invENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
 
-							<td className="name">商品名稱</td>
+							<td className="name">商品名稱<button id="invCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
 
 							{this.state.loggedUser.TYPE_VIEW || this.state.loggedUser.TYPE_MODIFY ?
-								<td className="margin-center text-center">Type</td> : null
+								<td className="margin-center text-center">Type<button id="invTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
 							}
 
-							<td className="margin-center text-center number">Shelf No</td>
+							<td className="margin-center text-center number">Shelf No<button id="invSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
 							
-							<td>Manufacturer</td>
+							<td>Manufacturer<button id="invMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">Hold QTY</td> : null
+								<td className="margin-center text-center number">Hold QTY<button id="invHOLD_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"HOLD_QTY")}>ASC</button></td> : null
 							}
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">QTY</td> : null
+								<td className="margin-center text-center number">QTY<button id="invQTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"QTY")}>ASC</button></td> : null
 							} 
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">Total QTY</td> : null
+								<td className="margin-center text-center number">Total QTY<button id="invT_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"T_QTY")}>ASC</button></td> : null 
 							} 
 
 
 	 						{this.state.loggedUser.EXP_VIEW || this.state.loggedUser.EXP_MODIFY ?
-								<td className="margin-center text-center">Exp</td>: null
+								<td className="margin-center text-center">Exp<button id="invEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td>: null
 							}
 
 
 							{this.state.loggedUser.GRAM_VIEW || this.state.loggedUser.GRAM_MODIFY ?
-								<td className="margin-center text-center">Gram</td>: null
+								<td className="margin-center text-center">Gram<button id="invGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td>: null
 							}
 
 							{this.state.loggedUser.NAME_MODIFY  || this.state.loggedUser.TYPE_MODIFY ||

@@ -118,8 +118,6 @@ export default class checkoutMain extends React.Component {
 		}else {
 			sortData = this.state.ongoingOrders;
 		} 
-
-		console.log(`#${type}-${field}-sort-toggleBtn`);
 		
 		sortData = sortData.sort((a,b)=>{
 			return btnText === "ASC"? a[field].localeCompare(b[field]) : b[field].localeCompare(a[field]);
