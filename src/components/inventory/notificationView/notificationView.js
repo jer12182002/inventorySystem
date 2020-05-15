@@ -101,7 +101,7 @@ export default class notificationView extends React.Component {
 								<tr>
 									<td className="margin-center text-center verticalMiddle number">Index</td>
 
-									<td className="margin-center text-center verticalMiddle number">RowSpan</td>
+									<td className="margin-center text-center verticalMiddle number">Row<br/>Span</td>
 									
 
 									<td className="name">En_Name<br/><button id="invNotiENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
@@ -114,7 +114,7 @@ export default class notificationView extends React.Component {
 
 									<td className="margin-center text-center number">Shelf No<br/><button id="invNotiSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
 									
-									<td>Manufacturer<br/><button id="invNotiMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
+									<td>Manu.<br/><button id="invNotiMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 
 
 									{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
@@ -148,28 +148,28 @@ export default class notificationView extends React.Component {
 											:null
 										}
 											
-										<td className="name">
+										<td className="text-left bg-width">
 											<p id={`NAME_EN_V${item.ID}`}>{item.ENGLISH_NAME}</p>
 										</td>
 
-										<td className="name">
+										<td className="text-left bg-width">
 											<p id={`NAME_CH_V${item.ID}`}>{item.CHINESE_NAME}</p>
 										</td>
 
 										{this.state.loggedUser.TYPE_VIEW?
-											<td className="margin-center text-center">
+											<td>
 												<p>{item.TYPE}</p>
 											</td> 
 											:null
 										}
 
-										<td className="margin-center text-center number">
+										<td>
 											<p>{item.SHELF_NO}</p>
 										</td>
 
 										<td id={`menu${item.ID}`} className="highlightColor">{item.MANUFACTURE}</td>
 											{this.state.loggedUser.QTY_VIEW ?
-											<td className="margin-center text-center number">
+											<td>
 													<p>{item.QTY}</p>
 											</td>
 											:null
@@ -177,20 +177,20 @@ export default class notificationView extends React.Component {
 
 										{this.state.loggedUser.QTY_VIEW ?
 											item.ROWSPAN > 0? //allow to display number
-												<td rowSpan = {item.ROWSPAN} className="margin-center text-center number">{item.T_QTY}</td>
+												<td rowSpan = {item.ROWSPAN}>{item.T_QTY}</td>
 												:null
 											:null
 										}
 
 										{this.state.loggedUser.EXP_VIEW ?
-											<td className="margin-center text-center">
+											<td className="bg-width">
 												<p>{item.EXPIRE_DATE}</p>
 											</td>	
 											:null
 										}
 
 										{this.state.loggedUser.GRAM_VIEW ?
-											<td className="margin-center text-center">
+											<td>
 												<p>{item.GRAM}</p>
 											</td>	
 											:null

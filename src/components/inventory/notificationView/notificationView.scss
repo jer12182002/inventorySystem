@@ -1,3 +1,4 @@
+@import 'sass-mq';
 .notificationview-wrapper {
 	background-color: pink;
 	width: fit-content;
@@ -40,10 +41,13 @@
 			
 			table {
 
-
 				td {
 					border: 2px solid black;
 					vertical-align: middle;
+
+					p {
+						margin: 0;
+					}
 				}
 
 				thead {
@@ -54,6 +58,7 @@
 
 					td {
 						vertical-align: bottom;
+						
 
 						&.verticalMiddle {
 							vertical-align: middle;
@@ -61,12 +66,24 @@
 					}
 				}
 
-				.number {
-					width: 5%;
+			
+			}
+		}
+	}
+
+	@include mq($until: desktop) {
+		.main-section {
+			.scroll-container {
+				table  {
+					td {
+						padding:10px 0;
+						text-align: center;
+						font-size: 1.5vw;
+					}
 				}
 
-				.name {
-					width: 15%;
+				.bg-width {
+					padding: 0 5px;
 				}
 			}
 		}
