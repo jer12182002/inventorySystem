@@ -45,6 +45,14 @@
 					border-top: 0;
 					font-weight: 900;
 					text-align: center;
+
+					td {
+						vertical-align: bottom;
+
+						&.verticalMiddle {
+							vertical-align: middle;
+						}
+					}
 				}
 
 				.number {

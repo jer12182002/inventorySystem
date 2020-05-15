@@ -88,7 +88,7 @@ export default class holdItemsDisplay extends React.Component {
 						<table className="block items-table table">
 							<thead>
 								<tr>
-									<td className="margin-center text-center number">Index</td>
+									<td className="margin-center text-center verticalMiddle number">Index</td>
 									<td>name<br/><button id="invholdENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
 									<td>商品名稱<br/><button id="invholdCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
 									{this.props.loggedUser.TYPE_VIEW ? 
@@ -116,7 +116,7 @@ export default class holdItemsDisplay extends React.Component {
 									}
 
 									{this.props.loggedUser.QTY_MODIFY? 
-										<td className="margin-center text-center">Action</td> : null
+										<td className="margin-center text-center verticalMiddle">Action</td> : null
 									}
 
 								</tr>

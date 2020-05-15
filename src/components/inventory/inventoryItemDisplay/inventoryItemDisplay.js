@@ -230,9 +230,9 @@ export default class inventoryItemDisplay extends React.Component {
 					<table className="block items-table table">
 						<thead>
 						<tr>
-							<td className="margin-center text-center number">Index</td>
+							<td className="margin-center text-center number verticalMiddle">Index</td>
 
-							<td className="margin-center text-center number">RowSpan</td>
+							<td className="margin-center text-center number verticalMiddle">RowSpan</td>
 							
 
 							<td className="name">Name<br/><button id="invENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
@@ -274,7 +274,7 @@ export default class inventoryItemDisplay extends React.Component {
 							 this.state.loggedUser.SHELF_MODIFY || this.state.loggedUser.QTY_MODIFY  || 
 							 this.state.loggedUser.EXP_MODIFY   || this.state.loggedUser.GRAM_MODIFY || 
 							 this.state.loggedUser.DELETE_ITEM ?
-								<td className="margin-center text-center">Action</td>:null
+								<td className="margin-center text-center verticalMiddle">Action</td>:null
 							}
 
 						</tr>

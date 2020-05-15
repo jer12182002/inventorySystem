@@ -35,6 +35,15 @@
 				border-top: 4px solid black;
 				border-bottom: 4px solid black;
 				text-align: center;
+				
+				td {
+					vertical-align: bottom;
+					
+					&.verticalMiddle {
+						vertical-align: middle;
+					}
+				}
+
 			}
 			
 

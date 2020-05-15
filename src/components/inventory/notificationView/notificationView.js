@@ -99,9 +99,9 @@ export default class notificationView extends React.Component {
 						<table className="block items-table table">
 							<thead>
 								<tr>
-									<td className="margin-center text-center number">Index</td>
+									<td className="margin-center text-center verticalMiddle number">Index</td>
 
-									<td className="margin-center text-center number">RowSpan</td>
+									<td className="margin-center text-center verticalMiddle number">RowSpan</td>
 									
 
 									<td className="name">En_Name<br/><button id="invNotiENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
