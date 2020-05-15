@@ -1,5 +1,7 @@
+@import 'sass-mq';
 .inventoryitemdisplay-wrapper {
 	background-color: lightyellow;
+	
 	.header-section {
 		border-bottom: 3px solid black;
 		display: table;
@@ -17,12 +19,12 @@
 	
 	.main-section {
 		.items-table {
-			.number {
-				width: 5%;
+			.sm-width {
+				padding:0;
 			}
 
-			.btns,.name {
-				width: 15%;
+			.btns,.bg-width {
+				padding: 0 10px;
 			}
 
 			td {
@@ -42,6 +44,10 @@
 					&.verticalMiddle {
 						vertical-align: middle;
 					}
+
+					button {
+						width: 50px;
+					}
 				}
 
 			}
@@ -59,24 +65,34 @@
 				.hightLighBlue {
 					background-color: #93CCEA;
 				}
+				td {
+					text-align: center;
+
+					
+				}
 
 				p {
 					margin: 0;
 				}
-	
-				input[type="number"], .shelf_no {
+				
+				input {
+					width: 80%;
 					text-align: center;
-					width: 50px;
 				}
 
-				input[type="date"] {
-					text-align: center;
-				}
+				// input[type="number"], .shelf_no {
+				// 	text-align: center;
+					
+				// }
+
+				// input[type="date"] {
+				// 	text-align: center;
+				// }
 				
-				input[type="checkbox"] {
-					width: 50px;
-					height: 40px
-				}
+				// input[type="checkbox"] {
+				// 	width: 50px;
+				// 	height: 40px
+				// }
 				
 				button[type="button"] {
 					margin: 0 10px;
@@ -95,5 +111,42 @@
 
 		}
 	}
+	@include mq($until: desktop) {
+        	
+		.main-section {
+			.items-table{
+		       
+				.bg-width {
+					padding: 0 5px;
+				}
 
+				td {
+					font-size: 1.5vw;
+					padding: 0px;
+
+					button {
+						font-size: 10px;
+						width: 50px;
+					}
+
+					input {
+						width: 100%;
+						margin: 0;
+					}
+
+					.md-input {
+						width: 50px;
+					}
+					
+					.sm-input {
+						width: 30px;
+					}
+
+					.ss-input {
+						width: 20px;
+					}
+				}
+			}
+		}
+    }
 }

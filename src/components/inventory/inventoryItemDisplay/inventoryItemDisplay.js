@@ -230,51 +230,51 @@ export default class inventoryItemDisplay extends React.Component {
 					<table className="block items-table table">
 						<thead>
 						<tr>
-							<td className="margin-center text-center number verticalMiddle">Index</td>
+							<td className="verticalMiddle">Index</td>
 
-							<td className="margin-center text-center number verticalMiddle">RowSpan</td>
+							<td className="verticalMiddle">Row<br/>Span</td>
 							
 
-							<td className="name">Name<br/><button id="invENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
+							<td>Name<br/><button id="invENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
 
-							<td className="name">商品名稱<br/><button id="invCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
+							<td>商品名稱<br/><button id="invCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
 
 							{this.state.loggedUser.TYPE_VIEW || this.state.loggedUser.TYPE_MODIFY ?
-								<td className="margin-center text-center">Type<br/><button id="invTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
+								<td>Type<br/><button id="invTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
 							}
 
-							<td className="margin-center text-center number">Shelf No<br/><button id="invSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
+							<td>Shelf No<br/><button id="invSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
 							
-							<td>Manufacturer<br/><button id="invMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
+							<td>Manu.<br/><button id="invMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">Hold QTY<br/><button id="invHOLD_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"HOLD_QTY")}>ASC</button></td> : null
+								<td>Hold QTY<br/><button id="invHOLD_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"HOLD_QTY")}>ASC</button></td> : null
 							}
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">QTY<br/><button id="invQTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"QTY")}>ASC</button></td> : null
+								<td>QTY<br/><button id="invQTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"QTY")}>ASC</button></td> : null
 							} 
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-								<td className="margin-center text-center number">Total QTY<br/><button id="invT_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"T_QTY")}>ASC</button></td> : null 
+								<td>Total QTY<br/><button id="invT_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"T_QTY")}>ASC</button></td> : null 
 							} 
 
 
 	 						{this.state.loggedUser.EXP_VIEW || this.state.loggedUser.EXP_MODIFY ?
-								<td className="margin-center text-center">Exp<br/><button id="invEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td>: null
+								<td>Exp<br/><button id="invEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td>: null
 							}
 
 
 							{this.state.loggedUser.GRAM_VIEW || this.state.loggedUser.GRAM_MODIFY ?
-								<td className="margin-center text-center">Gram<br/><button id="invGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td>: null
+								<td >Gram<br/><button id="invGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td>: null
 							}
 
 							{this.state.loggedUser.NAME_MODIFY  || this.state.loggedUser.TYPE_MODIFY ||
 							 this.state.loggedUser.SHELF_MODIFY || this.state.loggedUser.QTY_MODIFY  || 
 							 this.state.loggedUser.EXP_MODIFY   || this.state.loggedUser.GRAM_MODIFY || 
 							 this.state.loggedUser.DELETE_ITEM ?
-								<td className="margin-center text-center verticalMiddle">Action</td>:null
+								<td className="verticalMiddle">Action</td>:null
 							}
 
 						</tr>
@@ -283,17 +283,17 @@ export default class inventoryItemDisplay extends React.Component {
 							<tbody>
 							{this.state.allItems.map((item,key)=>
 								<tr key={key+1}>
-									<td className="margin-center text-center number">{key+1}</td>
+									<td className="margin-center text-center ">{key+1}</td>
 									
 									{item.ROWSPAN > 0?
-										<td rowSpan={item.ROWSPAN} className="margin-center text-center number">{item.ROWSPAN}</td>
+										<td rowSpan={item.ROWSPAN} className="margin-center text-center">{item.ROWSPAN}</td>
 										:null
 									}
 										
-									<td className="name">
+									<td className="text-left bg-width">
 										<p id={`NAME_EN_V${item.ID}`}>{item.ENGLISH_NAME}</p>
 										{this.state.loggedUser.NAME_MODIFY? 
-											<input key={`${item.ENGLISH_NAME}${item.ID}${key+1}`} id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.ENGLISH_NAME}/>
+											<input key={`${item.ENGLISH_NAME}${item.ID}${key+1}`} id={`NAME_EN_M${item.ID}`} type="text" className={`editToggle${key} text-left display-none`} defaultValue={item.ENGLISH_NAME}/>
 											:null
 										}
 									</td>
@@ -302,10 +302,10 @@ export default class inventoryItemDisplay extends React.Component {
 									
 
 									
-									<td className="name">
+									<td className="text-left bg-width">
 										<p id={`NAME_CH_V${item.ID}`}>{item.CHINESE_NAME}</p>
 										{this.state.loggedUser.NAME_MODIFY? 
-											<input key={`${item.CHINESE_NAME}${item.ID}${key+1}`} id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} display-none`} defaultValue={item.CHINESE_NAME}/>:null
+											<input key={`${item.CHINESE_NAME}${item.ID}${key+1}`} id={`NAME_CH_M${item.ID}`} type="text" className={`editToggle${key} text-left display-none`} defaultValue={item.CHINESE_NAME}/>:null
 										}
 									</td>
 
@@ -313,16 +313,16 @@ export default class inventoryItemDisplay extends React.Component {
 
 									{this.state.loggedUser.TYPE_VIEW?
 										this.state.loggedUser.TYPE_MODIFY? 
-											<td className="margin-center text-center">
+											<td className="margin-center text-center sm-width">
 												<p id={`TYPE_VIEW${item.ID}`} data-id={`TYPE_MODIFY${item.ID}`}>{item.TYPE}</p>
-												<select key={`${item.TYPE}${key+1}`} id={`TYPE_MODIFY${item.ID}`} className={`editToggle${key} display-none`}>
+												<select key={`${item.TYPE}${key+1}`} id={`TYPE_MODIFY${item.ID}`} className={`editToggle${key} display-none sm-input`}>
 													{this.state.types.map((type,keyIndex)=>
 														<option key={keyIndex}>{type.ITEM_TYPE}</option>					
 													)}
 												</select>
 											</td>
 											: 
-											<td className="margin-center text-center">
+											<td className="margin-center text-center sm-width">
 												<p>{item.TYPE}</p>
 											</td> 
 										:null
@@ -331,20 +331,20 @@ export default class inventoryItemDisplay extends React.Component {
 
 							
 
-									<td className="margin-center text-center number">
+									<td className="margin-center text-center sm-width">
 										<p>{item.SHELF_NO}</p>
 										{this.state.loggedUser.SHELF_MODIFY ? 
-											<input key={`${item.SHELF_NO}${key+1}`} id={`SHELF_M${item.ID}`}type="text" className={`editToggle${key} display-none shelf_no`} defaultValue={item.SHELF_NO}/> : null
+											<input key={`${item.SHELF_NO}${key+1}`} id={`SHELF_M${item.ID}`}type="text" className={`editToggle${key} sm-input display-none shelf_no`} defaultValue={item.SHELF_NO}/> : null
 										}
 									</td>
 									
 
 
-									<td id={`menu${item.ID}`} className="highlightColor">{item.MANUFACTURE}</td>
+									<td id={`menu${item.ID}`} className="highlightColor sm-width">{item.MANUFACTURE}</td>
 									
 
 									{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-										<td className="margin-center text-center number">
+										<td className="margin-center text-center sm-width">
 											{item.HOLD_QTY === 0? 
 												<p>0</p> : <p className = "hold-highlight">{item.HOLD_QTY}</p>
 											}
@@ -354,11 +354,11 @@ export default class inventoryItemDisplay extends React.Component {
 
 									{this.state.loggedUser.QTY_VIEW ?
 										this.state.loggedUser.QTY_MODIFY?
-											<td className="margin-center text-center number">
+											<td className="margin-center text-center sm-width">
 												<p>{item.QTY - item.HOLD_QTY}</p>
-												<input key={`${item.QTY-item.HOLD_QTY}${key+1}`} id={`QTY_MODIFY${item.ID}`} type="number"  className={`editToggle${key} display-none`} defaultValue={item.QTY - item.HOLD_QTY}/>
+												<input key={`${item.QTY-item.HOLD_QTY}${key+1}`} id={`QTY_MODIFY${item.ID}`} type="number"  className={`editToggle${key} sm-input display-none`} defaultValue={item.QTY - item.HOLD_QTY}/>
 											</td>
-											:<td className="margin-center text-center number">
+											:<td className="margin-center text-center sm-width">
 												<p>{item.QTY - item.HOLD_QTY}</p>
 											</td>
 										:null
@@ -369,11 +369,11 @@ export default class inventoryItemDisplay extends React.Component {
 									{this.state.loggedUser.QTY_VIEW ?
 										this.state.loggedUser.QTY_MODIFY?
 											item.ROWSPAN > 0? //allow to display number
-												<td rowSpan = {item.ROWSPAN} className="margin-center text-center number">{item.T_QTY}</td>
+												<td rowSpan = {item.ROWSPAN} className="margin-center text-center sm-width">{item.T_QTY}</td>
 												:null
 											:	
 											item.ROWSPAN > 0? //allow to display number
-												<td rowSpan = {item.ROWSPAN} className="margin-center text-center number">{item.T_QTY}</td>
+												<td rowSpan = {item.ROWSPAN} className="margin-center text-center sm-width">{item.T_QTY}</td>
 												:null
 										:null
 									}
@@ -382,11 +382,11 @@ export default class inventoryItemDisplay extends React.Component {
 
 									{this.state.loggedUser.EXP_VIEW ?
 										this.state.loggedUser.EXP_MODIFY? 
-											<td className="margin-center text-center">
+											<td className="bg-width">
 												<p>{item.EXPIRE_DATE}</p>
-												<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} display-none`} defaultValue={item.EXPIRE_DATE}/>
+												<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} sm-input display-none `} defaultValue={item.EXPIRE_DATE}/>
 											</td>
-											:<td className="margin-center text-center">
+											:<td className="bg-width">
 												<p>{item.EXPIRE_DATE}</p>
 											</td>	
 										:null
@@ -395,11 +395,11 @@ export default class inventoryItemDisplay extends React.Component {
 
 									{this.state.loggedUser.GRAM_VIEW ?
 										this.state.loggedUser.GRAM_MODIFY?
-											<td className="margin-center text-center">
+											<td className="margin-center text-center sm-width">
 												<p>{item.GRAM}</p>
-												<input key={`${item.GRAM}${key+1}`} id={`GRAM_M${item.ID}`} type="number" className={`editToggle${key} display-none`} defaultValue={item.GRAM}/>
+												<input key={`${item.GRAM}${key+1}`} id={`GRAM_M${item.ID}`} type="number" className={`editToggle${key} sm-input display-none`} defaultValue={item.GRAM}/>
 											</td>
-											:<td className="margin-center text-center">
+											:<td className="margin-center text-center sm-width">
 												<p>{item.GRAM}</p>
 											</td>	
 										:null
@@ -410,7 +410,7 @@ export default class inventoryItemDisplay extends React.Component {
 									 this.state.loggedUser.SHELF_MODIFY ||  this.state.loggedUser.QTY_MODIFY  || 
 									 this.state.loggedUser.EXP_MODIFY   ||  this.state.loggedUser.GRAM_MODIFY || 
 									 this.state.loggedUser.DELETE_ITEM?
-									<td className="margin-center text-center">
+									<td className="margin-center text-center bg-width">
 										<div id={`edit-btn${key}`} className="inline-f">
 											<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickEdit(e,key); this.setTypeDefault(item.ID,item.TYPE)}}>Edit</button>
 										</div>
@@ -438,8 +438,8 @@ export default class inventoryItemDisplay extends React.Component {
 											<div id={`hold-functional-Btns${key}`} className="hold-functional-Btns display-none">
 												<div className="block">	
 													<input key={`holdName${key}`} id={`holdName${key}`} type="text" placeholder="name"/>	
-													<input key={`holdQty${key}`} id={`holdQty${key}`} type="number" defaultValue="0" onChange={(e)=> this.holdQtyChange(e,key,item.QTY-item.HOLD_QTY)}/>
-													<input key={`holdDate${key}`} id={`holdDate${key}`} type="date"/>	
+													<input key={`holdQty${key}`} id={`holdQty${key}`} className="sm-input inline-b ss-input" type="number" defaultValue="0" onChange={(e)=> this.holdQtyChange(e,key,item.QTY-item.HOLD_QTY)}/>
+													<input key={`holdDate${key}`} id={`holdDate${key}`} className="sm-input inline-b" type="date"/>	
 												</div>			
 												<button type="button" className="btn btn-success" onClick={(e)=>this.clickHoldAdd(e,key,item.ID)}>Add</button>
 												<button type="button" className="btn btn-danger" onClick={(e)=>this.clickHoldCancel(e,key,item.ID)}>Cancel</button>
