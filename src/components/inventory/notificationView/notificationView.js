@@ -6,21 +6,24 @@ export default class notificationView extends React.Component {
 	constructor(props) {
 		super(props);
 
-		let date = new Date();
-
+		
+		console.log(this.props.allNotificationItems);
 		this.state = {
-			loggedUser: this.props.loggedUser
-		}
-
+			loggedUser: this.props.loggedUser,
+			allNotificationItems: this.props.allNotificationItems
+		}	
 
 	}
 
 
-
+	componentWillReceiveProps(newProps) {
+	  if (this.state.allNotificationItems !== newProps.allNotificationItems) {
+	    this.setState({allNotificationItems: newProps.allNotificationItems});
+	  }
+	}
 	
 	componentDidMount() {
 		this.props.loadAllNotificationItems(this.props.defaultExpiryDate);
-		//this.props.loadAllItem('',this.props.defaultExpiryDate);
 	}
 
 
@@ -32,6 +35,25 @@ export default class notificationView extends React.Component {
 
 
 //============================== Work Functions =============================================================
+	sortToggleBtnClick(e, field) {
+		e.preventDefault();
+
+		let fieldBtnText = $(`#invNoti${field}-sortToggleBtn`).text();
+		let sortedData = this.state.allNotificationItems;
+			
+		if(fieldBtnText === 'ASC') {
+			sortedData = sortedData.sort((a,b)=>a[field].toString().localeCompare(b[field].toString()));
+			$(`#invNoti${field}-sortToggleBtn`).text('DESC');
+		}else {
+			sortedData = sortedData.sort((a,b)=>b[field].toString().localeCompare(a[field].toString()));
+			$(`#invNoti${field}-sortToggleBtn`).text('ASC');
+		}
+
+		this.setState({allNotificationItems:this.props.setStateWithRowSpan(sortedData)});
+	}
+
+
+
 	changeDate(e){
 		e.preventDefault();
 		if($("#date-picker").val() === '') {
@@ -64,7 +86,7 @@ export default class notificationView extends React.Component {
 				<div className="header-section">
 					<h3 className="title">About Expired Products Notification</h3>
 					<div>
-						<h3 className="inline-b"><strong>{this.props.allNotificationItems.length}</strong> Items Will Expire After: </h3>
+						<h3 className="inline-b"><strong>{this.state.allNotificationItems.length}</strong> Items Will Expire After: </h3>
 						<input id="date-picker"  type="date" defaultValue = {this.props.defaultExpiryDate} onChange= {e => this.changeDate(e)}/>
 					</div>
 					<div>
@@ -82,42 +104,42 @@ export default class notificationView extends React.Component {
 									<td className="margin-center text-center number">RowSpan</td>
 									
 
-									<td className="name">En_Name</td>
+									<td className="name">En_Name<button id="invNotiENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
 
-									<td className="name">商品名稱</td>
+									<td className="name">商品名稱<button id="invNotiCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
 
 									{this.state.loggedUser.TYPE_VIEW || this.state.loggedUser.TYPE_MODIFY ?
-										<td className="margin-center text-center">Type</td> : null
+										<td className="margin-center text-center">Type<button id="invNotiTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
 									}
 
-									<td className="margin-center text-center number">Shelf No</td>
+									<td className="margin-center text-center number">Shelf No<button id="invNotiSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
 									
-									<td>Manufacturer</td>
+									<td>Manufacturer<button id="invNotiMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 
 
 									{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-										<td className="margin-center text-center number">QTY</td> : null
+										<td className="margin-center text-center number">QTY<button id="invNotiQTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"QTY")}>ASC</button></td> : null
 									} 
 
 
 									{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
-										<td className="margin-center text-center number">Total QTY</td> : null
+										<td className="margin-center text-center number">Total QTY<button id="invNotiT_QTY-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"T_QTY")}>ASC</button></td> : null
 									} 
 
 
 			 						{this.state.loggedUser.EXP_VIEW || this.state.loggedUser.EXP_MODIFY ?
-										<td className="margin-center text-center">Exp</td>: null
+										<td className="margin-center text-center">Exp<button id="invNotiEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td>: null
 									}
 
 
 									{this.state.loggedUser.GRAM_VIEW || this.state.loggedUser.GRAM_MODIFY ?
-										<td className="margin-center text-center">Gram</td>: null
+										<td className="margin-center text-center">Gram<button id="invNotiGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td>: null
 									}
 								</tr>
 							</thead>
 
 							<tbody>
-								{this.props.allNotificationItems.map((item,key)=>
+								{this.state.allNotificationItems.map((item,key)=>
 									<tr key={key+1}>
 										<td className="margin-center text-center number">{key+1}</td>
 										

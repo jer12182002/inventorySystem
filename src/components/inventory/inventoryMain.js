@@ -22,7 +22,7 @@ export default class inventoryMain extends React.Component {
 			defaultExpiryDate : date.getFullYear() + "-" + ("0" + (date.getMonth() + 5)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)
 		}
 
-		//this.loadAllHoldItems = this.loadAllHoldItems.bind(this);
+		
 	}
 
 	componentDidMount() {
@@ -151,9 +151,6 @@ export default class inventoryMain extends React.Component {
 	
 
 	render() {
-		//<InventroyItemsDisplay loggedUser = {this.state.accountInfo}/>
-		//
-		
 		return (
 			<div className= "inventorymain-wrapper">
 				{this.state.accountInfo.VIEW_ITEM? 
