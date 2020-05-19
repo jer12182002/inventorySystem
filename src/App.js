@@ -61,7 +61,7 @@ saveAccountFromLogIn(userLogin){
       time.setHours(time.getHours() + 2);
 
       let cookiesUser = {ACCOUNT: userLogin.ACCOUNT, PASSWORD: userLogin.PASSWORD, expires: time};
-      cookies.set('RenDeInc-LoggedUser', cookiesUser,{expires:time});
+      cookies.set('RenDeIncInventorySys', cookiesUser,{expires:time, path:'/'});
      
 
       this.checkPermissionBySeconds();
@@ -70,8 +70,9 @@ saveAccountFromLogIn(userLogin){
 }
 
 clearAccountInfo(){
+  cookies.remove("RenDeIncInventorySys", {path: '/'});
   this.setState({accountInfo:[]});
-  window.location.href = "/";
+  window.location.href="/login";
 }
 
 
@@ -82,14 +83,16 @@ cookiesUserLogin(cookiesUser) {
       if(data.data[0]){
         this.saveAccountFromLogIn(data.data[0]);
       }
-    });
+  });
+    
 }
 
 
 
 componentDidMount(){
-  let cookiesUser = cookies.get("RenDeInc-LoggedUser");
-  if(cookiesUser){
+  let cookiesUser = cookies.get("RenDeIncInventorySys",{path:'/'});
+
+  if(cookiesUser && new Date(cookiesUser.expires).getTime() >= new Date().getTime()){    
     this.cookiesUserLogin(cookiesUser);
   }
 }
