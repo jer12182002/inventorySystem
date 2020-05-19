@@ -1,7 +1,10 @@
+@import 'sass-mq';
+
 .controlPanel-wrapper {
 	position: fixed;
 	bottom:0;
 	width: 100%;
+	height: 70px;
 	background-color: lightblue;
 
 	.main-section {
@@ -50,6 +53,7 @@
 			h3 {
 				margin-left: 10px;
 			}
+
 			#hideBtn {
 				float:right;
 				margin-right: 10px;
@@ -88,6 +92,71 @@
 			
 
 
+		}
+	}
+
+
+	@include mq($until: desktop) {
+		& {
+			height: 100px;
+		}
+
+		.main-section {
+			label,input,select,button {
+				margin: 2px;
+				height: 30px;
+				font-size: 12px;
+			}
+		
+			button {
+				margin-top: 0;
+			}
+
+			#addShelf {
+				width: 35px;
+			}
+
+			#addManufact {
+				width: 50px;
+			}
+			
+			#addQty {
+				width: 50px;
+			}
+		
+			#addGram {
+				width: 50px;
+			}
+
+			.filter-Section {
+				position: fixed;
+				bottom: 25px;
+				right: 0;
+				display: block;
+				background-color: orange;
+				padding-top:3px;
+				float:right;
+			}
+		}
+
+		.selectfilter-container {
+			bottom: 50px;
+			.selectAll {
+				h3 {
+					font-size: 24px
+				}
+
+				#hideBtn {
+					height: 100%;
+				}
+			}
+
+			.scroll-container {
+				li p {
+					margin-bottom: 0;
+					font-size: 16px;
+				}
+			}
 		}
 	}
 }
