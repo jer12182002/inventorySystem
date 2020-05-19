@@ -1,10 +1,16 @@
+@import 'sass-mq';
 .completedOrder-wrapper {
 	.head-section {
 		background-color: lightblue;
 		border-bottom: 3px solid black;
+		margin-bottom: 30px;
 
 		.order-info {
 			width: 100%;
+
+			h3 {
+				font-weight: 900;
+			}
 		}
 	}
 
@@ -48,6 +54,55 @@
 			.note-row.firstRow {
 				.note-header {
 					background-color: red;
+				}
+			}
+		}
+	}
+
+	@include mq($until: desktop) {
+		.head-section {
+			.order-info {
+				h3 {
+					font-size: 18px;
+				}
+			}
+		}
+
+		.main-section {
+			.header-container {
+				div {
+					padding: 0 5px;
+
+					h3 {
+						font-size: 18px;
+					}
+
+				}
+			}
+
+			.item-container {
+				margin-top: 0;
+
+				h3 {
+					font-size: 16px;
+				}
+			}
+
+			.noteContainer{
+				.note-header {
+					div {
+						padding: 0;
+
+						h4 {
+							font-size: 18px;
+						}
+					}
+				}
+
+				.note-info {
+					h4 {
+						font-size: 16px;
+					}
 				}
 			}
 		}

@@ -385,26 +385,18 @@ export default class ongoingItem extends React.Component {
 						<div className="col-4 col-md-4"><h3>Item</h3></div>
 						<div className="col-1 col-md-1"><h3 className="text-center">Order Qty</h3></div>
 						<div className="col-7 col-md-7">
-							{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"? 
 							<div className="row">
 								<div className="col-2"><h3 className="text-center">Shelf No.</h3></div>
 								<div className="col-2"><h3 className="text-center">Manu.</h3></div>
 								<div className="col-2"><h3 className="text-center">Exp Date</h3></div>
 								<div className="col-2"><h3 className="text-center">Stock Qty</h3></div>
 								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
-								<div className="col-2"><h3 className="text-center">Tablet Qty</h3></div>
+								<div className="col-2">
+								{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
+									<h3 className="text-center">Tablet Qty</h3>:null
+								}
+								</div>
 							</div>
-							:
-							<div className="row">
-								<div className="col-2"><h3 className="text-center">Shelf No.</h3></div>
-								<div className="col-2"><h3 className="text-center">Manu.</h3></div>
-								<div className="col-2"><h3 className="text-center">Exp Date</h3></div>
-								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
-								<div className="col-2"><h3 className="text-center">Tablet Qty</h3></div>
-								<div className="col-2"></div>
-							</div>	
-							}
-
 						</div>
 					</div>
 

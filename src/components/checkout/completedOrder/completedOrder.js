@@ -85,24 +85,23 @@ export default class completedOrder extends React.Component {
 			<div className="completedOrder-wrapper">
 				<div className="head-section container-fluid">
 					<div className="order-info row">
-						<div className="col-3 col-md-2"><h3>Order No: {this.state.COMPLETED_ORDER.ORDER_ID}</h3></div>
-						<div className="col-3 col-md-2"><h3>Customer: {this.state.COMPLETED_ORDER.CUSTOMER}</h3></div>
-						<div className="col-6 col-md-4"><h3>Order Received: {Moment(this.state.COMPLETED_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h3></div>
-						<div className="col-6 col-md-2"><h3>Sales: {this.state.COMPLETED_ORDER.PERSON}</h3></div>
-						<div className="col-6 col-md-2"><h3>Pickup: {this.state.COMPLETED_ORDER.PICKUP_PERSON}</h3></div>
+						<div className="col-3 col-lg-2"><h3>Order No: {this.state.COMPLETED_ORDER.ORDER_ID}</h3></div>
+						<div className="col-4 col-lg-2"><h3>Customer: {this.state.COMPLETED_ORDER.CUSTOMER}</h3></div>
+						<div className="col-5 col-lg-4"><h3>Order Received: {Moment(this.state.COMPLETED_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h3></div>
+						<div className="col-6 col-lg-2"><h3>Sales: {this.state.COMPLETED_ORDER.PERSON}</h3></div>
+						<div className="col-6 col-lg-2"><h3>Pickup: {this.state.COMPLETED_ORDER.PICKUP_PERSON}</h3></div>
 					</div>
 				</div>
 				<div className="main-section">
 					{this.state.COMPLETED_ORDER.STATUS === "COMPLETED"? 
 					<div className="container-fluid">
 						<div className="row header-container">
-							<div className="col-1"><h3>Index</h3></div>
 							<div className="col-4 text-left"><h3>Item</h3></div>
-							<div className="col-1"><h3>QTY</h3></div>
-							<div className="col-6">
+							<div className="col-1"><h3>Order Qty</h3></div>
+							<div className="col-7">
 								<div className="row">
-									<div className="col-1"><h3>Shelf No.</h3></div>
-									<div className="col-3"><h3>Manu.</h3></div>
+									<div className="col-2"><h3>Shelf No.</h3></div>
+									<div className="col-2"><h3>Manu.</h3></div>
 									<div className="col-4"><h3>Exp Date</h3></div>
 									<div className="col-2"><h3>Pick Up Qty</h3></div>
 									<div className="col-2"><h3>Tablet Qty</h3></div>
@@ -111,16 +110,15 @@ export default class completedOrder extends React.Component {
 						</div>
 						{this.state.ORDER_ITEMS.map((item,key)=>
 							<div className="row item-container" key={`item${key}`}>
-								<div className="col-1"><h3>{key+1}</h3></div>
 								<div className="col-4 text-left"><h3>{item.ITEMENNAME}</h3><h3>{item.ITEMCHNAME}</h3></div>
 								<div className="col-1"><h3>{item.ORDER_ITEM_QTY}</h3></div>
-								<div className="col-6">
+								<div className="col-7">
 				
 								{item.PICKUP_ITEMS.map((diffItem,diffKey)=>
 									diffItem.PICKUPVALUE > 0 ?
 									<div className="row" key={`diffItem${diffKey+1}`}>
-										<div className="col-1"><h3>{diffItem.SHELF_NO}</h3></div>
-										<div className="col-3"><h3>{diffItem.MANUFACTURE}</h3></div>
+										<div className="col-2"><h3>{diffItem.SHELF_NO}</h3></div>
+										<div className="col-2"><h3>{diffItem.MANUFACTURE}</h3></div>
 										<div className="col-4"><h3>{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h3></div>
 										<div className="col-2"><h3>{diffItem.PICKUPVALUE}</h3></div>
 										<div className="col-2"><h3>{diffItem.TABLETQTY}</h3></div>
@@ -159,7 +157,7 @@ export default class completedOrder extends React.Component {
 									<div className="col-4 col-md-4 text-center"><h4>Status: {note.STATUS}</h4></div>
 								</div>
 								<div className="note-info">
-									<h4 className="text-center">{note.NOTE}</h4>
+									<h4 className="text-left">{note.NOTE}</h4>
 								</div>
 							</div>
 						)}
