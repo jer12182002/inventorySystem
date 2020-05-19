@@ -1,17 +1,20 @@
+@import 'sass-mq';
+
 .activityLogs-wrapper {
 	.activityLogs-container {		
-		height:200px;
+		height:300px;
 		overflow-y: scroll;
 		background-color: lightblue;
 		border:2px solid black;
 		margin-top: 20px;
 		
 		.log-header {
-			position: relative;
-
-
+			position: sticky;
+			top: 0;
+			background-color: lightyellow;
+			z-index: 999;
+			
 			h3 {
-				background-color: lightyellow;
 				margin-bottom: 0;
 				text-align: center;
 				padding: 10px 0;
@@ -38,16 +41,19 @@
 		table {
 			width: 100%;
 			position: relative;
+
 		
 			thead {
-				background-color: lightyellow;
 				font-size: 20px;
 				font-weight: 900;
 
 				th {
+					background-color: lightyellow;
 					position: sticky;
-					border: 2px solid black;
+					top: 44px;
 					text-align: center;
+					z-index: 999;
+					outline: 3px solid black;
 
 					button {
 						width: 60px;
@@ -59,14 +65,7 @@
 				border: 2px solid black;
 				text-align: center;
 
-				&:first-child{
-					border-left: 0;
-				}
 			
-				&:last-child {
-					border-right: 0;
-				}
-					
 				&.logAction {
 					width: 10%;
 				}
@@ -75,6 +74,47 @@
 					width: 50%;
 					text-align: left;
 					padding-left: 5px;
+				}
+			}
+		}
+	}
+
+	@include mq($until: desktop) {
+		.activityLogs-container {
+
+			.log-header {
+				h3 {
+					font-size: 20px;
+				}
+
+				.search-container {
+					h4{
+						font-size: 20px;
+					}
+
+					input[type="text"] {
+						height: 25px;
+					}
+				}
+			}
+
+			table {
+				thead {
+					tr th {
+						font-size: 16px;
+
+						button {
+							font-size: 16px;
+							width: 50px;
+							display: inline;
+						}
+					}
+				}
+
+				tbody {
+					tr td {
+						font-size: 16px;
+					}
 				}
 			}
 		}

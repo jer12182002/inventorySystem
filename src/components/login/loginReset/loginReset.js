@@ -58,7 +58,7 @@ export default class loginReset extends React.Component {
 					<h1>Reset your account</h1>
 				</div>
 				<div className="main-section">
-					<p>#We can only reset your password only, if you want to reset your account. Please talk to your technical person#</p>
+					<p>#We can only reset your password, if you want to reset your account. Please talk to IT#</p>
 
 					<div className = "statusText-container block">
         				<h3 className = "statusText success-status text-center"></h3>

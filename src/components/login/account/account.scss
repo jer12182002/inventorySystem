@@ -1,7 +1,9 @@
+@import 'sass-mq';
+
 .account-wrapper {
 	.header-section {
 		width: 100%;
-
+		
 		.nav-bar {
 			border-top: 2px solid lightgray;
 			border-bottom: 2px solid lightgray;
@@ -15,5 +17,18 @@
 			}
 		}
 	}
+	
+	@include mq($until: desktop) {
+		.header-section {
+			h1 {
+				font-size: 20px;
+			}
 
+			.nav-bar {
+				li a {
+					font-size: 16px;
+				}
+			}
+		}
+	}
 }
