@@ -9,8 +9,14 @@ const cookies = new Cookies();
 export default class loginReset extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			accountInfo : this.props.location.state.accountInfo
+		if(this.props.loaction) {
+			this.state = {
+				accountInfo : this.props.location.state.accountInfo
+			}
+		}else {
+			this.state = {
+				accountInfo : []
+			}
 		}
 	}
 	
@@ -64,10 +70,14 @@ export default class loginReset extends React.Component {
         				<h3 className = "statusText success-status text-center"></h3>
         			</div>
 					<form>
+						{this.state.accountInfo.USERNAME?
 						<div className="block border-bottom">
 							<h1>Username:</h1>
 							<h3>{this.state.accountInfo.USERNAME}</h3>
 						</div>
+						:
+						null
+						}
 						<div className="block">
 							<h1>Your Account</h1>
 							<input id="accountCheck" type="text"></input>

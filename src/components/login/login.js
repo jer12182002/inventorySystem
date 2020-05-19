@@ -5,11 +5,16 @@ import "./login.scss";
 
 import $ from 'jquery';
 class Login extends Component {
-  
-  state = {
-      user:[],
-      loggedInUserInfo: this.props.accountInfo
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+        user:[],
+        loggedInUserInfo: this.props.accountInfo
     }
+  }
+
+
 
 
   accessLevel(level){
@@ -91,7 +96,6 @@ class Login extends Component {
 
         				{this.state.loggedInUserInfo.ID>0?
                   <div>
-                  
                     <div className="block loggedInBtns">
                       <button type="button"id="logoutBtn" className="btn" onClick = {e => this.logoutBtnClicked(e)}>Log Out</button>
                       <Link to="/" className="btn">Home Page</Link>
@@ -111,7 +115,7 @@ class Login extends Component {
                     </div>
                     <div className="block beforeLoggedInBtns">
                       <button type="button" id="loginBtn" className="btn" onClick = {e => this.loginBtnClicked(e)}>Login</button>
-                      <Link to="/login/reset" className="btn">Forget</Link>
+                      <Link to="/login/account/resetpassword" className="btn">Forget</Link>
                     </div>                    
                   </div>
                 }
