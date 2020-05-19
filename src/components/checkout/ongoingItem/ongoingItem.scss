@@ -1,3 +1,4 @@
+@import 'sass-mq';
 .ongoingItem-wrapper {
 	.main-section {
 		.container-fluid {
@@ -13,9 +14,10 @@
 			margin-bottom: 30px;
 			h4 {
 				font-weight: 900;
+				font-size: 18px;
 			}
 		}
-
+		
 		.item-detail {
 			margin-top: 50px;
 			border-bottom: 2px solid black;
@@ -69,6 +71,7 @@
 
 			label {
 				font-size: 30px;
+				width: 100%;
 			}
 			textarea {
 				width: 80%;
@@ -89,5 +92,41 @@
 
 	.warning {
 		background-color: red;
+	}
+
+	@include mq($until: desktop) {
+		.main-section {
+			.order-detail-head {
+				h3 {
+					font-size: 18px;
+				}
+			}
+
+			.item-detail {
+				margin-top: 25px;
+				
+				h4 {
+					font-size: 16px;
+				}
+
+				input[type="number"] {
+					width: 40px;
+				}
+			}
+
+			.noteContainer {
+				.note-header {
+					h4 {
+						font-size: 18px;
+					}
+				}
+
+				.note-info {
+					h4 {
+						font-size: 16px;
+					}
+				}
+			}	
+		}
 	}
 }

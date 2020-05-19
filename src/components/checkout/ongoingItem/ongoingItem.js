@@ -374,10 +374,10 @@ export default class ongoingItem extends React.Component {
 				<div className="header-section"></div>
 				<div className="main-section container-fluid">
 					<div className="order-info row ">
-						<div className="col-6 col-md-2"><h4>Order No: {this.state.ORDER_ID}</h4></div>
-						<div className="col-6 col-md-3"><h4>Customer: {this.state.ONGOING_ORDER.CUSTOMER}</h4></div>
-						<div className="col-6 col-md-4"><h4>Time Received: {Moment(this.state.ONGOING_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h4></div>
-						<div className="col-6 col-md-3"><h4>Status: {this.state.ONGOING_ORDER.STATUS}</h4></div>
+						<div className="col-6 col-lg-2"><h4>Order No: {this.state.ORDER_ID}</h4></div>
+						<div className="col-6 col-lg-3"><h4>Customer: {this.state.ONGOING_ORDER.CUSTOMER}</h4></div>
+						<div className="col-6 col-lg-4"><h4>Time Received: {Moment(this.state.ONGOING_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h4></div>
+						<div className="col-6 col-lg-3"><h4>Status: {this.state.ONGOING_ORDER.STATUS}</h4></div>
 					</div>
 
 					 {/*desktop display*/}
