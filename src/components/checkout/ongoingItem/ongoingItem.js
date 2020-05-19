@@ -371,15 +371,15 @@ export default class ongoingItem extends React.Component {
 		this.loadNotes();
 		return (
 			<div className="ongoingItem-wrapper">
-				<div className="header-section"></div>
-				<div className="main-section container-fluid">
+				<div className="header-section">
 					<div className="order-info row ">
 						<div className="col-6 col-lg-2"><h4>Order No: {this.state.ORDER_ID}</h4></div>
 						<div className="col-6 col-lg-3"><h4>Customer: {this.state.ONGOING_ORDER.CUSTOMER}</h4></div>
 						<div className="col-6 col-lg-4"><h4>Time Received: {Moment(this.state.ONGOING_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h4></div>
 						<div className="col-6 col-lg-3"><h4>Status: {this.state.ONGOING_ORDER.STATUS}</h4></div>
 					</div>
-
+				</div>
+				<div className="main-section container-fluid">
 					 {/*desktop display*/}
 					<div className="order-detail-head row">
 						<div className="col-4 col-md-4"><h3>Item</h3></div>

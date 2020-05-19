@@ -1,5 +1,18 @@
 @import 'sass-mq';
 .ongoingItem-wrapper {
+	.header-section {
+		background-color: yellow;
+		border-bottom: 3px solid black;
+		margin-bottom: 30px;
+
+		.order-info {
+
+			h4 {
+				font-weight: 900;
+			}
+		}
+	}
+
 	.main-section {
 		.container-fluid {
 			padding: 0;
@@ -10,14 +23,6 @@
 			margin: 0 auto;
 		}
 
-		.order-info {
-			margin-bottom: 30px;
-			
-			h4 {
-				font-weight: 900;
-			}
-		}
-		
 		.item-detail {
 			margin-top: 50px;
 			border-bottom: 2px solid black;
@@ -95,6 +100,16 @@
 	}
 
 	@include mq($until: desktop) {
+		.header-section {
+			.order-info {
+				div {
+					h4 {
+						font-size: 16px;
+					}
+				}
+			}
+		}
+
 		.main-section {
 			.order-detail-head {
 				h3 {
