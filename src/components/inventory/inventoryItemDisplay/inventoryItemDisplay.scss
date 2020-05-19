@@ -19,13 +19,6 @@
 	
 	.main-section {
 		.items-table {
-			// .sm-width {
-			// 	padding:0;
-			// }
-
-			// .btns,.bg-width {
-			// 	padding: 0 10px;
-			// }
 
 			td {
 				border: 2px solid black;
@@ -97,7 +90,12 @@
 		}
 	}
 	@include mq($until: desktop) {
-        	
+        .header-section {
+	
+			.title {
+				font-size: 20px;		
+			}
+		}
 		.main-section {
 			.items-table{
 		       

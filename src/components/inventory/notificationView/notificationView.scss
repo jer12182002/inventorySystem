@@ -71,6 +71,27 @@
 	}
 
 	@include mq($until: desktop) {
+		.header-section {
+			.title {
+				font-size: 20px;
+			}
+
+			div {
+				padding: 0;
+
+				h3 {
+					font-size: 20px;
+				}
+
+				input[type="date"] {
+				margin-top: 0;
+				margin-bottom: 15px;
+				height: 25px;
+				text-align: center;
+				}
+			}
+		}
+
 		.main-section {
 			.scroll-container {
 				table  {

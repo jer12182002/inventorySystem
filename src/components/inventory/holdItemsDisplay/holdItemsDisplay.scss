@@ -80,6 +80,14 @@
 	}
 
 	@include mq($until: desktop) {
+		.header-section {
+			.title {
+				font-size: 20px;
+			}
+			div h3 {
+				font-size: 20px;
+			}
+		}
 		.main-section {
 			.scroll-container {
 				table {
