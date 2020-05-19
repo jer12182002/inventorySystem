@@ -1,13 +1,17 @@
+@import 'sass-mq';
 .checkoutMain-wrapper {
+	.row {
+		margin: 0;
+	}
 
 	.main-section {
 		padding: 0;
+
 		.notification-container{
 			background-color: pink;
 			
 			.notification-head {
 				border: 5px solid black;
-				margin: 0 auto;
 			}
 			
 			.notification-main {
@@ -17,7 +21,6 @@
 				overflow-y:scroll;
 					
 				.row {
-					margin: 0;
 					border-bottom: 1px solid lightgray;
 				}
 
@@ -87,10 +90,7 @@
 			}
 
 			.search-container {
-				position: absolute;
-				top:0;
-				right: 15px;
-
+			
 				h4,input[type="text"]{
 					margin: 15px 0;
 					padding: 0 5px;
@@ -125,4 +125,22 @@
 			}
 		}
 	}
+
+	// @include mq($until: desktop) {
+	// 	.main-section {
+	// 		.notification-container {
+	// 			.notification-head {
+	// 				h2 {
+	// 					font-size: 26px;
+	// 				}
+	// 			}
+	// 		}
+
+	// 		.notification-main {
+	// 			h2 {
+	// 				font-size: 20px;
+	// 			}
+	// 		}
+	// 	}
+	// }
 }

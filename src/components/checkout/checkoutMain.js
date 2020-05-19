@@ -143,11 +143,11 @@ export default class checkoutMain extends React.Component {
 				{this.props.accountInfo.CHK_VIEW?
 				<div className = "main-section container-fluid">
 
-					<div className = "notification-container">
-						<div className="notification-head">
+					<div className = "notification-container row">
+						<div className="notification-head col-12">
 							<h2 className="text-center">Notification</h2>
 						</div>
-						<div className="notification-main">
+						<div className="notification-main col-12">
 							{this.state.ongoinOrdersNotifications.map((notification,key)=>
 							notification.NEW_MSG_CHKOUT > 0 ?
 								<div className="row" key={key+1}>
@@ -162,7 +162,7 @@ export default class checkoutMain extends React.Component {
 						<div className="row">
 						{/**********************************************COMPLETED Panel*****************************************************/}
 
-							<div className="col-12 col-md-6 completed-container">
+							<div className="col-12 col-md-12 col-lg-6 completed-container">
 								<div className="subContainer-head">
 									<h3 className="text-center">Completed Order</h3>
 									<div className="search-container inline-b">
@@ -216,7 +216,7 @@ export default class checkoutMain extends React.Component {
 
 
 						{/**********************************************ONGOING Panel*****************************************************/}
-							<div className="col-12 col-md-6 ongoing-container">
+							<div className="col-12 col-md-12 col-lg-6 ongoing-container">
 								<div className="subContainer-head">
 									<h3 className="text-center">Ongoing Order</h3>
 									<div className="search-container inline-b">
