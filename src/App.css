@@ -12,6 +12,8 @@ $mq-breakpoints: (
 );
 
 $mq-static-breakpoint: desktop;
+$bloodyRed: #962E3D;
+
 
 .block {
   display: block;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './header.scss';
-
+import logo from '../../logo.png';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -21,7 +21,7 @@ class header extends React.Component {
 			<div className="header-wrapper">
 				<header>
 
-					<h1><NavLink to="/">Ren De Inc Inventory System</NavLink></h1>
+					<h1><NavLink to="/"><img src={logo}/>Ren De Inc Inventory System</NavLink></h1>
 				
 					{this.props.accountInfo.USERNAME?
 						(<ul>
