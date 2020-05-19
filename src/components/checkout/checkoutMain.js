@@ -135,11 +135,7 @@ export default class checkoutMain extends React.Component {
 
 	render() {
 		return (
-			<div className = "checkoutMain-wrapper">
-				<div className = "header-section">
-					<h1>Check Out </h1>
-				</div>
-				
+			<div className = "checkoutMain-wrapper">		
 				{this.props.accountInfo.CHK_VIEW?
 				<div className = "main-section container-fluid">
 
