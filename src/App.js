@@ -18,6 +18,7 @@ import CompletedOrder from "./components/checkout/completedOrder/completedOrder"
 import Pickup from "./components/pickup/pickupMain";
 import PickupOrderDetail from "./components/pickup/pickupOrderDetail/pickupOrderDetail";
 
+import BackToTopWidget from './components/backToTopWidget/backToTopWidget';
 import Cookies from "universal-cookie";
 
 const cookies = new Cookies();
@@ -104,10 +105,6 @@ componentWillUnmount(){
 
 
 
-recordActivityLog(area, detail) {
-  alert(area+detail);
-}
-
 
 
 render(){
@@ -132,9 +129,9 @@ render(){
         <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/> 
         </div>
       ):null}
-    </Router>     
-       
-    </div>
+    </Router>  
+    <BackToTopWidget/>   
+  </div>
   );
 }
 }
