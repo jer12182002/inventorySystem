@@ -125,11 +125,10 @@ export default class inventoryMain extends React.Component {
 
 //============================= Display Functions ===================================
 	setStateWithRowSpan(recivedData){
-		recivedData.map((data,index)=>{
-	
+		recivedData.forEach((data,index)=>{
 			let rowSpan = 1;
 
-			if(index != recivedData.length-1 
+			if(index !== recivedData.length-1 
 				&& recivedData[index+1].ENGLISH_NAME === data.ENGLISH_NAME 
 				&& recivedData[index+1].CHINESE_NAME === data.CHINESE_NAME 
 				&& recivedData[index+1].TYPE === data.TYPE) {

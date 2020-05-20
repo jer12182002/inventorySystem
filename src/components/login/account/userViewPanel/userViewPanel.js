@@ -17,7 +17,7 @@ export default class userViewPanel extends React.Component {
 		fetch("http://localhost:4000/login/account")
 		.then(res => res.json())
 		.then (data =>{
-			this.setState({users : data.data},()=>console.log(this.state.users));		
+			this.setState({users : data.data});		
 		});
 	}
 

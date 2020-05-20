@@ -6,8 +6,6 @@ export default class notificationView extends React.Component {
 	constructor(props) {
 		super(props);
 
-		
-		console.log(this.props.allNotificationItems);
 		this.state = {
 			loggedUser: this.props.loggedUser,
 			allNotificationItems: this.props.allNotificationItems

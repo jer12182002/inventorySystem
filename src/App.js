@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -45,17 +45,15 @@ checkPermissionBySeconds(){
        fetch(`http://localhost:4000/chcekPermission?id=${this.state.accountInfo.ID}`)
        .then(res => res.json())
        .then(data => {
-          if(JSON.stringify(data.data[0]) != JSON.stringify(this.state.accountInfo)) {
+          if(JSON.stringify(data.data[0]) !== JSON.stringify(this.state.accountInfo)) {
             this.setState({accountInfo:data.data[0]});
           }
        });
     }
-    console.log("load account every second");
   },1000)
 }
 
 saveAccountFromLogIn(userLogin){
-  console.log(userLogin);
   if(userLogin) {
     this.setState ({accountInfo: userLogin},()=>{
       let time = new Date();

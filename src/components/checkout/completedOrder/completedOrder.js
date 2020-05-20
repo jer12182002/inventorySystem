@@ -22,7 +22,6 @@ export default class completedOrder extends React.Component {
 		fetch(`http://localhost:4000/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
 			.then(res => res.json())
 			.then(data => {
-				console.log(data.data);
 				if(data.data.order[0]) {
 					this.setState({COMPLETED_ORDER : data.data.order[0]});
 				}
@@ -80,7 +79,6 @@ export default class completedOrder extends React.Component {
 
 
 	render() {
-		console.log(this.state.ORDER_ITEMS);
 		return (
 			<div className="completedOrder-wrapper">
 				<div className="head-section container-fluid">

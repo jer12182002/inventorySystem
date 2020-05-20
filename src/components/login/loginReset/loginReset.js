@@ -3,8 +3,6 @@ import './loginReset.scss';
 
 import $ from 'jquery';
 
-import Cookies from 'universal-cookie';
-const cookies = new Cookies();
 
 export default class loginReset extends React.Component {
 	constructor(props) {

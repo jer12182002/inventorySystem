@@ -47,7 +47,7 @@ export default class ongoingItem extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.data){
-				let orderItems = data.data.map(item => {
+				let orderItems = data.data.forEach(item => {
 					let chineseName = item.ORDER_ITEM_PRODUCT.split(" ");
 					chineseName = chineseName[chineseName.length-1];
 				
@@ -170,11 +170,11 @@ export default class ongoingItem extends React.Component {
 		});
 
 		//SET PICKUPVALUE, SET TABLETQTY = 0, AND CHECK FOR SUFFICIENCY OF ITEMS
-		uniqueData.map(item=>{
+		uniqueData.forEach(item=>{
 			let orderQty = item.ORDER_ITEM_QTY;
 			let diffItemSum = 0;
 			
-			item.DIFFERENT_TYPE.map(diffItem=>{
+			item.DIFFERENT_TYPE.forEach(diffItem=>{
 				//CHECK IF WE THERE ARE SUFFICIENT ITEMS IN INVENTORY
 				diffItemSum += diffItem.QTY;
 				if(diffItem.ID === null) {
@@ -234,10 +234,10 @@ export default class ongoingItem extends React.Component {
 		}); 	
 
 
-		uniqueData.map(item=>{
+		uniqueData.forEach(item=>{
 			
 			//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
-			let diffItemSum =  item.DIFFERENT_TYPE.reduce((acc, diffItem)=>acc + diffItem.QTY,0);
+			let diffItemSum = item.DIFFERENT_TYPE.reduce((acc, diffItem)=>acc + diffItem.QTY,0);
 
 			if(item.ORDER_ITEM_QTY > diffItemSum) {
 				this.setState({ITEM_NOT_ENOUGH : true});
@@ -324,7 +324,7 @@ export default class ongoingItem extends React.Component {
 		items.forEach(item=> {
 			if(itemId === item.ORDER_ITEM_ID){
 				
-				if(item.ORDER_ITEM_QTY != item.DIFFERENT_TYPE.reduce((acc,diffItem)=>acc+diffItem.PICKUPVALUE,0)) {
+				if(item.ORDER_ITEM_QTY !== item.DIFFERENT_TYPE.reduce((acc,diffItem)=>acc+diffItem.PICKUPVALUE,0)) {
 					$(`#orderQty${key}`).addClass("warning");
 				}else {
 					$(`#orderQty${key}`).removeClass("warning");

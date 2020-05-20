@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 import Moment from 'moment';
-import $ from 'jquery';
 import "./pickupMain.scss";
 
 export default class pickupMain extends React.Component {
@@ -21,7 +20,7 @@ export default class pickupMain extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.orders) {
-				this.setState({PICKUP_ORDERS : data.orders},()=> console.log(this.state));
+				this.setState({PICKUP_ORDERS : data.orders});
 			}
 		})
 	}

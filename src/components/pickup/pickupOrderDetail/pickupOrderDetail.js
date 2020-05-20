@@ -23,7 +23,7 @@ export default class pickupOrderDetail extends React.Component {
 		.then(res => res.json())
 		.then(data => {
 			if(data.orderDetail) {
-				this.setState({ORDER_ITEMS: this.organizeData(data.orderDetail), ORDER_ITEMS_COUNT : data.orderDetail.length},()=>console.log(this.state.ORDER_ITEMS_COUNT));
+				this.setState({ORDER_ITEMS: this.organizeData(data.orderDetail), ORDER_ITEMS_COUNT : data.orderDetail.length});
 			}
 		});
 	}
@@ -52,7 +52,6 @@ export default class pickupOrderDetail extends React.Component {
 
 
 	organizeData (orderDetails) {
-		console.log(orderDetails);
 		let orderItems = [];
 
 		orderDetails.forEach(item => {
@@ -69,7 +68,6 @@ export default class pickupOrderDetail extends React.Component {
 								PICKUP_ITEMS: JSON.parse(item.PICKUP_ITEMS)
 							})
 		})
-		console.log(orderItems);
 		return orderItems;
 	}
 
@@ -80,10 +78,10 @@ export default class pickupOrderDetail extends React.Component {
 
 		if($(`#checkbox${key}`).prop("checked")){
 			$(`#item${key}`).addClass("itemChecked");
-			this.setState({ORDER_ITEMS_COUNT : this.state.ORDER_ITEMS_COUNT - 1},()=>console.log(this.state.ORDER_ITEMS_COUNT));
+			this.setState({ORDER_ITEMS_COUNT : this.state.ORDER_ITEMS_COUNT - 1});
 		} else {
 			$(`#item${key}`).removeClass("itemChecked");
-			this.setState({ORDER_ITEMS_COUNT : this.state.ORDER_ITEMS_COUNT + 1},()=>console.log(this.state.ORDER_ITEMS_COUNT));
+			this.setState({ORDER_ITEMS_COUNT : this.state.ORDER_ITEMS_COUNT + 1});
 		}
 	}
 
@@ -95,7 +93,7 @@ export default class pickupOrderDetail extends React.Component {
 	btnsToggle(e,btnAction) {
 		e.preventDefault();
 
-		if(btnAction === "PUSHED BACK" && $.trim($("#noteInput").val()) || btnAction === "COMPLETED") {
+		if((btnAction === "PUSHED BACK" && $.trim($("#noteInput").val())) || btnAction === "COMPLETED") {
 
 			let today = new Date();
 			today = today.getFullYear() + "-" + ("0" + (today.getMonth() +1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2) + " " + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);

@@ -17,7 +17,6 @@ export default class inventoryControlPanel extends React.Component {
 			checkedId:[]
 		}
 		this.loadAllItem('',true);
-		console.log(this.props.loggedUser);
 	}
 
 	
@@ -69,7 +68,7 @@ export default class inventoryControlPanel extends React.Component {
 					this.setState({defaultAllItems:data.data});
 				}
 
-				data.data.map(item=>{
+				data.data.forEach(item=>{
 					if(this.state.checkedId.includes(item.ID)){
 							item.checked = true;
 					}
@@ -142,14 +141,14 @@ export default class inventoryControlPanel extends React.Component {
 	     		checkedIdArray.push(id);   // push in anyway, then delete the duplicate later
 	    }else {
 	    	checkedIdArray = checkedIdArray.filter(ele => {
-	    		return ele != id;
+	    		return ele !== id;
 	    	});
 	    }
 
 	    checkedIdArray = checkedIdArray.filter((v,i)=>checkedIdArray.indexOf(v)===i);  // delete the duplicate
 
 	   
-	    this.state.defaultAllItems.map(item=>{
+	    this.state.defaultAllItems.forEach(item=>{
 	    	if(checkedIdArray.includes(item.ID)){
 	    		checkedItems.push(item);
 	    	}

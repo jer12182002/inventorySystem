@@ -42,7 +42,7 @@ export default class checkoutMain extends React.Component {
 					ongoingOrders_BACKUP : saveOngoingOrders, 
 					completedOrders_BACKUP : saveCompletedOrders
 			
-				},()=>{console.log(this.state.ongoingOrders_BACKUP);}
+				}
 			);
 			
 		});

@@ -52,7 +52,7 @@ export default class inventoryItemDisplay extends React.Component {
 		holdItem.HOLD_QTY = $(`#holdQty${key}`).val();
 		holdItem.DATE = $(`#holdDate${key}`).val();
 		holdItem.PERSON = this.state.loggedUser.USERNAME;
-		if(holdItem.PERSON === '' || holdItem.HOLD_QTY <= 0 || (holdItem.DATE != '' && holdItem.DATE <= this.props.today)) {
+		if(holdItem.PERSON === '' || holdItem.HOLD_QTY <= 0 || (holdItem.DATE !== '' && holdItem.DATE <= this.props.today)) {
 			alert("Error! You are missed some infomation for hold item !!");
 		}
 
