@@ -340,15 +340,20 @@ export default class inventoryItemDisplay extends React.Component {
 									
 
 
-									<td id={`menu${item.ID}`} className="highlightColor sm-width">{item.MANUFACTURE}</td>
+									<td id={`menu${item.ID}`} className={`highlightColor sm-width ${item.MANUFACTURE}`}>{item.MANUFACTURE}</td>
 									
 
 									{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
+										item.HOLD_QTY === 0? 
 										<td className="margin-center text-center sm-width">
-											{item.HOLD_QTY === 0? 
-												<p>0</p> : <p className = "hold-highlight">{item.HOLD_QTY}</p>
-											}
-										</td> : null
+											<p>0</p>
+										</td>
+										:
+										<td className="margin-center text-center sm-width hold-highlight">
+											<p className = "hold-highlight">{item.HOLD_QTY}</p>
+										</td>
+										
+										: null
 									} 
 
 
