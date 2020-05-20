@@ -43,16 +43,6 @@ class Login extends Component {
     });
   }
 
-	checkEmptyInput(){
-		var goodInput= false;
-    if($("#login_acc").val() && $("#login_pwd").val()){
-      goodInput = true;
-		}else {
-			$(".login-wrapper .statusText").text("Please tpye valid account and password");
-      $(".login-wrapper .statusText").addClass("warning-status");
-		}
-    return goodInput;
-	}
 
 
 
@@ -72,10 +62,7 @@ class Login extends Component {
       loggedInUserInfo:[]
     },
     ()=>{
-          // $(".login-wrapper .statusText").text("Successfully Logged Out");
-          // $(".login-wrapper .loggedInBtns").addClass("display-none");
-          // $(".login-wrapper .beforeLoggedInBtns").removeClass("display-none");
-    this.props.clearAccountInfo();
+      this.props.clearAccountInfo();
     });
   }  
   
@@ -115,7 +102,6 @@ class Login extends Component {
                     </div>
                     <div className="block beforeLoggedInBtns">
                       <button type="button" id="loginBtn" className="btn" onClick = {e => this.loginBtnClicked(e)}>Login</button>
-                      <Link to="/login/account/resetpassword" className="btn">Forget</Link>
                     </div>                    
                   </div>
                 }
@@ -128,6 +114,7 @@ class Login extends Component {
                 "You have Successfully Logged In": null
               }
               </h3>
+              
         		</div>
         	</div>
     </div>

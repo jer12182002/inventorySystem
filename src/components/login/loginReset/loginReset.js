@@ -9,7 +9,8 @@ const cookies = new Cookies();
 export default class loginReset extends React.Component {
 	constructor(props) {
 		super(props);
-		if(this.props.loaction) {
+		
+		if(this.props.location && this.props.location.state) {
 			this.state = {
 				accountInfo : this.props.location.state.accountInfo
 			}
@@ -17,7 +18,7 @@ export default class loginReset extends React.Component {
 			this.state = {
 				accountInfo : []
 			}
-		}
+		}	
 	}
 	
 	clickChangePwd(e){
@@ -32,7 +33,7 @@ export default class loginReset extends React.Component {
 		if(inputCheck) {
 			newUserInfo.id = this.state.accountInfo.ID;
 			newUserInfo.newPassword = $.trim($('#resetPwd').val());
-			
+
 			fetch(`http://localhost:4000/login/account/resetpassword?newUserInfo=${JSON.stringify(newUserInfo)}`)
 			.then(res => res.json())
 			.then(data => {
@@ -63,6 +64,7 @@ export default class loginReset extends React.Component {
 				<div className="header-section">
 					<h1>Reset your account</h1>
 				</div>
+				{this.state.accountInfo.USERNAME?
 				<div className="main-section">
 					<p>#We can only reset your password, if you want to reset your account. Please talk to IT#</p>
 
@@ -70,14 +72,12 @@ export default class loginReset extends React.Component {
         				<h3 className = "statusText success-status text-center"></h3>
         			</div>
 					<form>
-						{this.state.accountInfo.USERNAME?
+						
 						<div className="block border-bottom">
 							<h1>Username:</h1>
 							<h3>{this.state.accountInfo.USERNAME}</h3>
 						</div>
-						:
-						null
-						}
+					
 						<div className="block">
 							<h1>Your Account</h1>
 							<input id="accountCheck" type="text"></input>
@@ -100,6 +100,9 @@ export default class loginReset extends React.Component {
 						</div>
 					</form>
 				</div>
+				:
+				<h1 className="text-center warning-status">You must login to reset your password!</h1>
+				}
 			</div>
 		);
 	}
