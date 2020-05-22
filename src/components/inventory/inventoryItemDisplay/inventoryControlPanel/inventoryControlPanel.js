@@ -1,6 +1,6 @@
 import React from 'react';
 import './inventoryControlPanel.scss';
-
+import BulkItemImporter from'./bulkItemImporter/bulkItemImporter';
 
 import $ from 'jquery';
 
@@ -168,6 +168,7 @@ export default class inventoryControlPanel extends React.Component {
 				<div className="main-section">
 
 				{this.props.loggedUser.ADD_ITEM? 
+					<>
 					<div className="inline-b">
 						<label>Type:</label>
 						<select id="addType">
@@ -199,6 +200,8 @@ export default class inventoryControlPanel extends React.Component {
 
 						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
 					</div>
+					<BulkItemImporter loggedUser={this.state.loggedUser} types={this.props.types}/>
+					</>
 					:null}
 					
 					<div className="inline-f filter-Section">

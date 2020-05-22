@@ -212,6 +212,29 @@ app.get('/inventory/addNewItem',(req,res)=>{
 	});
 });
 
+
+
+app.get('/inventory/addbulkItems',(req,res)=>{
+	let bulkItems = JSON.parse(req.query.bulkItems);
+	
+	let sqlQueries = '';
+	bulkItems.forEach(item=>{
+		sqlQueries += `INSERT INTO item_list(TYPE, SHELF_NO,MANUFACTURE,ENGLISH_NAME,CHINESE_NAME, QTY,EXPIRE_DATE,GRAM,CREATED_BY,LAST_MODIFIED_BY) VALUES ('${item.TYPE}', '${item.SHELF_NO}', '${item.MANUFACTURER}', '${item.ENGLISH_NAME}', '${item.CHINESE_NAME}','${item.QTY}', '${item.EXPIRY_DATE}', '${item.GRAM}', '${item.AUTHOR}', '${item.AUTHOR}');`;
+		let actionDetails = `${item.ENGLISH_NAME} ${item.CHINESE_NAME} Type: ${item.TYPE}, Shelf No: ${item.SHELF_NO}, Manu.: ${item.MANUFACTURER}, QTY: ${item.QTY}, Exp.: ${item.EXPIRY_DATE}, Gram: ${item.GRAM}`;	
+			sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${item.AUTHOR}','Add BulkItems' ,'${actionDetails}');`;		
+	})
+	connection.query(sqlQueries, (err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:'success'});
+		}
+	});
+})
+
+
+
+
 app.get('/inventory/loadAllItem',(req,res)=>{
 	let filter = req.query.filter;
 
