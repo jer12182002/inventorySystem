@@ -127,7 +127,11 @@ export default class bulkItemImporter extends React.Component {
     	fetch(`http://localhost:4000/inventory/addbulkItems?bulkItems=${JSON.stringify(bulkItems)}`)
     	.then(res=>res.json())
     	.then(data => {
-    		console.log(data);
+    		if(data.data) {
+    			//show successfully add items
+    		}else {
+    			// show the original file
+    		}
     	})
     }
   }
