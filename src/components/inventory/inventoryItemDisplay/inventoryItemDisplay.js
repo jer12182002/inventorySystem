@@ -119,7 +119,7 @@ export default class inventoryItemDisplay extends React.Component {
 		let updatedItemInfo = this.state.allItems.filter(item => id === item.ID)[0];
 	
 		if(this.state.loggedUser.NAME_MODIFY) {
-			updatedItemInfo.ENGLISH_NAME = $.trim($("#NAME_EN_M" + id).val());
+			updatedItemInfo.ENGLISH_NAME = $.trim($("#NAME_EN_M" + id).val().toLowerCase().replace(/\s\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase());
 			updatedItemInfo.CHINESE_NAME = $.trim($("#NAME_CH_M" + id).val());
 		}
 		 

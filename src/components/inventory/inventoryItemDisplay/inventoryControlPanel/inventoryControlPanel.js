@@ -38,7 +38,7 @@ export default class inventoryControlPanel extends React.Component {
 			newItem.type = $("#addType").val();
 			newItem.shelfNo = $.trim($("#addShelf").val().toUpperCase());
 			newItem.manufacturer = $.trim($("#addManufact").val().toUpperCase());
-		   	newItem.ENname = $.trim($("#addENName").val().toLowerCase().replace(/\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase());
+		   	newItem.ENname = $.trim($("#addENName").val().toLowerCase().replace(/\s\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase());
 		   	newItem.CHname = $.trim($("#addCHName").val());
 		   	newItem.qty = $.trim($("#addQty").val());
 		   	newItem.exp = $.trim($("#addExp").val());
