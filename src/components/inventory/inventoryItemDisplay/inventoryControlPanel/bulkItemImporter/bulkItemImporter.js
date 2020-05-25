@@ -1,4 +1,5 @@
 import React from 'react';
+import './bulkItemImporter.scss';
 import $ from 'jquery';
 import Moment from 'moment';
 import {CSVReader} from 'react-papaparse';
@@ -9,7 +10,8 @@ export default class bulkItemImporter extends React.Component {
 
 		this.state = {
 			loggedUser: [],
-			types: []
+			types: [], 
+			bulkItems: []
 		}
 	}
 
@@ -19,41 +21,6 @@ export default class bulkItemImporter extends React.Component {
 	  }
 	}
 
-// 	processFile (path){
-// 		// let csvFilePath = require(path);
-// 		// let Papa = require("papaparse/papaparse.min.js");
-// 		// Papa.parse(csvFilePath, {
-// 		// 	header:true,
-// 		// 	skipEmptyLine:true,
-// 		// 	complete: (result)=>{
-// 		// 		console.log(result.data);
-// 		// 	}
-// 		// })
-// 		const fs = require('fs');
-// 		const file = fs.createReadStream(path);
-// 		const papa = require('papaparse');
-// 		var count = 0;
-// 		papa.parse(file, {
-//     worker: true, // Don't bog down the main thread if its a big file
-//     step: function(result) {
-//         // do stuff with result
-//     },
-//     complete: function(results, file) {
-//         console.log('parsing complete read', count, 'records.'); 
-//     }
-// });
-
-// 	}
-
-// 	fileUploaded(e){
-// 		e.preventDefault();
-// 		console.log($('#fileUpload').val());
-// 		if($('#fileUpload').val().includes('.csv')) {
-// 			this.processFile($('#fileUpload').val());
-// 		}else {
-// 			alert("File type is not supported, please upload CSV file only");
-// 		}
-// 	}
 
 
   handleOnDrop = (data) => {
@@ -124,11 +91,12 @@ export default class bulkItemImporter extends React.Component {
     	}
     }
     if(bulkItems.length > 0) {
-    	fetch(`http://localhost:4000/inventory/addbulkItems?bulkItems=${JSON.stringify(bulkItems)}`)
+    	fetch(`http://localhost:4000/inventory/addbulkItemsRepo?bulkItems=${JSON.stringify(bulkItems)}`)
     	.then(res=>res.json())
     	.then(data => {
     		if(data.data) {
-    			//show successfully add items
+    			this.setState({bulkItems: data.data});
+    			$('.bulkItemImporter-wrapper .result-container').removeClass('display-none');
     		}else {
     			// show the original file
     		}
@@ -136,6 +104,37 @@ export default class bulkItemImporter extends React.Component {
     }
   }
 
+
+
+  bulkImportClick(e) {
+  	e.preventDefault();
+  	fetch(`http://localhost:4000/inventory/addbulkItems?redayToImport=${JSON.stringify(true)}`)
+  	.then(res => res.json())
+  	.then(data => {
+  		if(data.data && data.data === 'success') {
+  			console.log(data.data);
+  			alert("Bulkitems are successfully Imported!");
+  		}else {
+  			alert("Something went wrong!, Please try again");
+  		}
+  		window.location.reload();
+  	})
+  }
+
+
+
+  closeBulkItemsContainer(e) {
+  	e.preventDefault();
+  	fetch(`http://localhost:4000/inventory/addbulkItems?redayToImport=${JSON.stringify(false)}`)
+  	.then(res => res.json())
+  	.then(data => {
+  		if(data.data && data.data === 'success') {
+  			 $('.bulkItemImporter-wrapper .result-container').addClass('display-none');
+  		}else {
+  			window.location.reload();
+  		}
+  	})
+  }
 
 
   handleOnError = (err, file, inputElem, reason) => {
@@ -147,6 +146,9 @@ export default class bulkItemImporter extends React.Component {
     console.log(data)
     console.log('---------------------------')
   }
+
+
+
 
 	render() {
 				//<input id="fileUpload" type="file" accept=".csv" onChange={e=>this.fileUploaded(e,this)}></input>
@@ -161,7 +163,54 @@ export default class bulkItemImporter extends React.Component {
 			      >
 			        <span>Click to upload.</span>
 	      		</CSVReader>
+
+	      		<div className="result-container display-none">
+	      			<button type="button" className="close-btn" aria-label="Close"  onClick={e=>this.closeBulkItemsContainer(e)}><span aria-hidden="true">&times;</span></button>
+	      			{this.state.bulkItems.length > 0 ?
+	      			<div className="item-info">
+	      			<h1><span>{this.state.bulkItems.length}</span> Items are ready to be imported!</h1>
+		      			<table>
+		      				<thead>
+		      					<tr>
+		      						<td>Index</td>
+		      						<td className="text-left">Name</td>
+		      						<td className="text-left">商品名稱</td>
+		      						<td>Type</td>
+		      						<td>Shelf No</td>
+		      						<td>Manu.</td>
+		      						<td>Qty</td>
+		      						<td>Exp</td>
+		      						<td>Gram</td>
+		      					</tr>
+		      				</thead>
+		      				<tbody>
+		      					{this.state.bulkItems.map((item,key)=>
+		      						<tr key={`bulkItem${key+1}`}>
+		      							<td>{key+1}</td>
+			      						<td className="text-left">{item.ENGLISH_NAME}</td>
+			      						<td className="text-left">{item.CHINESE_NAME}</td>
+			      						<td>{item.TYPE}</td>
+			      						<td>{item.SHELF_NO}</td>
+			      						<td>{item.MANUFACTURE}</td>
+			      						<td>{item.QTY}</td>
+			      						<td>{Moment(item.EXPIRE_DATE).format('YYYY-MM-DD')}</td>
+			      						<td>{item.GRAM}</td>
+		      						</tr>
+		      					)}
+		      				</tbody>
+		      				
+		      			</table>
+		      			<div className="btns-container">
+		      				<button className="btn btn-success" onClick={e=>this.bulkImportClick(e)}>Import</button>
+		      				<button className="btn btn-warning" onClick={e=>this.closeBulkItemsContainer(e)}>Cancel</button>
+		      			</div>
+	      			</div>
+	      			:
+	      			<h1>No items have been imported, please check your data format</h1>
+	      		}
+	      		</div>
 			</div>
 		);
 	}
 }
+
