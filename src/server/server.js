@@ -243,16 +243,16 @@ app.get('/inventory/addbulkItemsRepo',(req,res)=>{
 
 app.get('/inventory/addbulkItems',(req,res)=>{
 
-	let redayToImport = JSON.parse(req.query.redayToImport);
-
+	let readyToImport = JSON.parse(req.query.readyToImport);
+	console.log(readyToImport);
 	let sqlQueries = '';
-	if(redayToImport) {
+	if(readyToImport) {
 		sqlQueries = 'INSERT INTO item_list( TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY) SELECT TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY FROM bulk_item_list_repository;';
 	}
 
-		sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
+	sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
 
-		console.log(sqlQueries);
+	console.log(readyToImport)
 	connection.query(sqlQueries, (err, result)=> {
 		if(err) {
 			res.send(err);

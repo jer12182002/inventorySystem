@@ -25,8 +25,6 @@ export default class bulkItemImporter extends React.Component {
 
   handleOnDrop = (data) => {
   	let bulkItems = [];
-    console.log(this.state.types);
-    console.log(data);
 	 
     for (let i = 1; i < data.length;i++) {
     	let passCheck = true;
@@ -35,7 +33,6 @@ export default class bulkItemImporter extends React.Component {
     	data[i].data.forEach(itemAttr=>{  
     		if($.trim(itemAttr.toString().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '')) === "" ) {
     			passCheck = false;
-    			console.log("empty or sepcial words chk fails");
     		}
     	})
 
@@ -71,9 +68,6 @@ export default class bulkItemImporter extends React.Component {
 
 
     	if(passCheck) {
-    		let dateFormat = new Date(new Date($.trim(data[i].data[6].toString().match(/^[0-9]{4}[\-+.~_/][0-9]{2}[\-+.~_/][0-9]{2}$/g))));
-    		dateFormat.setDate(dateFormat.getDate()+1);
-
     		let item = {
     			TYPE: $.trim(data[i].data[0].toString().replace(/[^a-z]/gi,'')).replace(/^[a-z]/g,c => c.toUpperCase()),
     			SHELF_NO: $.trim(data[i].data[1].toString().replace(/[^a-z0-9]/gi,'')).toUpperCase(),
@@ -81,13 +75,12 @@ export default class bulkItemImporter extends React.Component {
     			ENGLISH_NAME: $.trim(data[i].data[3].toString().replace(/[^a-z0-9 ]/gi,'').toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase()),
     			CHINESE_NAME: $.trim(data[i].data[4].toString().split("").filter(char => /\p{Script=Han}/u.test(char)).join("")),
     			QTY: parseInt(data[i].data[5]),
-    			EXPIRY_DATE: Moment(dateFormat).format('YYYY-MM-DD'),
+    			EXPIRY_DATE: Moment(new Date($.trim(data[i].data[6].toString().match(/^[0-9]{4}[\-+.~_/][0-9]{2}[\-+.~_/][0-9]{2}$/g)))).format('YYYY-MM-DD'),
     			GRAM: parseInt(data[i].data[7]),
     			AUTHOR: this.state.loggedUser.USERNAME
 
     		}
     		bulkItems.push(item);
-    		console.log(bulkItems);
     	}
     }
     if(bulkItems.length > 0) {
@@ -98,9 +91,11 @@ export default class bulkItemImporter extends React.Component {
     			this.setState({bulkItems: data.data});
     			$('.bulkItemImporter-wrapper .result-container').removeClass('display-none');
     		}else {
-    			// show the original file
+    			alert("OOps! Something went wrong...");
     		}
     	})
+    }else {
+    	alert("There are something wrong in your data. Please check");
     }
   }
 
@@ -108,11 +103,10 @@ export default class bulkItemImporter extends React.Component {
 
   bulkImportClick(e) {
   	e.preventDefault();
-  	fetch(`http://localhost:4000/inventory/addbulkItems?redayToImport=${JSON.stringify(true)}`)
+  	fetch(`http://localhost:4000/inventory/addbulkItems?readyToImport=${JSON.stringify(true)}`)
   	.then(res => res.json())
   	.then(data => {
   		if(data.data && data.data === 'success') {
-  			console.log(data.data);
   			alert("Bulkitems are successfully Imported!");
   		}else {
   			alert("Something went wrong!, Please try again");
@@ -125,15 +119,16 @@ export default class bulkItemImporter extends React.Component {
 
   closeBulkItemsContainer(e) {
   	e.preventDefault();
-  	fetch(`http://localhost:4000/inventory/addbulkItems?redayToImport=${JSON.stringify(false)}`)
-  	.then(res => res.json())
+	fetch(`http://localhost:4000/inventory/addbulkItems?readyToImport=${JSON.stringify(false)}`)
+	.then(res => res.json())
   	.then(data => {
   		if(data.data && data.data === 'success') {
-  			 $('.bulkItemImporter-wrapper .result-container').addClass('display-none');
+  			$('.bulkItemImporter-wrapper .result-container').addClass('display-none'); 	
   		}else {
+  			alert("Something went wrong!, Please try again");
   			window.location.reload();
   		}
-  	})
+  	});
   }
 
 
@@ -141,17 +136,11 @@ export default class bulkItemImporter extends React.Component {
     console.log(err)
   }
 
-  handleOnRemoveFile = (data) => {
-    console.log('---------------------------')
-    console.log(data)
-    console.log('---------------------------')
-  }
 
 
 
 
 	render() {
-				//<input id="fileUpload" type="file" accept=".csv" onChange={e=>this.fileUploaded(e,this)}></input>
 		return (
 			<div className="bulkItemImporter-wrapper inline-b">
 				<CSVReader
@@ -159,9 +148,9 @@ export default class bulkItemImporter extends React.Component {
 			        onError={this.handleOnError}
 			        noDrag
 			        addRemoveButton
-			        onRemoveFile={this.handleOnRemoveFile}
+			        
 			      >
-			        <span>Click to upload.</span>
+			        <span>BulkAdd</span>
 	      		</CSVReader>
 
 	      		<div className="result-container display-none">

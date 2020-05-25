@@ -180,13 +180,13 @@ export default class inventoryControlPanel extends React.Component {
 						<label>Shelf No.:</label>
 						<input id="addShelf" type="text"></input>
 
-						<label>Manaufacturer:</label>
+						<label>Manu:</label>
 						<input id="addManufact" type="text"></input>
 
-						<label>En Name:</label>
+						<label>Name:</label>
 						<input id="addENName" type="text"></input>
 
-						<label>CH Name:</label>
+						<label>商品名稱:</label>
 						<input id="addCHName" type="text"></input>
 
 						<label>QTY:</label>
@@ -199,8 +199,8 @@ export default class inventoryControlPanel extends React.Component {
 						<input id="addGram" type="number"></input>
 
 						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
+						<BulkItemImporter loggedUser={this.state.loggedUser} types={this.props.types}/>
 					</div>
-					<BulkItemImporter loggedUser={this.state.loggedUser} types={this.props.types}/>
 					</>
 					:null}
 					
