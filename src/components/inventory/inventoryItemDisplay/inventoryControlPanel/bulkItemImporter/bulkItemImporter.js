@@ -72,7 +72,7 @@ export default class bulkItemImporter extends React.Component {
     			TYPE: $.trim(data[i].data[0].toString().replace(/[^a-z]/gi,'')).replace(/^[a-z]/g,c => c.toUpperCase()),
     			SHELF_NO: $.trim(data[i].data[1].toString().replace(/[^a-z0-9]/gi,'')).toUpperCase(),
     			MANUFACTURER: $.trim(data[i].data[2].toString().replace(/[^a-z0-9]/gi,'')).toUpperCase(),
-    			ENGLISH_NAME: $.trim(data[i].data[3].toString().replace(/[^a-z0-9 ]/gi,'').toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase()),
+    			ENGLISH_NAME: $.trim(data[i].data[3].toString().toLowerCase().replace(/\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase()),
     			CHINESE_NAME: $.trim(data[i].data[4].toString().split("").filter(char => /\p{Script=Han}/u.test(char)).join("")),
     			QTY: parseInt(data[i].data[5]),
     			EXPIRY_DATE: Moment(new Date($.trim(data[i].data[6].toString().match(/^[0-9]{4}[\-+.~_/][0-9]{2}[\-+.~_/][0-9]{2}$/g)))).format('YYYY-MM-DD'),
