@@ -37,6 +37,7 @@ export default class inventoryMain extends React.Component {
 		.then(data =>{
 
 			if(data.data){
+				console.log(data.data);
 				this.setState({allItems: this.setStateWithRowSpan(data.data)});
 			}	
 		});

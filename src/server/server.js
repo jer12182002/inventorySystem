@@ -274,8 +274,9 @@ app.get('/inventory/addNewItem',(req,res)=>{
 
 
 
-app.get('/inventory/addbulkItemsRepo',(req,res)=>{
-	let bulkItems = JSON.parse(req.query.bulkItems);
+app.post('/inventory/addbulkItemsRepo',(req,res)=>{
+	//let bulkItems = JSON.parse(req.query.bulkItems);
+	let bulkItems = req.body.bulkItems;
 	
 	let sqlQueries = '';
 	bulkItems.forEach(item=>{
@@ -329,11 +330,9 @@ app.get('/inventory/addbulkItems',(req,res)=>{
 app.get('/inventory/loadAllItem',(req,res)=>{
 	let filter = req.query.filter;
 
-	//let sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.HOLD_QTY, I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY,ROWSPAN FROM item_list I INNER JOIN (SELECT ENGLISH_NAME AS T_ENGLISH_NAME, CHINESE_NAME AS T_CHINESE_NAME,TYPE AS T_TYPE, SUM(QTY) AS T_QTY,'Filter' AS ROWSPAN FROM item_list GROUP BY CHINESE_NAME, TYPE) T ON I.ENGLISH_NAME = T.T_ENGLISH_NAME AND I.CHINESE_NAME = T.T_CHINESE_NAME AND I.TYPE = T.T_TYPE WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.TYPE, I.ENGLISH_NAME`;
-	let sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.HOLD_QTY, I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY FROM item_list I INNER JOIN (SELECT ENGLISH_NAME AS T_ENGLISH_NAME, CHINESE_NAME AS T_CHINESE_NAME,TYPE AS T_TYPE, SUM(QTY) AS T_QTY,'Filter' AS ROWSPAN FROM item_list GROUP BY CHINESE_NAME, TYPE) T ON I.ENGLISH_NAME = T.T_ENGLISH_NAME AND I.CHINESE_NAME = T.T_CHINESE_NAME AND I.TYPE = T.T_TYPE WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.TYPE, I.ENGLISH_NAME`;
-	
-	console.log(sqlQuery);
+	let	sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.HOLD_QTY, I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY FROM item_list I INNER JOIN (SELECT CONCAT(ENGLISH_NAME, CHINESE_NAME, TYPE) AS T_NAME, SUM(QTY) AS T_QTY FROM item_list GROUP BY CONCAT(CHINESE_NAME, ENGLISH_NAME, TYPE)) T ON CONCAT(I.ENGLISH_NAME, I.CHINESE_NAME, I.TYPE) = T.T_NAME WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.TYPE, I.ENGLISH_NAME;`; 
 	console.log('Get all item for inventory');
+	console.log(sqlQuery);
 
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){

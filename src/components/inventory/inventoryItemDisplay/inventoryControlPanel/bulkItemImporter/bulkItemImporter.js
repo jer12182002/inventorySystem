@@ -83,8 +83,18 @@ export default class bulkItemImporter extends React.Component {
     		bulkItems.push(item);
     	}
     }
+    console.log(bulkItems);
     if(bulkItems.length > 0) {
-    	fetch(`http://localhost:4000/inventory/addbulkItemsRepo?bulkItems=${JSON.stringify(bulkItems)}`)
+    //	fetch(`http://localhost:4000/inventory/addbulkItemsRepo?bulkItems=${JSON.stringify(bulkItems)}`)
+    fetch(`http://localhost:4000/inventory/addbulkItemsRepo`,
+    	{	method:'POST',  
+    		headers: {
+    		    'Content-Type': 'application/json'
+    		},
+    		body: JSON.stringify({
+    			bulkItems: bulkItems
+    		})
+    	})
     	.then(res=>res.json())
     	.then(data => {
     		if(data.data) {
