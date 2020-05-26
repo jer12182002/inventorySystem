@@ -2,6 +2,7 @@ import React from 'react';
 import './inventoryItemDisplay.scss';
 
 
+import Moment from 'moment';
 import $ from 'jquery';
 
 import ControlPanel from './inventoryControlPanel/inventoryControlPanel';
@@ -17,8 +18,6 @@ export default class inventoryItemDisplay extends React.Component {
 			checkedItem:[]
 		}
 
-		
-
 		if(this.state.loggedUser.TYPE_MODIFY || this.state.loggedUser.ADD_ITEM) {
 			this.loadSelect();
 		}
@@ -30,6 +29,8 @@ export default class inventoryItemDisplay extends React.Component {
 	    this.setState({allItems: newProps.allItems});
 	  }
 	}
+
+
 //======================== Preset load ============================================
 	loadSelect(){
 		fetch(`http://localhost:4000/inventory/loadSelect`)
@@ -67,10 +68,6 @@ export default class inventoryItemDisplay extends React.Component {
 			})
 		}
 	}
-
-
-
-
 
 
 
@@ -216,6 +213,7 @@ export default class inventoryItemDisplay extends React.Component {
 
 
 	render() {
+		console.log(this.state.allItems);
 
 		return (
 			<div className="inventoryitemdisplay-wrapper">
@@ -372,24 +370,23 @@ export default class inventoryItemDisplay extends React.Component {
 
 									
 
-									{this.state.loggedUser.QTY_VIEW ?
-										this.state.loggedUser.QTY_MODIFY?
-											item.ROWSPAN > 0? //allow to display number
-												<td rowSpan = {item.ROWSPAN} className="margin-center text-center sm-width">{item.T_QTY}</td>
-												:null
-											:	
-											item.ROWSPAN > 0? //allow to display number
-												<td rowSpan = {item.ROWSPAN} className="margin-center text-center sm-width">{item.T_QTY}</td>
-												:null
-										:null
+									{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY ?
+										item.ROWSPAN > 0? //allow to display number
+											<td rowSpan = {item.ROWSPAN} className="margin-center text-center sm-width">{item.T_QTY}</td>
+											: 
+											null
+										:
+										null
 									}
+									
 
 
 
 									{this.state.loggedUser.EXP_VIEW ?
 										this.state.loggedUser.EXP_MODIFY? 
-											<td className="bbg-width">
+											<td className={`bbg-width ${Moment(item.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.props.toady).format('YYYY-MM')? 'expired-date':'' }`}>
 												<p>{item.EXPIRE_DATE}</p>
+		
 												<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} sm-input display-none `} defaultValue={item.EXPIRE_DATE}/>
 											</td>
 											:<td className="bg-width">
