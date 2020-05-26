@@ -178,6 +178,66 @@ app.get('/login/account/saveUpdatedUser',(req,res)=>{
 
 
 
+//****************************Announcement***************************************************
+
+app.get('/home/loadallannouncements',(req,res)=>{
+	let sqlQuery = 'SELECT * FROM announcements';
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:result});
+		}
+	})
+})
+
+
+app.get('/home/addannouncements',(req,res)=>{
+	let announcementInfo = JSON.parse(req.query.announcementInfo);
+	
+	let sqlQuery = `INSERT INTO announcements (ANNOUNCEMENT, PERSON) VALUES('${announcementInfo.ANNOUNCEMENT}', '${announcementInfo.PERSON}');`;
+
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:'success'});
+		}
+	})
+})
+
+
+
+app.get('/home/modifyannouncements',(req,res)=>{
+	let announcementInfo = JSON.parse(req.query.announcementInfo);
+	
+	let sqlQuery = '';
+
+	if(announcementInfo.ACTION === 'update') {
+		sqlQuery = `UPDATE announcements SET ANNOUNCEMENT = '${announcementInfo.ANNOUNCEMENT}' WHERE ID = ${announcementInfo.ID};`;
+	}else if(announcementInfo.ACTION === 'delete') {
+		sqlQuery = `DELETE FROM announcements WHERE ID = ${announcementInfo.ID};`;
+	}
+ 
+	connection.query(sqlQuery,(err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:'success'});
+		}
+	})
+})
+
+
+//*******************************************************************************************
+
+
+
+
+
+
+
 //****************************Inventroy******************************************************
 app.get('/inventory/loadSelect',(req,res)=>{
 

@@ -120,7 +120,7 @@ export default class inventoryItemDisplay extends React.Component {
 	
 		if(this.state.loggedUser.NAME_MODIFY) {
 			updatedItemInfo.ENGLISH_NAME = $.trim($("#NAME_EN_M" + id).val().toLowerCase().replace(/\s\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase());
-			updatedItemInfo.CHINESE_NAME = $.trim($("#NAME_CH_M" + id).val());
+			updatedItemInfo.CHINESE_NAME = $.trim($("#NAME_CH_M" + id).val().replace(/\s\s/g, ''));
 		}
 		 
 		if(this.state.loggedUser.TYPE_MODIFY) {
@@ -128,7 +128,8 @@ export default class inventoryItemDisplay extends React.Component {
 		}
 
 		if(this.state.loggedUser.SHELF_MODIFY) {
-			updatedItemInfo.SHELF_NO = $.trim($("#SHELF_M" + id).val().toUpperCase());
+			updatedItemInfo.SHELF_NO = $.trim($("#SHELF_M" + id).val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '').toUpperCase());
+			
 		}
 
 		if(this.state.loggedUser.QTY_MODIFY) {

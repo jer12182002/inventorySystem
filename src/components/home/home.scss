@@ -1,0 +1,41 @@
+.home-wrapper {
+	text-align: center;
+	
+	.accouncement-field,.announcementPush-field {
+		width: 80%;
+		height: 200px;
+		margin: 0 auto;
+		margin-top: 40px;
+		
+		.announcementInfo {
+			display: inline-block;
+			text-align: right;
+			width: 100%;
+			margin: 0 auto;
+		}
+
+
+		.accnounceDisplay-manager, .accnounceDisplay, #announcementManagerInput {
+			position: relative;
+			width: 100%;
+			height: 80%;
+			border: 3px solid black;
+			border-radius: 25px;
+			background-color: lightblue;
+			text-align: left;
+			padding: 10px;
+		}
+
+		#announcementManagerInput {
+			background-color: lightyellow;
+		}
+
+		.btnsContainer {
+			display: block;
+			button {
+				margin: 0 5px;
+			}
+		}
+	}
+
+}

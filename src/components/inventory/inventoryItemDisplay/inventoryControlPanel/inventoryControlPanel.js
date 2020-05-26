@@ -27,19 +27,20 @@ export default class inventoryControlPanel extends React.Component {
 		let newItem = {};
 
 		if($("#addType").val()
-		   && $.trim($("#addShelf").val()) 
-		   && $.trim($("#addManufact").val())
-		   && $.trim($("#addENName").val())
-		   && $.trim($("#addCHName").val())
+		   && $.trim($("#addShelf").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '')) 
+		   && $.trim($("#addManufact").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, ''))
+		   && $.trim($("#addENName").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, ''))
+		   && $.trim($("#addCHName").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, ''))
 		   && $.trim($("#addQty").val())
 		   && $.trim($("#addExp").val())
 		   && $.trim($("#addGram").val())
-		   ){
+		){
+			
 			newItem.type = $("#addType").val();
-			newItem.shelfNo = $.trim($("#addShelf").val().toUpperCase());
-			newItem.manufacturer = $.trim($("#addManufact").val().toUpperCase());
+			newItem.shelfNo = $.trim($("#addShelf").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '').toUpperCase());
+			newItem.manufacturer = $.trim($("#addManufact").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '').toUpperCase());
 		   	newItem.ENname = $.trim($("#addENName").val().toLowerCase().replace(/\s\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase());
-		   	newItem.CHname = $.trim($("#addCHName").val());
+		   	newItem.CHname = $.trim($("#addCHName").val().replace(/\s\s/g, ''));
 		   	newItem.qty = $.trim($("#addQty").val());
 		   	newItem.exp = $.trim($("#addExp").val());
 		    newItem.gram = $.trim($("#addGram").val()); 
