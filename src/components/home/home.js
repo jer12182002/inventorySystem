@@ -20,7 +20,7 @@ export default class home extends React.Component {
 		.then(res=>res.json())
 		.then(data =>{
 			if(data.data){
-				this.setState({announcements: data.data},()=>console.log(this.state.announcements));
+				this.setState({announcements: data.data});
 			}
 		});
 	}
@@ -78,21 +78,17 @@ export default class home extends React.Component {
 				<h1>Announcement</h1>
 				
 				{this.state.announcements.map((announcement, key)=>
-					this.state.accountInfo.ACCESS_LEVEL < 3?
+					this.state.accountInfo.ACCESS_LEVEL < 3 && this.state.accountInfo.USERNAME === announcement.PERSON?
 						
 						<div className="accouncement-field" key={`announcement${key}`}>
 							<p className="announcementInfo">Time: {Moment(announcement.TIME).format('YYYY-MM-DD')}By.{announcement.PERSON}</p>
 							<textarea id={`announcement-${announcement.ID}`} className="accnounceDisplay-manager" defaultValue={announcement.ANNOUNCEMENT}/>
-							{this.state.accountInfo.USERNAME === announcement.PERSON?
+		
 							<div className="btnsContainer">
 								<button onClick={e=>this.btnModifyActions(e, 'update',announcement.ID)} className="btn btn-warning">Update</button>
 								<button onClick={e=>this.btnModifyActions(e, 'delete',announcement.ID)} className="btn btn-danger">Delete</button>
 							</div>
-							:
-							null
-							}
-						</div>
-						
+						</div>				
 						:
 						<div className="accouncement-field" key={`announcement${key}`}>
 							<p className="announcementInfo">Time: {Moment(announcement.TIME).format('YYYY-MM-DD')}    By.{announcement.PERSON}</p>
