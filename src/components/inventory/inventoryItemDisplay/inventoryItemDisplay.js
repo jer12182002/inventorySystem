@@ -92,7 +92,6 @@ export default class inventoryItemDisplay extends React.Component {
 			sortedData = sortedData.sort((a,b)=>b[field].toString().localeCompare(a[field].toString()));
 			$(`#inv${field}-sortToggleBtn`).text('ASC');
 		}
-
 		this.setState({allItems:this.props.setStateWithRowSpan(sortedData)});
 	}
 //=================================================================================
@@ -213,8 +212,6 @@ export default class inventoryItemDisplay extends React.Component {
 
 
 	render() {
-		console.log(this.state.allItems);
-
 		return (
 			<div className="inventoryitemdisplay-wrapper">
 

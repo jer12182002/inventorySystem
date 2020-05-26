@@ -37,7 +37,6 @@ export default class inventoryMain extends React.Component {
 		.then(data =>{
 
 			if(data.data){
-				console.log(data.data);
 				this.setState({allItems: this.setStateWithRowSpan(data.data)});
 			}	
 		});
@@ -126,16 +125,30 @@ export default class inventoryMain extends React.Component {
 
 //============================= Display Functions ===================================
 	setStateWithRowSpan(recivedData){
+		console.log(recivedData);
 		recivedData.forEach((data,index)=>{
 			let rowSpan = 1;
 
-			if(index !== recivedData.length-1 
+			if(index !== recivedData.length-1   // item is not the last one
 				&& recivedData[index+1].ENGLISH_NAME === data.ENGLISH_NAME 
 				&& recivedData[index+1].CHINESE_NAME === data.CHINESE_NAME 
 				&& recivedData[index+1].TYPE === data.TYPE) {
-					rowSpan = recivedData.filter(r => r.ENGLISH_NAME === data.ENGLISH_NAME && r.CHINESE_NAME === data.CHINESE_NAME && r.TYPE === data.TYPE).length;
+					//rowSpan = recivedData.filter(r => r.ENGLISH_NAME === data.ENGLISH_NAME && r.CHINESE_NAME === data.CHINESE_NAME && r.TYPE === data.TYPE).length;		
+					
+					let addIndex = 1;
+					while(true) {
+						if(index+addIndex <= recivedData.length-1
+						&&recivedData[index+addIndex].ENGLISH_NAME === data.ENGLISH_NAME
+						&& recivedData[index+addIndex].CHINESE_NAME === data.CHINESE_NAME
+						&& recivedData[index+addIndex].TYPE === data.TYPE){
+							rowSpan++;
+							addIndex++;
+						}else {
+							break;
+						}
+					}
 			}
-			if(index>=1 
+			if(index >= 1  
 				&& recivedData[index-1].ENGLISH_NAME === data.ENGLISH_NAME 
 				&& recivedData[index-1].CHINESE_NAME === data.CHINESE_NAME 	
 				&& recivedData[index-1].TYPE === data.TYPE) {
@@ -143,6 +156,7 @@ export default class inventoryMain extends React.Component {
 			}			
 			data.ROWSPAN = rowSpan;		
 		})
+
 		return recivedData;
 	}
 
