@@ -125,7 +125,6 @@ export default class inventoryMain extends React.Component {
 
 //============================= Display Functions ===================================
 	setStateWithRowSpan(recivedData){
-		console.log(recivedData);
 		recivedData.forEach((data,index)=>{
 			let rowSpan = 1;
 

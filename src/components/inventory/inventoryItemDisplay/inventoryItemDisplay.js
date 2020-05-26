@@ -86,10 +86,10 @@ export default class inventoryItemDisplay extends React.Component {
 		let sortedData = this.state.allItems;
 			
 		if(fieldBtnText === 'ASC') {
-			sortedData = sortedData.sort((a,b)=>a[field].toString().localeCompare(b[field].toString()));
+			sortedData = sortedData.sort((a,b)=>isNaN(a[field])? a[field].toString().localeCompare(b[field].toString()):a[field]-b[field]);
 			$(`#inv${field}-sortToggleBtn`).text('DESC');
 		}else {
-			sortedData = sortedData.sort((a,b)=>b[field].toString().localeCompare(a[field].toString()));
+			sortedData = sortedData.sort((a,b)=>isNaN(b[field])? b[field].toString().localeCompare(a[field].toString()):b[field]-a[field]);
 			$(`#inv${field}-sortToggleBtn`).text('ASC');
 		}
 		this.setState({allItems:this.props.setStateWithRowSpan(sortedData)});
