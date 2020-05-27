@@ -38,6 +38,8 @@ class Login extends Component {
       if(data.data[0]){
       this.setState({loggedInUserInfo: data.data[0]},()=>{
         this.props.saveAccountFromLogIn(this.state.loggedInUserInfo);
+
+        window.location.href="/";
       });
       }
     });

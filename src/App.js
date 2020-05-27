@@ -61,8 +61,6 @@ saveAccountFromLogIn(userLogin){
 
       let cookiesUser = {ACCOUNT: userLogin.ACCOUNT, PASSWORD: userLogin.PASSWORD, expires: time};
       cookies.set('RenDeIncInventorySys', cookiesUser,{expires:time, path:'/'});
-     
-
       this.checkPermissionBySeconds();
     });
   }

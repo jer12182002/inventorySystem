@@ -181,7 +181,7 @@ app.get('/login/account/saveUpdatedUser',(req,res)=>{
 //****************************Announcement***************************************************
 
 app.get('/home/loadallannouncements',(req,res)=>{
-	let sqlQuery = 'SELECT * FROM announcements';
+	let sqlQuery = 'SELECT * FROM announcements ORDER BY TIME DESC';
 
 	connection.query(sqlQuery,(err,result)=>{
 		if(err) {
