@@ -141,7 +141,7 @@ export default class activityLogs extends React.Component {
 						{this.state.inventoryLogs.map((log, key)=>
 							<tr key={`invLog-${key+1}`}>
 								<td>{key+1}</td>
-								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:MM:SS')}</td>
+								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:mm:ss')}</td>
 								<td className="logAction">{log.ACTION}</td>
 								<td className="logDetail">{log.DETAIL}</td>
 								{this.state.accountInfo.ACCESS_LEVEL<3?
@@ -180,7 +180,7 @@ export default class activityLogs extends React.Component {
 						{this.state.chk_pickupLogs.map((log, key)=>
 							<tr key={`chk_pickupLog-${key+1}`}>
 								<td>{key+1}</td>
-								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:MM:SS')}</td>
+								<td>{Moment(log.TIME).format('YYYY-MM-DD HH:mm:ss')}</td>
 								<td className="logAction">{log.ACTION}</td>
 								<td className="logDetail">{log.DETAIL}</td>
 								{this.state.accountInfo.ACCESS_LEVEL<3?

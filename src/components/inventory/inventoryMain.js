@@ -124,22 +124,41 @@ export default class inventoryMain extends React.Component {
 
 
 //============================= Display Functions ===================================
-	setStateWithRowSpan(recivedData){
-		recivedData.forEach((data,index)=>{
+	setStateWithRowSpan(receivedData){
+		// let index = 0
+		// for (index ; index < receivedData.length; index++) {
+		// let rowSpan = 1;
+		// 	receivedData[index].ROWSPAN = 1;
+		// 	while (true) {
+		// 		if( index + rowSpan != receivedData.length
+		// 			&&receivedData[index].ENGLISH_NAME === receivedData[index+rowSpan].ENGLISH_NAME
+		// 			&&receivedData[index].CHINESE_NAME === receivedData[index+rowSpan].CHINESE_NAME
+		// 			&&receivedData[index].TYPE === receivedData[index+rowSpan].TYPE
+		// 			) {
+		// 			rowSpan++;
+		// 		}else {
+		// 			index+= rowSpan;
+		// 			break;
+		// 		}
+		// 	}
+
+		// 	receivedData[index].ROWSPAN = rowSpan;
+		// }
+		receivedData.forEach((data,index)=>{
 			let rowSpan = 1;
 
-			if(index !== recivedData.length-1   // item is not the last one
-				&& recivedData[index+1].ENGLISH_NAME === data.ENGLISH_NAME 
-				&& recivedData[index+1].CHINESE_NAME === data.CHINESE_NAME 
-				&& recivedData[index+1].TYPE === data.TYPE) {
+			if(index !== receivedData.length-1   // item is not the last one
+				&& receivedData[index+1].ENGLISH_NAME === data.ENGLISH_NAME 
+				&& receivedData[index+1].CHINESE_NAME === data.CHINESE_NAME 
+				&& receivedData[index+1].TYPE === data.TYPE) {
 					//rowSpan = recivedData.filter(r => r.ENGLISH_NAME === data.ENGLISH_NAME && r.CHINESE_NAME === data.CHINESE_NAME && r.TYPE === data.TYPE).length;		
 					
 					let addIndex = 1;
 					while(true) {
-						if(index+addIndex <= recivedData.length-1
-						&&recivedData[index+addIndex].ENGLISH_NAME === data.ENGLISH_NAME
-						&& recivedData[index+addIndex].CHINESE_NAME === data.CHINESE_NAME
-						&& recivedData[index+addIndex].TYPE === data.TYPE){
+						if(index+addIndex <= receivedData.length-1
+						&& receivedData[index+addIndex].ENGLISH_NAME === data.ENGLISH_NAME
+						&& receivedData[index+addIndex].CHINESE_NAME === data.CHINESE_NAME
+						&& receivedData[index+addIndex].TYPE === data.TYPE){
 							rowSpan++;
 							addIndex++;
 						}else {
@@ -148,15 +167,15 @@ export default class inventoryMain extends React.Component {
 					}
 			}
 			if(index >= 1  
-				&& recivedData[index-1].ENGLISH_NAME === data.ENGLISH_NAME 
-				&& recivedData[index-1].CHINESE_NAME === data.CHINESE_NAME 	
-				&& recivedData[index-1].TYPE === data.TYPE) {
+				&& receivedData[index-1].ENGLISH_NAME === data.ENGLISH_NAME 
+				&& receivedData[index-1].CHINESE_NAME === data.CHINESE_NAME 	
+				&& receivedData[index-1].TYPE === data.TYPE) {
 					rowSpan = 0;
 			}			
 			data.ROWSPAN = rowSpan;		
 		})
-
-		return recivedData;
+	
+		return receivedData;
 	}
 
 

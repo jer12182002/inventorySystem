@@ -386,7 +386,7 @@ export default class inventoryItemDisplay extends React.Component {
 		
 												<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} sm-input display-none `} defaultValue={item.EXPIRE_DATE}/>
 											</td>
-											:<td className="bg-width">
+											:<td className={`bg-width ${Moment(item.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.props.toady).format('YYYY-MM')? 'expired-date':'' }`}>
 												<p>{item.EXPIRE_DATE}</p>
 											</td>	
 										:null
