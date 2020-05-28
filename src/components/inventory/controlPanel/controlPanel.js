@@ -13,8 +13,15 @@ export default class controlPanel extends React.Component {
 
 		this.state = {
 			loggedUser : this.props.loggedUser, 
-			today: this.props.today
+			today: this.props.today,
+			allItems: []
 		}
+	}
+
+	componentWillReceiveProps(newProps) {
+	  if (this.state.allItems !== newProps.allItems) {
+	    this.setState({allItems: newProps.allItems});
+	  }
 	}
 
 	render() {
@@ -27,7 +34,7 @@ export default class controlPanel extends React.Component {
 				}
 				<EditItem/>
 				<HoldItem/>
-				<Filter/>
+				<Filter loggedUser = {this.state.loggedUser} allItems = {this.state.allItems}/>
 			</div>
 		);
 	}
