@@ -65,3 +65,8 @@ $bloodyRed: #962E3D;
 	cursor: not-allowed;
 	pointer-events: none;
 }
+
+body {
+	background-image: url('./jasonpupu.jpg');
+	background-size: contain;
+}

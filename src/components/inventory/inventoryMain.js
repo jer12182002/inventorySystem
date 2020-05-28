@@ -3,6 +3,7 @@ import React from 'react';
 import Notification from './notificationView/notificationView';
 import HoldItemsDisplay from './holdItemsDisplay/holdItemsDisplay';
 import InventroyItemsDisplay from './inventoryItemDisplay/inventoryItemDisplay';
+import ControlPanel from './controlPanel/controlPanel';
 
 
 export default class inventoryMain extends React.Component {
@@ -213,6 +214,7 @@ export default class inventoryMain extends React.Component {
 										   updateItem = {this.updateItem.bind(this)}
 										   deleteItem = {this.deleteItem.bind(this)}
 										   setStateWithRowSpan = {this.setStateWithRowSpan.bind(this)}/>
+					 <ControlPanel/>
 										   
 				</div>
 				:null
