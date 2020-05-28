@@ -68,7 +68,7 @@ export default class inventoryMain extends React.Component {
 			
 		});
 	}
-
+	
 
 	updateItem(updatedItemInfo) {
 		fetch(`http://localhost:4000/inventory/updateItems?updatedItem=${JSON.stringify(updatedItemInfo)}`)
@@ -214,7 +214,10 @@ export default class inventoryMain extends React.Component {
 										   updateItem = {this.updateItem.bind(this)}
 										   deleteItem = {this.deleteItem.bind(this)}
 										   setStateWithRowSpan = {this.setStateWithRowSpan.bind(this)}/>
-					 <ControlPanel/>
+					
+					<ControlPanel 	loggedUser = {this.state.accountInfo} 
+									allItems = {this.state.allItems} 
+									today = {this.state.today}/>
 										   
 				</div>
 				:null

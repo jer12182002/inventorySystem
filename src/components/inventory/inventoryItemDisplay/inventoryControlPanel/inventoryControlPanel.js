@@ -165,7 +165,7 @@ export default class inventoryControlPanel extends React.Component {
 
 	render() {	
 		return (
-			<div className="controlPanel-wrapper">
+			<div className="old-controlPanel-wrapper">
 				<div className="main-section">
 
 				{this.props.loggedUser.ADD_ITEM? 

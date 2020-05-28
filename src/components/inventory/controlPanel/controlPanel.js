@@ -10,6 +10,11 @@ export default class controlPanel extends React.Component {
 
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			loggedUser : this.props.loggedUser, 
+			today: this.props.today
+		}
 	}
 
 	render() {
@@ -17,7 +22,9 @@ export default class controlPanel extends React.Component {
 
 		return (
 			<div className="controlPanel-wrapper">
-				<AddItem/>
+				{this.state.loggedUser.ADD_ITEM?
+				<AddItem loggedUser = {this.state.loggedUser}/>:null
+				}
 				<EditItem/>
 				<HoldItem/>
 				<Filter/>

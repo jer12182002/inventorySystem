@@ -8,7 +8,7 @@ export default class filter extends React.Component {
 
 	render() {
 		return (
-			<div className = "filter-wrapper controlPanel-functions">
+			<div className = "filter-wrapper controlPanel-functions display-none">
 				<div className="main-function"></div>
 				<div className="action-area">
 					<button>Filter</button>

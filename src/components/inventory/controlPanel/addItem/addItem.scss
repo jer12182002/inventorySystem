@@ -1,0 +1,32 @@
+.addItem-wrapper {
+	width: 100%;
+
+	.main-function {
+		label,input,select,button {
+			margin: 3px;
+			height: 35px;
+		}
+	
+		button {
+			margin-top: 0;
+		}
+
+		#addShelf {
+			width: 35px;
+		}
+		
+		#addQty {
+			width: 50px;
+		}
+	
+		#addGram {
+			width: 50px;
+		}
+
+		.filter-Section {
+			background-color: orange;
+			padding-top:3px;
+			float:right;
+		}
+	}
+}
