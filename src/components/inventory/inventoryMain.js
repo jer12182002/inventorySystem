@@ -180,8 +180,11 @@ export default class inventoryMain extends React.Component {
 	}
 
 
-
-	
+	//================================Control Panel Actions=====================================================
+	//================================Filter====================================================================
+	filterAllItemsFromChild(filteredArr) {
+		this.setState({allItems: this.setStateWithRowSpan(filteredArr)});
+	}
 
 	render() {
 		return (
@@ -217,7 +220,8 @@ export default class inventoryMain extends React.Component {
 					
 					<ControlPanel 	loggedUser = {this.state.accountInfo} 
 									allItems = {this.state.allItems} 
-									today = {this.state.today}/>
+									today = {this.state.today}
+									filterAllItemsFromChild = {this.filterAllItemsFromChild.bind(this)}/>
 										   
 				</div>
 				:null

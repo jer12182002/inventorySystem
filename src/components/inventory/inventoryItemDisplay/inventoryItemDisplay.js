@@ -458,10 +458,10 @@ export default class inventoryItemDisplay extends React.Component {
 					</table>
 				
 				</div>
-				<ControlPanel loggedUser={this.state.loggedUser} 
+				{/*<ControlPanel loggedUser={this.state.loggedUser} 
 							  types={this.state.types} 
 							  filterCall={this.filterCallFromChild.bind(this)}/>
-							  )
+							  )*/}
 			</div>
 		);
 	}

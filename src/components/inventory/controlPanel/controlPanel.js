@@ -24,6 +24,11 @@ export default class controlPanel extends React.Component {
 	  }
 	}
 
+	//=================================Filter===================================================
+	filterCallFromChild(filterArr){
+		this.setState({allItems:this.props.setStateWithRowSpan(filterArr)});
+	}
+	//==========================================================================================
 	render() {
 		// This is just a container to hold different functions
 
@@ -34,7 +39,7 @@ export default class controlPanel extends React.Component {
 				}
 				<EditItem/>
 				<HoldItem/>
-				<Filter loggedUser = {this.state.loggedUser} allItems = {this.state.allItems}/>
+				<Filter loggedUser = {this.state.loggedUser} allItems = {this.state.allItems} filterAllItemsFromChild = {this.props.filterAllItemsFromChild}/>
 			</div>
 		);
 	}

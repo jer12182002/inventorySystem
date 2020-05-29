@@ -32,7 +32,9 @@ export default class filter extends React.Component {
 			  || f.TYPE.toUpperCase().includes(receviedFilter) 
 			  || f.SHELF_NO.toUpperCase().includes(receviedFilter)
 			  || f.EXPIRE_DATE.includes(receviedFilter)
-		).forEach(item=> {
+		);
+		
+		filterItems.forEach(item=> {
 				if(this.state.checkedId.includes(item.ID)) {
 					item.checked = true;
 				}
@@ -68,7 +70,7 @@ export default class filter extends React.Component {
 		this.setState({checkedId:[]});
 		//this.loadAllItem('',true);
 		this.loadAllItem2('',true);
-		this.props.filterCall(this.state.allItems);
+		this.props.filterAllItemsFromChild(this.state.defaultAllItems);
 		$('.checkBoxDisplay:checkbox').prop('checked', false).removeAttr('checked');
 	}
 
@@ -89,7 +91,7 @@ export default class filter extends React.Component {
 			$(".selectfilter-container").addClass("display-none");
 			$("#filterBtn").text("Filter");
 			$("#showBtn").addClass("display-none");
-			this.setDefault();	
+			//this.setDefault();	
 		}
 	}
 
@@ -129,14 +131,16 @@ export default class filter extends React.Component {
 
 	   
 	    this.state.defaultAllItems.forEach(item=>{
+
 	    	if(checkedIdArray.includes(item.ID)){
 	    		checkedItems.push(item);
 	    	}
 	    });
 
 		this.setState({checkedId:checkedIdArray});
-		this.props.filterCall(checkedItems);
-	}
+		console.log(checkedItems);
+		//this.props.filterAllItemsFromChild(checkedItems);
+	}	
 
 
 
