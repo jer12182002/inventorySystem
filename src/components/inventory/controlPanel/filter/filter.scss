@@ -1,4 +1,9 @@
 .filter-wrapper {
+	position: absolute;
+	right: 0;
+	text-align: right;
+	margin-right: 10px;
+
 	.selectfilter-container {
 		position:fixed;
 		right:0;
@@ -9,7 +14,8 @@
 		border: 2px solid black;
 		border-radius: 20px;
 		margin-bottom: 50px;
-
+		text-align: left;
+		
 		.selectAll {
 			border-bottom: 3px solid black;
 			h3 {

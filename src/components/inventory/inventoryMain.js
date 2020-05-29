@@ -181,10 +181,14 @@ export default class inventoryMain extends React.Component {
 
 
 	//================================Control Panel Actions=====================================================
+
+
 	//================================Filter====================================================================
 	filterAllItemsFromChild(filteredArr) {
 		this.setState({allItems: this.setStateWithRowSpan(filteredArr)});
 	}
+
+	//==========================================================================================================
 
 	render() {
 		return (

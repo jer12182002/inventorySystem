@@ -8,42 +8,16 @@ export default class filter extends React.Component {
 
 		this.state = {
 			loggedUser : this.props.loggedUser,
-			defaultAllItems:[],
-			allItems: [],
+			selectItems: [],
 			checkedId:[]
 		}
 
 	}
 
-	componentWillReceiveProps(newProps) {
-	  if (this.state.allItems !== newProps.allItems) {
-	    this.setState({
-	    	allItems: newProps.allItems, 
-	    	defaultAllItems: newProps.allItems
-	    });
-	  }
+	componentDidMount() {
+		this.loadAllItem('',true);
 	}
 
-
-	loadAllItem2(receviedFilter='') {
-		let filterItems = this.state.defaultAllItems.filter(
-			f => f.ENGLISH_NAME.toUpperCase().includes(receviedFilter)
-			  || f.CHINESE_NAME.toUpperCase().includes(receviedFilter)
-			  || f.TYPE.toUpperCase().includes(receviedFilter) 
-			  || f.SHELF_NO.toUpperCase().includes(receviedFilter)
-			  || f.EXPIRE_DATE.includes(receviedFilter)
-		);
-		
-		filterItems.forEach(item=> {
-				if(this.state.checkedId.includes(item.ID)) {
-					item.checked = true;
-				}
-			}
-		);
-
-		
-		this.setState({allItems: filterItems});
-	}
 
 	loadAllItem(receviedFilter='',defaultCall=false){
 		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
@@ -60,24 +34,16 @@ export default class filter extends React.Component {
 					}
 				});
 
-				this.setState({allItems: data.data}, console.log(this.state.allItems));
+				this.setState({selectItems: data.data}, console.log(this.state.selectItems));
 			}
 		});
 	}
 
 
-	setDefault(){
-		this.setState({checkedId:[]});
-		//this.loadAllItem('',true);
-		this.loadAllItem2('',true);
-		this.props.filterAllItemsFromChild(this.state.defaultAllItems);
-		$('.checkBoxDisplay:checkbox').prop('checked', false).removeAttr('checked');
-	}
 
 
-	filterItemOnChange(){  // need to work on
-		//this.loadAllItem($.trim($("#itemFilter").val().toUpperCase()));
-		this.loadAllItem2($.trim($("#itemFilter").val().toUpperCase()));
+	filterItemOnChange(){
+		this.loadAllItem($.trim($("#itemFilter").val().toUpperCase()));
 	}
 
 
@@ -91,7 +57,7 @@ export default class filter extends React.Component {
 			$(".selectfilter-container").addClass("display-none");
 			$("#filterBtn").text("Filter");
 			$("#showBtn").addClass("display-none");
-			//this.setDefault();	
+			window.location.reload();
 		}
 	}
 
@@ -115,9 +81,7 @@ export default class filter extends React.Component {
 		e.stopPropagation();
 
 	 	let checkedIdArray = this.state.checkedId;
-
 	 	let checkedItems = [];
-
 
 	    if($(`#checkbox${id}`).prop("checked")){
 	     		checkedIdArray.push(id);   // push in anyway, then delete the duplicate later
@@ -139,7 +103,7 @@ export default class filter extends React.Component {
 
 		this.setState({checkedId:checkedIdArray});
 		console.log(checkedItems);
-		//this.props.filterAllItemsFromChild(checkedItems);
+		this.props.filterAllItemsFromChild(checkedItems);
 	}	
 
 
@@ -155,7 +119,7 @@ export default class filter extends React.Component {
 					</div>
 						
 					<ul className="scroll-container">
-						{this.state.allItems.map((item,key)=>
+						{this.state.selectItems.map((item,key)=>
 							<li key={`${key}${item.ID}`}>
 								<input key={`${key}${item.ID}`} id={`checkbox${item.ID}`} className="checkBoxDisplay inline-b" type="checkbox" defaultChecked={item.checked} onChange={e=>this.selectCheckBox(e,item.ID)}/>	
 								<p className="inline-b">{item.ENGLISH_NAME}-{item.CHINESE_NAME}<br/>
@@ -163,10 +127,9 @@ export default class filter extends React.Component {
 								<strong>{item.MANUFACTURE}</strong></p>
 							</li>					
 						)}						
-
 					</ul>
-
 				</div>
+				
 				<div className="action-area">
 					<div className="inline-f filter-Section">
 						<input id="itemFilter" type="text" className="display-none" onChange= {e=>this.filterItemOnChange(e)}/>
