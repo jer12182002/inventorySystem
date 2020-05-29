@@ -427,10 +427,15 @@ export default class inventoryItemDisplay extends React.Component {
 											:null}
 										</div>
 
-										{this.state.loggedUser.QTY_MODIFY?
+										{this.state.loggedUser.QTY_MODIFY && this.props.holdLock?
+											<div className="inline-f">
+												<input id={`holdQty${item.ID}`}type="number" min="0" max={`${item.QTY-item.HOLD_QTY}`}></input>
+											</div>
+											/*
 											<div id={`hold-btn${key}`} className="inline-f">
 												<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickHold(e,key)}}>Hold</button>
 											</div>
+											*/
 											:
 											null
 										}

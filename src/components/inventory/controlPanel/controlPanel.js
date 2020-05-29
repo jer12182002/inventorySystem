@@ -38,7 +38,10 @@ export default class controlPanel extends React.Component {
 				<AddItem loggedUser = {this.state.loggedUser}/>:null
 				}
 				<EditItem/>
-				<HoldItem/>
+				<HoldItem  loggedUser = {this.state.loggedUser}
+						   today = {this.props.today}
+						   allItems={this.props.allItems}
+						   lockHoldLock={this.props.lockHoldLock}/>
 				<Filter loggedUser = {this.state.loggedUser} 
 						filterAllItemsFromChild = {this.props.filterAllItemsFromChild}/>
 			</div>

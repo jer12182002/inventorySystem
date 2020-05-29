@@ -302,27 +302,27 @@ app.post('/inventory/addbulkItemsRepo',(req,res)=>{
 })
 
 
-app.get('/inventory/addbulkItems',(req,res)=>{
+// app.get('/inventory/addbulkItems',(req,res)=>{
 
-	let readyToImport = JSON.parse(req.query.readyToImport);
-	console.log(readyToImport);
-	let sqlQueries = '';
-	if(readyToImport) {
-		sqlQueries = 'INSERT INTO item_list( TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY) SELECT TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY FROM bulk_item_list_repository;';
-	}
+// 	let readyToImport = JSON.parse(req.query.readyToImport);
+// 	console.log(readyToImport);
+// 	let sqlQueries = '';
+// 	if(readyToImport) {
+// 		sqlQueries = 'INSERT INTO item_list( TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY) SELECT TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY FROM bulk_item_list_repository;';
+// 	}
 
-	sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
+// 	sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
 
-	console.log(readyToImport)
-	connection.query(sqlQueries, (err, result)=> {
-		if(err) {
-			res.send(err);
-		}else {
-			return res.json({data: 'success'});
-		}
-	})
+// 	console.log(readyToImport)
+// 	connection.query(sqlQueries, (err, result)=> {
+// 		if(err) {
+// 			res.send(err);
+// 		}else {
+// 			return res.json({data: 'success'});
+// 		}
+// 	})
 
-})
+// })
 
 
 
@@ -424,30 +424,30 @@ app.get('/inventory/deleteItem',(req,res)=>{
 })
 
 
-
-app.get('/inventory/addhold',(req,res)=>{
-
-	let holdItem = JSON.parse(req.query.holdItem);
-
-	connection.query(`SELECT * FROM item_list WHERE ID = ${holdItem.ITEM_ID}`,(selectErr, selectResult)=>{
-		if(selectResult[0]) {
-			let itemInfo = selectResult[0];
-			let sqlQueries = `INSERT INTO hold_item_list (ITEM_ID, PERSON, HOLD_QTY, DATE) VALUES ('${holdItem.ITEM_ID}', '${holdItem.RECIPIENT}','${holdItem.HOLD_QTY}', '${holdItem.DATE}');`;
-				sqlQueries+= `UPDATE item_list set HOLD_QTY = HOLD_QTY + ${holdItem.HOLD_QTY} where ID = ${holdItem.ITEM_ID};`; 
-				sqlQueries+= `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES('${holdItem.PERSON}', 'Hold Item','Item(${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME}-${itemInfo.TYPE}-${moment(itemInfo.EXPIRE_DATE).format("YYYY-MM-DD")}) Qty: ${holdItem.HOLD_QTY} for ${holdItem.RECIPIENT} ${holdItem.DATE===''?`with no expiry date`:`with expiry date: ${holdItem.DATE}`} is holded');`;
-
-			connection.query(sqlQueries, (err,result)=>{
-				if(err) {
-					res.send(err);
-				}else {
-					return(res.json({data:'success'}));
-				}
-			})
-		}
+app.post('/inventory/addhold',(req,res)=>{
+	//let bulkItems = JSON.parse(req.query.bulkItems);
+	let holdItems = req.body.holdItems;
+	
+	let sqlQueries = '';
+	
+	holdItems.ITEMS.forEach(item=>{
+		console.log(item);
+		sqlQueries += `INSERT INTO hold_item_list (ITEM_ID, PERSON, HOLD_QTY, DATE) VALUES ('${item.ID}', '${holdItems.HOLDFOR}','${item.HOLD_QTY}', '${holdItems.UNTIL}');`;
+		sqlQueries += `UPDATE item_list set HOLD_QTY = HOLD_QTY + ${item.HOLD_QTY} WHERE ID = ${item.ID};`; 
+		sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES('${holdItems.AUTHOR}', 'Hold Item','Item(${item.ENGLISH_NAME} ${item.CHINESE_NAME}-${item.TYPE}-${moment(holdItems.UNTIL).format("YYYY-MM-DD")}) Qty: ${item.HOLD_QTY} for ${holdItems.HOLDFOR} ${holdItems.UNTIL===''?`with no expiry date`:`with expiry date: ${holdItems.UNTIL}`} is holded');`;
 
 	})
-})
 	
+	connection.query(sqlQueries, (err,result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data:'success'}));
+		}
+	})
+
+})
+
 
 
 app.get('/inventory/restockHold',(req,res)=>{

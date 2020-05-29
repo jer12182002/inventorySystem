@@ -20,7 +20,8 @@ export default class inventoryMain extends React.Component {
 			allHoldItems: [],
 			allNotificationItems: [],
 			today: date.toISOString().slice(0, 10), 
-			defaultExpiryDate : date.getFullYear() + "-" + ("0" + (date.getMonth() + 5)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2)
+			defaultExpiryDate : date.getFullYear() + "-" + ("0" + (date.getMonth() + 5)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2),
+			holdLock:false
 		}
 
 		
@@ -181,6 +182,12 @@ export default class inventoryMain extends React.Component {
 
 
 	//================================Control Panel Actions=====================================================
+	//================================Hold Item=================================================================
+	lockHoldLock(defaultLcok=true){
+		this.setState({holdLock : defaultLcok});
+	}
+
+	//==========================================================================================================
 
 
 	//================================Filter====================================================================
@@ -189,6 +196,7 @@ export default class inventoryMain extends React.Component {
 	}
 
 	//==========================================================================================================
+
 
 	render() {
 		return (
@@ -215,6 +223,7 @@ export default class inventoryMain extends React.Component {
 					<InventroyItemsDisplay loggedUser = {this.state.accountInfo} 
 										   allItems = {this.state.allItems} 
 										   today = {this.state.today}
+										   holdLock = {this.state.holdLock}
 										   loadAllItem = {this.loadAllItem.bind(this)} 
 										   loadAllHoldItems = {this.loadAllHoldItems.bind(this)}
 										   loadAllNotificationItems = {this.loadAllNotificationItems.bind(this)}
@@ -225,7 +234,10 @@ export default class inventoryMain extends React.Component {
 					<ControlPanel 	loggedUser = {this.state.accountInfo} 
 									allItems = {this.state.allItems} 
 									today = {this.state.today}
-									filterAllItemsFromChild = {this.filterAllItemsFromChild.bind(this)}/>
+									lockHoldLock = {this.lockHoldLock.bind(this)}
+									filterAllItemsFromChild = {this.filterAllItemsFromChild.bind(this)}
+									updateItem = {this.updateItem.bind(this)}/>
+
 										   
 				</div>
 				:null

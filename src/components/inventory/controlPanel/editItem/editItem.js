@@ -8,7 +8,7 @@ export default class editItem extends React.Component {
 
 	render() {
 		return (
-			<div className="editItem-wrapper controlPanel-functions display-none">
+			<div className="editItem-wrapper controlPanel-functions">
 				<div className="main-function"></div>
 				<div className="action-area">
 					<button>Edit Item</button>
