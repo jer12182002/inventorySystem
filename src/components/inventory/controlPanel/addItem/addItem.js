@@ -67,10 +67,24 @@ export default class addItem extends React.Component {
 		}
 	}
 
+
+	addItemClick(e) {
+		$(".controlPanel-functions").addClass("display-none");
+		$(".addItem-wrapper").removeClass("display-none");
+		$(".addItem-input-container").removeClass("display-none");
+		$(".addFunctonBtns-container").removeClass("display-none");
+	}
+
+	addCancelClick(e) {
+		$(".controlPanel-functions").removeClass("display-none");
+		$(".addItem-input-container").addClass("display-none");
+		$(".addFunctonBtns-container").addClass("display-none");
+	}
+
 	render() {
 		return (
-			<div className="addItem-wrapper controlPanel-functions display-none">
-				<div className="main-function">
+			<div className="addItem-wrapper controlPanel-functions">
+				<div className="addItem-input-container main-function display-none">
 					<div className="inline-b">
 
 						<label>Name:</label>
@@ -102,12 +116,15 @@ export default class addItem extends React.Component {
 						<label>Gram: </label>
 						<input id="addGram" type="number"></input>
 
-						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
+						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.addConfirmClick(e)}}>Confirm</button>
 						<BulkItemImporter loggedUser={this.state.loggedUser} types={this.state.types}/>
 					</div>
 				</div>
 				<div className="action-area">
-					<button>Add Item</button>
+					<button className="btn btn-primary" onClick = {e => this.addItemClick(e)}>Add Item</button>
+					<div className = "addFunctonBtns-container inline-b display-none">
+						<button className = "btn btn-warning" onClick = {e=> this.addCancelClick(e)}>Cancel</button>
+					</div>
 				</div>
 			</div>
 		);

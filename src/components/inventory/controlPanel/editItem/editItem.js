@@ -9,9 +9,9 @@ export default class editItem extends React.Component {
 	render() {
 		return (
 			<div className="editItem-wrapper controlPanel-functions">
-				<div className="main-function"></div>
+				<div className="main-function display-none"></div>
 				<div className="action-area">
-					<button>Edit Item</button>
+					<button className="btn btn-primary" >Edit Item</button>
 				</div>
 			</div>
 		);

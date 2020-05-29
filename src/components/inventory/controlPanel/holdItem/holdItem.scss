@@ -1,13 +1,8 @@
 .holdItem-wrapper {
-	.main-function {
-	
-		.holdItem-input-container {
-
-			label, input {
-				height: 50px;
-				margin:0 5px;
-			}
-
+	.main-function.holdItem-input-container {
+		label, input {
+			height: 50px;
+			margin:0 5px;
 		}
 	}
 }
