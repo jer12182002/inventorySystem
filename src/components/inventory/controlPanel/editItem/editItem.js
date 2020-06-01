@@ -20,6 +20,7 @@ export default class editItem extends React.Component {
 		$('.editFunctonBtns-container').addClass("display-none");
 		$('.controlPanel-functions').removeClass("display-none");
 		$('#editItemBtn').removeClass("display-none");
+		this.props.lockEditLock(false);
 	}
 
 
