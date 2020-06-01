@@ -77,7 +77,7 @@ export default class inventoryMain extends React.Component {
 		    .then(res =>res.json())
 			.then(data => {
 			   	if(data.data.affectedRows) {
-					this.loadAllItem();
+					console.log("updated");
 				}else {
 					alert("Something went wrong !!");
 				}
@@ -273,6 +273,7 @@ export default class inventoryMain extends React.Component {
 									allItems = {this.state.allItems} 
 									today = {this.state.today}
 									lockHoldLock = {this.lockHoldLock.bind(this)}
+									lockEditLock = {this.lockEditLock.bind(this)}
 									filterAllItemsFromChild = {this.filterAllItemsFromChild.bind(this)}
 									updateItem = {this.updateItem.bind(this)}/>
 

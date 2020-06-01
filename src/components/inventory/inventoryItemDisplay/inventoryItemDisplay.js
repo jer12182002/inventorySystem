@@ -269,12 +269,22 @@ export default class inventoryItemDisplay extends React.Component {
 								<td >Gram<br/><button id="invGRAM-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"GRAM")}>ASC</button></td>: null
 							}
 
-							{this.state.loggedUser.NAME_MODIFY  || this.state.loggedUser.TYPE_MODIFY ||
-							 this.state.loggedUser.SHELF_MODIFY || this.state.loggedUser.QTY_MODIFY  || 
-							 this.state.loggedUser.EXP_MODIFY   || this.state.loggedUser.GRAM_MODIFY || 
-							 this.state.loggedUser.DELETE_ITEM ?
-								<td className="verticalMiddle">Action</td>:null
+							{this.props.holdLock && this.state.loggedUser.QTY_MODIFY?
+								<td className="verticalMiddle">Hold Qty</td>:null
 							}
+
+							{this.props.editLock?
+								this.state.loggedUser.NAME_MODIFY  || this.state.loggedUser.TYPE_MODIFY ||
+								 this.state.loggedUser.SHELF_MODIFY || this.state.loggedUser.QTY_MODIFY  || 
+								 this.state.loggedUser.EXP_MODIFY   || this.state.loggedUser.GRAM_MODIFY || 
+								 this.state.loggedUser.DELETE_ITEM ?
+									<td className="verticalMiddle">Action</td>:null
+								
+								:
+								null
+
+							}
+
 
 						</tr>
 						</thead>
@@ -408,56 +418,59 @@ export default class inventoryItemDisplay extends React.Component {
 										:null
 									}
 
-
-									{this.state.loggedUser.NAME_MODIFY  ||  this.state.loggedUser.TYPE_MODIFY ||
-									 this.state.loggedUser.SHELF_MODIFY ||  this.state.loggedUser.QTY_MODIFY  || 
-									 this.state.loggedUser.EXP_MODIFY   ||  this.state.loggedUser.GRAM_MODIFY || 
-									 this.state.loggedUser.DELETE_ITEM?
-									<td className="margin-center text-center bg-width">
-										<div id={`edit-btn${key}`} className="inline-f">
-											<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickEdit(e,key); this.setTypeDefault(item.ID,item.TYPE)}}>Edit</button>
-										</div>
-
-										<div id={`functional-Btns${key}`} className="display-none">
-											{this.state.loggedUser.NAME_MODIFY  ||  this.state.loggedUser.TYPE_MODIFY ||
-									 		 this.state.loggedUser.QTY_MODIFY   ||  this.state.loggedUser.EXP_MODIFY  || 
-									 		 this.state.loggedUser.SHELF_MODIFY ||  this.state.loggedUser.GRAM_MODIFY ? 
-											<button type="button" className="btn btn-success" onClick={(e)=>this.clickSave(e,key,item.ID)}>Save</button>
-											:null}
-											<button type="button" className="btn btn-danger" onClick={(e)=>this.clickCancel(e,key)}>Cancel</button>
-											{this.state.loggedUser.DELETE_ITEM?
-											<button type="button" className="btn btn-warning" onClick={(e)=>this.clickDelete(e, item.ID,key)}>Delete</button>
-											:null}
-										</div>
-
-										{this.state.loggedUser.QTY_MODIFY && this.props.holdLock?
-											<div className="inline-f">
-												<input id={`holdQty${item.ID}`}type="number" min="0" max={`${item.QTY-item.HOLD_QTY}`}></input>
+									{this.props.editLock || this.props.holdLock?
+										this.state.loggedUser.NAME_MODIFY  ||  this.state.loggedUser.TYPE_MODIFY ||
+										this.state.loggedUser.SHELF_MODIFY ||  this.state.loggedUser.QTY_MODIFY  || 
+										this.state.loggedUser.EXP_MODIFY   ||  this.state.loggedUser.GRAM_MODIFY || 
+										this.state.loggedUser.DELETE_ITEM?
+										<td className="margin-center text-center bg-width">
+											{this.props.editLock?
+											<div id={`edit-btn${key}`} className="inline-f">
+												<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickEdit(e,key); this.setTypeDefault(item.ID,item.TYPE)}}>Edit</button>
 											</div>
-											/*
-											<div id={`hold-btn${key}`} className="inline-f">
-												<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickHold(e,key)}}>Hold</button>
-											</div>
-											*/
-											:
-											null
-										}
-										{this.state.loggedUser.QTY_MODIFY?
-											<div id={`hold-functional-Btns${key}`} className="hold-functional-Btns display-none">
-												<div className="block">	
-													<input key={`holdName${key}`} id={`holdName${key}`} type="text" placeholder="name"/>	
-													<input key={`holdQty${key}`} id={`holdQty${key}`} className="sm-input inline-b ss-input" type="number" defaultValue="0" onChange={(e)=> this.holdQtyChange(e,key,item.QTY-item.HOLD_QTY)}/>
-													<input key={`holdDate${key}`} id={`holdDate${key}`} className="sm-input inline-b" type="date"/>	
-												</div>			
-												<button type="button" className="btn btn-success" onClick={(e)=>this.clickHoldAdd(e,key,item.ID)}>Add</button>
-												<button type="button" className="btn btn-danger" onClick={(e)=>this.clickHoldCancel(e,key,item.ID)}>Cancel</button>
-											</div>
-											:
-											null
-										}
+											:null
+											}
 
+											<div id={`functional-Btns${key}`} className="display-none">
+												{this.state.loggedUser.NAME_MODIFY  ||  this.state.loggedUser.TYPE_MODIFY ||
+										 		 this.state.loggedUser.QTY_MODIFY   ||  this.state.loggedUser.EXP_MODIFY  || 
+										 		 this.state.loggedUser.SHELF_MODIFY ||  this.state.loggedUser.GRAM_MODIFY ? 
+												<button type="button" className="btn btn-success" onClick={(e)=>this.clickSave(e,key,item.ID)}>Save</button>
+												:null}
+												<button type="button" className="btn btn-danger" onClick={(e)=>this.clickCancel(e,key)}>Cancel</button>
+												{this.state.loggedUser.DELETE_ITEM?
+												<button type="button" className="btn btn-warning" onClick={(e)=>this.clickDelete(e, item.ID,key)}>Delete</button>
+												:null}
+											</div>
 
-									</td> :
+											{this.state.loggedUser.QTY_MODIFY && this.props.holdLock?
+												<div className="inline-f">
+													<input id={`holdQty${item.ID}`}type="number" min="0" max={`${item.QTY-item.HOLD_QTY}`}></input>
+												</div>
+												/*
+												<div id={`hold-btn${key}`} className="inline-f">
+													<button type="button" className="btn btn-primary" onClick={(e)=>{this.clickHold(e,key)}}>Hold</button>
+												</div>
+												*/
+												:
+												null
+											}
+											{this.state.loggedUser.QTY_MODIFY?
+												<div id={`hold-functional-Btns${key}`} className="hold-functional-Btns display-none">
+													<div className="block">	
+														<input key={`holdName${key}`} id={`holdName${key}`} type="text" placeholder="name"/>	
+														<input key={`holdQty${key}`} id={`holdQty${key}`} className="sm-input inline-b ss-input" type="number" defaultValue="0" onChange={(e)=> this.holdQtyChange(e,key,item.QTY-item.HOLD_QTY)}/>
+														<input key={`holdDate${key}`} id={`holdDate${key}`} className="sm-input inline-b" type="date"/>	
+													</div>			
+													<button type="button" className="btn btn-success" onClick={(e)=>this.clickHoldAdd(e,key,item.ID)}>Add</button>
+													<button type="button" className="btn btn-danger" onClick={(e)=>this.clickHoldCancel(e,key,item.ID)}>Cancel</button>
+												</div>
+												:
+												null
+											}
+										</td> :
+										null
+									:
 									null
 									}
 								</tr>
