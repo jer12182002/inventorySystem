@@ -7,6 +7,7 @@ export default class holdItem extends React.Component {
 	holdItemClick(e) {
 		this.props.lockHoldLock();
 		$(".controlPanel-functions").addClass("display-none");
+		$("#holdItem-btn").addClass("display-none");
 		$(".holdItem-wrapper").removeClass("display-none");
 		$(".holdItem-input-container,.holdItem-input-container").removeClass("display-none");
 		$(".holdFunctonBtns-container").removeClass("display-none");
@@ -68,6 +69,7 @@ export default class holdItem extends React.Component {
 
 	holdCancelClick(e) {
 		$(".controlPanel-functions").removeClass("display-none");
+		$("#holdItem-btn").removeClass("display-none");
 		$(".holdFunctonBtns-container,.holdItem-input-container").addClass("display-none");
 		this.props.lockHoldLock(false);
 	}
@@ -111,7 +113,7 @@ export default class holdItem extends React.Component {
 				</div>
 
 				<div className="action-area">
-					<button className="btn btn-primary" onClick = {e=>this.holdItemClick(e)}>Hold Item</button>
+					<button id="holdItem-btn" className="btn btn-primary" onClick = {e=>this.holdItemClick(e)}>Hold Item</button>
 					<div className = "holdFunctonBtns-container inline-b display-none">
 						<button className="btn btn-success" onClick = {e=> this.holdConfirmClick(e)}>Confirm</button>
 						<button className="btn btn-warning" onClick = {e=>this.holdCancelClick(e)}>Cancel</button>
