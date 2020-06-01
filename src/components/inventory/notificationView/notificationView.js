@@ -37,18 +37,20 @@ export default class notificationView extends React.Component {
 		e.preventDefault();
 
 		let fieldBtnText = $(`#invNoti${field}-sortToggleBtn`).text();
-		let sortedData = this.state.allNotificationItems;
+		let sortedData = this.props.quickSort(field, this.state.allNotificationItems,0, this.state.allNotificationItems.length-1);
 			
 		if(fieldBtnText === 'ASC') {
-			sortedData = sortedData.sort((a,b)=>a[field].toString().localeCompare(b[field].toString()));
+			
 			$(`#invNoti${field}-sortToggleBtn`).text('DESC');
 		}else {
-			sortedData = sortedData.sort((a,b)=>b[field].toString().localeCompare(a[field].toString()));
+				sortedData.reverse();
 			$(`#invNoti${field}-sortToggleBtn`).text('ASC');
 		}
 
-		this.setState({allNotificationItems:this.props.setStateWithRowSpan(sortedData)});
-	}
+		this.setState({allNotificationItems: this.props.setStateWithRowSpan(sortedData)});
+	
+
+	}	
 
 
 

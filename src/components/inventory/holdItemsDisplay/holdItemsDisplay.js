@@ -54,13 +54,13 @@ export default class holdItemsDisplay extends React.Component {
 		e.preventDefault();
 
 		let fieldBtnText = $(`#invhold${field}-sortToggleBtn`).text();
-		let sortedData = this.state.allHoldItems;
+		let sortedData = this.props.quickSort(field, this.state.allHoldItems, 0 , this.state.allHoldItems.length-1);
 			
 		if(fieldBtnText === 'ASC') {
-			sortedData = sortedData.sort((a,b)=>a[field].toString().localeCompare(b[field].toString()));
+			
 			$(`#invhold${field}-sortToggleBtn`).text('DESC');
 		}else {
-			sortedData = sortedData.sort((a,b)=>b[field].toString().localeCompare(a[field].toString()));
+			sortedData.reverse();
 			$(`#invhold${field}-sortToggleBtn`).text('ASC');
 		}
 

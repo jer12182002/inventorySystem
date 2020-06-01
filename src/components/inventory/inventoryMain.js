@@ -21,7 +21,8 @@ export default class inventoryMain extends React.Component {
 			allNotificationItems: [],
 			today: date.toISOString().slice(0, 10), 
 			defaultExpiryDate : date.getFullYear() + "-" + ("0" + (date.getMonth() + 5)).slice(-2) + "-" + ("0" + date.getDate()).slice(-2),
-			holdLock:false
+			holdLock:false,
+			editLock:false
 		}
 
 		
@@ -181,12 +182,45 @@ export default class inventoryMain extends React.Component {
 	}
 
 
+	//================================Quick Sort================================================================
+	quickSort (field, array, left, right) {
+		var centr = array[Math.floor((right + left) / 2)][field];
+		var i = left;
+		var k = right;
+		while (i < k) {
+			while (array[i][field] < centr) {
+				i++;
+			}
+			while (array[k][field] > centr) {
+				k--;
+			}
+			if (i <= k) {
+				[array[i], array[k]] = [array[k], array[i]]
+				i++;
+				k--;
+			}
+		}
+		if (left < k) {
+			this.quickSort(field, array, left, k);
+			
+		}
+		if (i < right) {
+			this.quickSort(field, array, i, right);
+		}
+		return array;
+	}
+
+	//==========================================================================================================
+
 	//================================Control Panel Actions=====================================================
 	//================================Hold Item=================================================================
 	lockHoldLock(defaultLcok=true){
 		this.setState({holdLock : defaultLcok});
 	}
 
+	lockEditLock(defaultLcok=true) {
+		this.setState({editLock : defaultLcok});
+	}
 	//==========================================================================================================
 
 
@@ -208,6 +242,7 @@ export default class inventoryMain extends React.Component {
 									  allNotificationItems = {this.state.allNotificationItems}
 									  defaultExpiryDate = {this.state.defaultExpiryDate}
 									  loadAllNotificationItems = {this.loadAllNotificationItems.bind(this)}
+									  quickSort = {this.quickSort.bind(this)}
 									  setStateWithRowSpan = {this.setStateWithRowSpan.bind(this)}/>
 					    :
 					    null
@@ -217,18 +252,21 @@ export default class inventoryMain extends React.Component {
 									  allHoldItems= {this.state.allHoldItems} 
 									  today = {this.state.today}
 									  loadAllHoldItems = {this.loadAllHoldItems.bind(this)} 
-									  loadAllItem = {this.loadAllItem.bind(this)} 
+									  loadAllItem = {this.loadAllItem.bind(this)}
+									  quickSort = {this.quickSort.bind(this)} 
 									  restockAction = {this.restockAction.bind(this)}/>
 
 					<InventroyItemsDisplay loggedUser = {this.state.accountInfo} 
 										   allItems = {this.state.allItems} 
 										   today = {this.state.today}
 										   holdLock = {this.state.holdLock}
+										   editLock = {this.state.editLock}
 										   loadAllItem = {this.loadAllItem.bind(this)} 
 										   loadAllHoldItems = {this.loadAllHoldItems.bind(this)}
 										   loadAllNotificationItems = {this.loadAllNotificationItems.bind(this)}
 										   updateItem = {this.updateItem.bind(this)}
 										   deleteItem = {this.deleteItem.bind(this)}
+										   quickSort = {this.quickSort.bind(this)}
 										   setStateWithRowSpan = {this.setStateWithRowSpan.bind(this)}/>
 					
 					<ControlPanel 	loggedUser = {this.state.accountInfo} 

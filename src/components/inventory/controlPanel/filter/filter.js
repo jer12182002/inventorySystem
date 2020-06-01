@@ -110,7 +110,7 @@ export default class filter extends React.Component {
 
 	render() {
 		return (
-			<div className = "filter-wrapper controlPanel-functions">
+			<div className = "filter-wrapper">
 				<div className="selectfilter-container block display-none" >
 					
 					<div className="selectAll">
