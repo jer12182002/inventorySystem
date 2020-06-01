@@ -73,12 +73,14 @@ export default class addItem extends React.Component {
 		$(".addItem-wrapper").removeClass("display-none");
 		$(".addItem-input-container").removeClass("display-none");
 		$(".addFunctonBtns-container").removeClass("display-none");
+		$("#addItem-btn").addClass("display-none");
 	}
 
 	addCancelClick(e) {
 		$(".controlPanel-functions").removeClass("display-none");
 		$(".addItem-input-container").addClass("display-none");
 		$(".addFunctonBtns-container").addClass("display-none");
+		$("#addItem-btn").removeClass("display-none");
 	}
 
 	render() {
@@ -116,13 +118,13 @@ export default class addItem extends React.Component {
 						<label>Gram: </label>
 						<input id="addGram" type="number"></input>
 
-						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.addConfirmClick(e)}}>Confirm</button>
-						<BulkItemImporter loggedUser={this.state.loggedUser} types={this.state.types}/>
 					</div>
 				</div>
 				<div className="action-area">
-					<button className="btn btn-primary" onClick = {e => this.addItemClick(e)}>Add Item</button>
+					<button id="addItem-btn"className="btn btn-primary" onClick = {e => this.addItemClick(e)}>Add Item</button>
 					<div className = "addFunctonBtns-container inline-b display-none">
+						<button id="addBtn" className="btn btn-success" onClick = {(e)=>{this.clickAddBtn(e)}}>Add</button>
+						<BulkItemImporter loggedUser={this.state.loggedUser} types={this.state.types}/>
 						<button className = "btn btn-warning" onClick = {e=> this.addCancelClick(e)}>Cancel</button>
 					</div>
 				</div>
