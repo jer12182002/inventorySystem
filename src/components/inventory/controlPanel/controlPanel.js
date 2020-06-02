@@ -37,7 +37,11 @@ export default class controlPanel extends React.Component {
 				{this.state.loggedUser.ADD_ITEM?
 				<AddItem loggedUser = {this.state.loggedUser}/>:null
 				}
-				<EditItem  lockEditLock={this.props.lockEditLock} />
+				{ this.state.loggedUser.NAME_MODIFY || this.state.loggedUser.QTY_MODIFY
+				||this.state.loggedUser.TYPE_MODIFY || this.state.loggedUser.SHELF_MODIFY 
+				||this.state.loggedUser.GRAM_MODIFY || this.state.EXP_MODIFY?
+				<EditItem  lockEditLock={this.props.lockEditLock} />:null
+				}
 				<HoldItem  loggedUser = {this.state.loggedUser}
 						   today = {this.props.today}
 						   allItems={this.props.allItems}

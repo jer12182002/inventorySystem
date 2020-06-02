@@ -344,14 +344,24 @@ app.get('/inventory/addbulkItems',(req,res)=>{
 
 
 
+app.get('/inventory/loadallhistoryItem', (req,res)=>{
+	let sqlQuery = 'SELECT * FROM history_item_list ORDER BY EXPIRE_DATE';
+
+	connection.query(sqlQuery, (err, result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data:result}));
+		}
+	})
+})
+
 
 app.get('/inventory/loadAllItem',(req,res)=>{
 	let filter = req.query.filter;
 
 	let	sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.HOLD_QTY, I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY FROM item_list I INNER JOIN (SELECT CONCAT(ENGLISH_NAME, CHINESE_NAME, TYPE) AS T_NAME, SUM(QTY) AS T_QTY FROM item_list GROUP BY CONCAT(CHINESE_NAME, ENGLISH_NAME, TYPE)) T ON CONCAT(I.ENGLISH_NAME, I.CHINESE_NAME, I.TYPE) = T.T_NAME WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.TYPE, I.ENGLISH_NAME;`; 
-	console.log('Get all item for inventory');
-	console.log(sqlQuery);
-
+	
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);

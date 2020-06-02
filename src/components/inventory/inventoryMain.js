@@ -1,5 +1,6 @@
 import React from 'react';
 
+import HistoryItemsDisplay from './historyItemsDisplay/historyItemsDisplay';
 import Notification from './notificationView/notificationView';
 import HoldItemsDisplay from './holdItemsDisplay/holdItemsDisplay';
 import InventroyItemsDisplay from './inventoryItemDisplay/inventoryItemDisplay';
@@ -16,6 +17,7 @@ export default class inventoryMain extends React.Component {
 
 		this.state = {
 			accountInfo: this.props.accountInfo,
+			allHistoryItems: [],
 			allItems: [],
 			allHoldItems: [],
 			allNotificationItems: [],
@@ -30,6 +32,7 @@ export default class inventoryMain extends React.Component {
 
 	componentDidMount() {
 		this.actionBeforeLoadAllItem();
+		this.loadAllHistoryItem();
 		this.loadAllItem();
 		this.loadAllHoldItems();
 	}
@@ -39,13 +42,21 @@ export default class inventoryMain extends React.Component {
 		fetch('http://localhost:4000/inventory/actionbeforloadallitem')
 		.then(res  =>res.json())
 		.then(data => {
-			console.log(data);
 			if(data.data && data.data === 'success') {
 				console.log("actionBeforeLoadAllItem succeeds");
 			}
 		})
 	}
 
+	loadAllHistoryItem(){
+		fetch(`http://localhost:4000/inventory/loadallhistoryItem`)
+		.then(res => res.json())
+		.then(data => {
+			if(data.data) {
+				this.setState({allHistoryItems: this.setStateWithRowSpan(data.data)});
+			}
+		})
+	}
 
 	loadAllItem(receviedFilter=''){
 		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
@@ -250,6 +261,13 @@ export default class inventoryMain extends React.Component {
 			<div className= "inventorymain-wrapper">
 				{this.state.accountInfo.VIEW_ITEM? 
 				<div className = "invtory-viewable">
+					
+
+					<HistoryItemsDisplay loggedUser = {this.state.accountInfo}
+										 allHistoryItems={this.state.allHistoryItems}
+										 quickSort = {this.quickSort.bind(this)}
+										 setStateWithRowSpan = {this.setStateWithRowSpan.bind(this)}/>
+
 					{this.state.accountInfo.EXP_VIEW ?	
 						<Notification loggedUser = {this.state.accountInfo}
 									  allNotificationItems = {this.state.allNotificationItems}
