@@ -241,9 +241,9 @@ app.get('/home/modifyannouncements',(req,res)=>{
 //****************************Inventroy******************************************************
 app.get('/inventory/actionbeforloadallitem',(req,res)=>{
 	let sqlQueries = '';
-	sqlQueries += 'UPDATE item_list AS I, (SELECT ITEM_ID, HOLD_QTY FROM `hold_item_list` WHERE DATE < CURRENT_DATE) AS H SET I.HOLD_QTY = I.HOLD_QTY + H.HOLD_QTY WHERE I.ID = H.ITEM_ID;';
+	sqlQueries += 'UPDATE item_list AS I, (SELECT ITEM_ID, HOLD_QTY FROM `hold_item_list` WHERE DATE < CURRENT_DATE AND DATE != "0000-00-0") AS H SET I.HOLD_QTY = I.HOLD_QTY - H.HOLD_QTY WHERE I.ID = H.ITEM_ID;';
 	sqlQueries += 'INSERT INTO history_item_list SELECT * FROM item_list where QTY = 0 OR EXPIRE_DATE < CURRENT_DATE();';
-	sqlQueries += 'DELETE FROM hold_item_list WHERE DATE < CURRENT_DATE;';
+	sqlQueries += 'DELETE FROM hold_item_list WHERE DATE < CURRENT_DATE AND DATE != "0000-00-00";';
 	sqlQueries += 'DELETE FROM item_list WHERE EXPIRE_DATE < CURRENT_DATE OR QTY <= 0;';
 	
 	console.log(sqlQueries);
