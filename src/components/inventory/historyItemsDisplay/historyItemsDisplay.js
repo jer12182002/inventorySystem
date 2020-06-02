@@ -66,7 +66,7 @@ export default class historyItemsDisplay extends React.Component {
 						<h3 className="title">History Items</h3>
 					</div>
 					<div className="qty-container">
-						<h3 className="inline-b"><strong>{this.state.allHistoryItems.length}</strong> History Items In Record: </h3>	
+						<h3 className="inline-b"><strong>{this.state.allHistoryItems.length}</strong> History Items In Record</h3>	
 					</div>
 					<div>
 						<button id="ivtHistory-expand-btn" type="button" onClick={e=>this.ivtExpandClick(e)}>Expand</button>

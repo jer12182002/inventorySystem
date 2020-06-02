@@ -88,7 +88,7 @@ export default class notificationView extends React.Component {
 						<h3 className="title">About Expired Products Notification</h3>
 					</div>
 					<div className="qty-container">
-						<h3 className="inline-b"><strong>{this.state.allNotificationItems.length}</strong> Items Will Expire After: </h3>
+						<h3 className="inline-b"><strong>{this.state.allNotificationItems.length}</strong> Items Will Expire After</h3>
 						<input id="date-picker"  type="date" defaultValue = {this.props.defaultExpiryDate} onChange= {e => this.changeDate(e)}/>
 					</div>
 					<div>

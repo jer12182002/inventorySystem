@@ -77,7 +77,7 @@ export default class holdItemsDisplay extends React.Component {
 						<h3 className="title">Hold Items</h3>
 					</div>
 					<div className="qty-container">
-						<h3 className="inline-b"><strong>{this.state.allHoldItems.length}</strong> Items Are On Hold: </h3>
+						<h3 className="inline-b"><strong>{this.state.allHoldItems.length}</strong> Items Are On Hold</h3>
 					</div>
 					<div>
 						<button id="hold-expand-btn" type="button" onClick={e=>this.holdExpandClick(e)}>Expand</button>

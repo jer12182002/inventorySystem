@@ -1,5 +1,19 @@
+@import 'sass-mq';
+
 .bulkItemImporter-wrapper {
 	height: 35px;
+	
+	div {
+		background-color: lightblue;
+		color: black;
+		
+		&{
+			@include mq($until: desktop) {
+				display: none !important;
+			}			
+		}
+	}
+
 	.result-container {
 
 		&::before{
@@ -88,4 +102,6 @@
 			}
 		}
 	}
+
+
 }

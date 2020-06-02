@@ -1,10 +1,12 @@
 .controlPanel-wrapper {
-	background-color: red;
+	background-color: lightgray;
 	position: fixed;
-	height: 100px;
+	height: 120px;
 	width: 100%;
 	bottom:0px;
+	border: 3px solid black;
 	
+
 	.controlPanel-functions, .filter-wrapper {
 		height: 100%;
 		width: 25%;
@@ -17,8 +19,6 @@
 			top:0;
 			height: 50%;
 			width:100%;
-			
-
 		}
 
 		.action-area {
@@ -26,7 +26,10 @@
 			bottom: 0;
 			height: 50%;
 			width:100%;
-			background-color: blue;
+			
+			button {
+				margin: 0 20px;
+			}
 		}
 	}
 }

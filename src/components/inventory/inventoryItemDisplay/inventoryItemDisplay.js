@@ -238,7 +238,7 @@ export default class inventoryItemDisplay extends React.Component {
 						<h3 className="title">All Inventory Items</h3>
 					</div>
 					<div className="qty-container">
-						<h3 className="inline-b"><strong>{this.state.allItems.length}</strong> Items In Stock: </h3>	
+						<h3 className="inline-b"><strong>{this.state.allItems.length}</strong> Items In Stock</h3>	
 					</div>
 					<div>
 						<button id="ivtItem-expand-btn" type="button" onClick={e=>this.ivtExpandClick(e)}>Expand</button>

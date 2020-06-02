@@ -1,8 +1,16 @@
 .holdItem-wrapper {
 	.main-function.holdItem-input-container {
+		text-align: left;
 		label, input {
-			height: 50px;
+			height: 40px;
+			width: 10%;
 			margin:0 5px;
 		}
+		label {
+			text-align: right;
+		}
+
 	}
+	
+
 }

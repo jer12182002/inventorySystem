@@ -1,3 +1,4 @@
+@import 'sass-mq';
 .filter-wrapper {
 	position: absolute;
 	right: 0;
@@ -7,7 +8,7 @@
 	.selectfilter-container {
 		position:fixed;
 		right:0;
-		bottom:50px;
+		bottom:70px;
 		width:400px;
 		height: 600px;
 		background-color: white;
@@ -60,7 +61,19 @@
 			
 		}
 	}
-	.action-area {
+
+	@include mq($until: desktop){
+		.action-area {
+			width: 100%;
+			
+			input {
+				width: 60%;
+			}
+
+			#showBtn,#filterBtn {
+				margin: 0;
+			}
+		}
 
 	}
 }

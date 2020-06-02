@@ -1,3 +1,5 @@
+@import 'sass-mq';
+
 .addItem-wrapper {
 	width: 100%;
 
@@ -21,8 +23,23 @@
 	
 		#addGram {
 			width: 50px;
-		}
+		}	
+	}
 
-		
+	@include mq($until: desktop) {
+		.main-function.addItem-input-container {
+			label {
+				width: 5%;
+				margin: 0;
+				font-size: 14px;
+			}
+
+			input,select {
+				width: 6%;
+				margin: 0;
+				font-size: 14px;
+			}
+
+		}
 	}
 }
