@@ -129,16 +129,8 @@ export default class bulkItemImporter extends React.Component {
 
   closeBulkItemsContainer(e) {
   	e.preventDefault();
-	fetch(`http://localhost:4000/inventory/addbulkItems?readyToImport=${JSON.stringify(false)}`)
-	.then(res => res.json())
-  	.then(data => {
-  		if(data.data && data.data === 'success') {
-  			$('.bulkItemImporter-wrapper .result-container').addClass('display-none'); 	
-  		}else {
-  			alert("Something went wrong!, Please try again");
-  			window.location.reload();
-  		}
-  	});
+  	$('.bulkItemImporter-wrapper .result-container').addClass('display-none'); 	
+  		
   }
 
 

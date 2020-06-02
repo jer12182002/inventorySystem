@@ -47,7 +47,8 @@ export default class filter extends React.Component {
 	}
 
 
-	filterBtn(){
+	filterBtn(e){
+		e.preventDefault();
 		if($("#filterBtn").text()==="Filter"){
 			$("#itemFilter").removeClass("display-none");
 			$(".selectfilter-container").removeClass("display-none");

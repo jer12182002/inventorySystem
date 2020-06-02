@@ -279,6 +279,7 @@ app.post('/inventory/addbulkItemsRepo',(req,res)=>{
 	let bulkItems = req.body.bulkItems;
 	
 	let sqlQueries = '';
+		sqlQueries += 'DELETE FROM bulk_item_list_repository;';
 	bulkItems.forEach(item=>{
 		sqlQueries += `INSERT INTO bulk_item_list_repository (TYPE, SHELF_NO ,MANUFACTURE,ENGLISH_NAME,CHINESE_NAME, QTY,EXPIRE_DATE,GRAM,CREATED_BY,LAST_MODIFIED_BY) VALUES ('${item.TYPE}', '${item.SHELF_NO}', '${item.MANUFACTURER}', '${item.ENGLISH_NAME}', '${item.CHINESE_NAME}','${item.QTY}', '${item.EXPIRY_DATE}', '${item.GRAM}', '${item.AUTHOR}', '${item.AUTHOR}');`;
 		let actionDetails = `${item.ENGLISH_NAME} ${item.CHINESE_NAME} Type: ${item.TYPE}, Shelf No: ${item.SHELF_NO}, Manu.: ${item.MANUFACTURER}, QTY: ${item.QTY}, Exp.: ${item.EXPIRY_DATE}, Gram: ${item.GRAM}`;	
@@ -302,27 +303,26 @@ app.post('/inventory/addbulkItemsRepo',(req,res)=>{
 })
 
 
-// app.get('/inventory/addbulkItems',(req,res)=>{
+app.get('/inventory/addbulkItems',(req,res)=>{
 
-// 	let readyToImport = JSON.parse(req.query.readyToImport);
-// 	console.log(readyToImport);
-// 	let sqlQueries = '';
-// 	if(readyToImport) {
-// 		sqlQueries = 'INSERT INTO item_list( TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY) SELECT TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY FROM bulk_item_list_repository;';
-// 	}
+	let readyToImport = JSON.parse(req.query.readyToImport);
+	let sqlQueries = '';
+	if(readyToImport) {
+		sqlQueries = 'INSERT INTO item_list( TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY) SELECT TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY FROM bulk_item_list_repository;';
+	}
 
-// 	sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
+	sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
 
-// 	console.log(readyToImport)
-// 	connection.query(sqlQueries, (err, result)=> {
-// 		if(err) {
-// 			res.send(err);
-// 		}else {
-// 			return res.json({data: 'success'});
-// 		}
-// 	})
+	console.log(readyToImport)
+	connection.query(sqlQueries, (err, result)=> {
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data: 'success'});
+		}
+	})
 
-// })
+})
 
 
 
