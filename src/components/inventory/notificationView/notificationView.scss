@@ -7,9 +7,19 @@
 		display: table;
 		height: 80px;
 
-		.title {
-			float:left;
-			margin-left: 30px;
+		.title-container {
+			width: 45%;
+			text-align: left;
+
+			.title {
+				float:left;
+				margin-left: 30px;
+			}
+		}
+
+		.qty-container {
+			width: 30%;
+			text-align: left;
 		}
 		
 		div {
@@ -72,22 +82,18 @@
 
 	@include mq($until: desktop) {
 		.header-section {
-			.title {
+			h3 {
 				font-size: 20px;
 			}
 
 			div {
 				padding: 0;
-
-				h3 {
-					font-size: 20px;
-				}
-
+				
 				input[type="date"] {
 				margin-top: 0;
 				margin-bottom: 15px;
 				height: 25px;
-				text-align: center;
+				text-align: left;
 				}
 			}
 		}

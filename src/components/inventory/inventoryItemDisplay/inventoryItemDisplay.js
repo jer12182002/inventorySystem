@@ -217,19 +217,35 @@ export default class inventoryItemDisplay extends React.Component {
 		this.setState({allItems:this.props.setStateWithRowSpan(filterArr)});
 	}
 
+	ivtExpandClick (e) {
+		e.preventDefault();
+		if($('#ivtItem-expand-btn').text()==="Expand") {
+			$('.inventoryitemdisplay-wrapper .main-section').removeClass("display-none");
+			$('#ivtItem-expand-btn').text("Close");
+		}
+		else {
+			$('.inventoryitemdisplay-wrapper .main-section').addClass("display-none");
+			$('#ivtItem-expand-btn').text("Expand");	
+		}	
+	}
 
 	render() {
 		return (
 			<div className="inventoryitemdisplay-wrapper">
 
 				<div className="header-section">
-					<div>
+					<div className="title-container">
 						<h3 className="title">All Inventory Items</h3>
 					</div>
-				
+					<div className="qty-container">
+						<h3 className="inline-b"><strong>{this.state.allItems.length}</strong> Items In Stock: </h3>	
+					</div>
+					<div>
+						<button id="ivtItem-expand-btn" type="button" onClick={e=>this.ivtExpandClick(e)}>Expand</button>
+					</div>
 				</div>
 				
-				<div className="main-section">
+				<div className="main-section display-none">
 					<table className="block items-table table">
 						<thead>
 						<tr>

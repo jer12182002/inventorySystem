@@ -62,10 +62,10 @@ export default class historyItemsDisplay extends React.Component {
 		return (
 			<div className="historyItemsDisplay-wrapper">
 				<div className="header-section">
-					<div>
+					<div className="title-container">
 						<h3 className="title">History Items</h3>
 					</div>
-					<div>
+					<div className="qty-container">
 						<h3 className="inline-b"><strong>{this.state.allHistoryItems.length}</strong> History Items In Record: </h3>	
 					</div>
 					<div>

@@ -6,15 +6,25 @@
 		border-bottom: 3px solid black;
 		display: table;
 		height: 80px;
+		
+		.title-container {
+			width: 45%;
+			text-align: left;
 			
-		div {
-			vertical-align: middle;
-			display: table-cell; 
-
 			.title {
 				float:left;
 				margin-left: 30px;
 			}
+		}
+
+		.qty-container {
+			width: 30%;
+			text-align: left;
+		}
+
+		div {
+			vertical-align: middle;
+			display: table-cell; 
 
 			button[type="button"] {
 				float: right;
@@ -81,10 +91,7 @@
 
 	@include mq($until: desktop) {
 		.header-section {
-			.title {
-				font-size: 20px;
-			}
-			div h3 {
+			h3 {
 				font-size: 20px;
 			}
 		}

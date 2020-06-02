@@ -6,10 +6,20 @@
 		border-bottom: 3px solid black;
 		display: table;
 		height: 80px;
+		
+		.title-container {
+			width: 45%;
+			text-align: left;
+			
+			.title {
+				float:left;
+				margin-left: 30px;
+			}
+		}
 
-		.title {
-			float:left;
-			margin-left: 30px;
+		.qty-container {
+			width: 30%;
+			text-align: left;
 		}
 		
 		div {
@@ -62,16 +72,8 @@
 
 	@include mq($until: desktop) {
 		.header-section {
-			.title {
+			h3 {
 				font-size: 20px;
-			}
-
-			div {
-				padding: 0;
-
-				h3 {
-					font-size: 20px;
-				}
 			}
 		}
 

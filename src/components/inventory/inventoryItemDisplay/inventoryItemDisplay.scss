@@ -7,14 +7,30 @@
 		display: table;
 		height: 80px;
 
-		.title {
-			float:left;
-			margin-left: 30px;
+		.title-container {
+			width: 45%;
+			text-align: left;
+			
+			.title {
+				float:left;
+				margin-left: 30px;
+			}
 		}
+
+		.qty-container {
+			width: 30%;
+			text-align: left;
+		}
+		
+
 		div {
 			vertical-align: middle;
 			display: table-cell; 
-		}	
+			button[type="button"] {
+				float: right;
+				margin-right: 30px;
+			}
+		}
 	}
 	
 	.main-section {
@@ -101,10 +117,9 @@
 		}
 	}
 	@include mq($until: desktop) {
-        .header-section {
-	
-			.title {
-				font-size: 20px;		
+       .header-section {
+			h3 {
+				font-size: 20px;
 			}
 		}
 		.main-section {

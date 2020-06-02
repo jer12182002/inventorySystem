@@ -73,10 +73,10 @@ export default class holdItemsDisplay extends React.Component {
 		return (
 			<div className="holditemsdisplay-wrapper">
 				<div className="header-section">
-					<div>
+					<div className="title-container">
 						<h3 className="title">Hold Items</h3>
 					</div>
-					<div>
+					<div className="qty-container">
 						<h3 className="inline-b"><strong>{this.state.allHoldItems.length}</strong> Items Are On Hold: </h3>
 					</div>
 					<div>
