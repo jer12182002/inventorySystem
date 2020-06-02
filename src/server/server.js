@@ -239,6 +239,24 @@ app.get('/home/modifyannouncements',(req,res)=>{
 
 
 //****************************Inventroy******************************************************
+app.get('/inventory/actionbeforloadallitem',(req,res)=>{
+	let sqlQueries = '';
+	sqlQueries += 'UPDATE item_list AS I, (SELECT ITEM_ID, HOLD_QTY FROM `hold_item_list` WHERE DATE < CURRENT_DATE) AS H SET I.HOLD_QTY = I.HOLD_QTY + H.HOLD_QTY WHERE I.ID = H.ITEM_ID;';
+	sqlQueries += 'INSERT INTO history_item_list SELECT * FROM item_list where QTY = 0 OR EXPIRE_DATE < CURRENT_DATE();';
+	sqlQueries += 'DELETE FROM hold_item_list WHERE DATE < CURRENT_DATE;';
+	sqlQueries += 'DELETE FROM item_list WHERE EXPIRE_DATE < CURRENT_DATE OR QTY <= 0;';
+	
+	console.log(sqlQueries);
+	connection.query(sqlQueries,(err, result)=> {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data: 'success'}));
+		}
+	})
+})
+
+
 app.get('/inventory/loadSelect',(req,res)=>{
 
 	var sqlQuery = 'SELECT ITEM_TYPE FROM item_list_type_list';

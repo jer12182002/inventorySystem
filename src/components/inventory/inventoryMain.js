@@ -29,10 +29,23 @@ export default class inventoryMain extends React.Component {
 	}
 
 	componentDidMount() {
+		this.actionBeforeLoadAllItem();
 		this.loadAllItem();
 		this.loadAllHoldItems();
 	}
 	
+
+	actionBeforeLoadAllItem() {
+		fetch('http://localhost:4000/inventory/actionbeforloadallitem')
+		.then(res  =>res.json())
+		.then(data => {
+			console.log(data);
+			if(data.data && data.data === 'success') {
+				console.log("actionBeforeLoadAllItem succeeds");
+			}
+		})
+	}
+
 
 	loadAllItem(receviedFilter=''){
 		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)

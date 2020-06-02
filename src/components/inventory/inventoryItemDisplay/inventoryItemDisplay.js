@@ -15,7 +15,8 @@ export default class inventoryItemDisplay extends React.Component {
 			loggedUser: this.props.loggedUser,
 			types: [],
 			allItems: this.props.allItems,
-			checkedItem:[]
+			checkedItem:[],
+			aboutExpiredDate:''
 		}
 
 		if(this.state.loggedUser.TYPE_MODIFY || this.state.loggedUser.ADD_ITEM) {
@@ -26,7 +27,10 @@ export default class inventoryItemDisplay extends React.Component {
 
 	componentWillReceiveProps(newProps) {
 	  if (this.state.allItems !== newProps.allItems) {
-	    this.setState({allItems: newProps.allItems});
+	  	let aboutExpiredDate = new Date(newProps.today);
+	  	aboutExpiredDate = aboutExpiredDate.setMonth(aboutExpiredDate.getMonth()+4);
+	  	
+	    this.setState({allItems: newProps.allItems , aboutExpiredDate: Moment(aboutExpiredDate).format('YYYY-MM')});
 	  }
 	}
 
@@ -394,12 +398,12 @@ export default class inventoryItemDisplay extends React.Component {
 
 									{this.state.loggedUser.EXP_VIEW ?
 										this.state.loggedUser.EXP_MODIFY? 
-											<td className={`bbg-width ${Moment(item.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.props.toady).format('YYYY-MM')? 'expired-date':'' }`}>
+											<td className={`bbg-width ${Moment(item.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.props.toady).format('YYYY-MM')? 'expired-date':Moment(item.EXPIRE_DATE).format('YYYY-MM') < this.state.aboutExpiredDate? 'about-expired' : ''  }`}>
 												<p>{item.EXPIRE_DATE}</p>
 		
 												<input key={`${item.EXPIRE_DATE}${key+1}`} id={`EXP_M${item.ID}`} type="date" className={`editToggle${key} sm-input display-none `} defaultValue={item.EXPIRE_DATE}/>
 											</td>
-											:<td className={`bg-width ${Moment(item.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.props.toady).format('YYYY-MM')? 'expired-date':'' }`}>
+											:<td className={`bg-width ${Moment(item.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.props.toady).format('YYYY-MM')? 'expired-date': Moment(item.EXPIRE_DATE).format('YYYY-MM') < this.state.aboutExpiredDate? 'about-expired' : '' }`}>
 												<p>{item.EXPIRE_DATE}</p>
 											</td>	
 										:null
