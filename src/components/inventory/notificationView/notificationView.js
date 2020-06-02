@@ -82,7 +82,7 @@ export default class notificationView extends React.Component {
 
 	render() {
 		return (
-			<div className = "notificationview-wrapper">
+			<div className = "notificationview-wrapper  category-wrappr">
 				<div className="header-section">
 					<div className="title-container">
 						<h3 className="title">About Expired Products Notification</h3>

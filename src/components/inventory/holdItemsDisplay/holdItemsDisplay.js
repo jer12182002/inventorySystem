@@ -71,7 +71,7 @@ export default class holdItemsDisplay extends React.Component {
 
 	render() {
 		return (
-			<div className="holditemsdisplay-wrapper">
+			<div className="holditemsdisplay-wrapper category-wrappr">
 				<div className="header-section">
 					<div className="title-container">
 						<h3 className="title">Hold Items</h3>

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './inventoryMain.scss';
 import HistoryItemsDisplay from './historyItemsDisplay/historyItemsDisplay';
 import Notification from './notificationView/notificationView';
 import HoldItemsDisplay from './holdItemsDisplay/holdItemsDisplay';

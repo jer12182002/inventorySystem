@@ -231,7 +231,7 @@ export default class inventoryItemDisplay extends React.Component {
 
 	render() {
 		return (
-			<div className="inventoryitemdisplay-wrapper">
+			<div className="inventoryitemdisplay-wrapper  category-wrappr">
 
 				<div className="header-section">
 					<div className="title-container">

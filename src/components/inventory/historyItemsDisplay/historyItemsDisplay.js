@@ -60,7 +60,7 @@ export default class historyItemsDisplay extends React.Component {
 
 	render() {
 		return (
-			<div className="historyItemsDisplay-wrapper">
+			<div className="historyItemsDisplay-wrapper category-wrappr">
 				<div className="header-section">
 					<div className="title-container">
 						<h3 className="title">History Items</h3>
