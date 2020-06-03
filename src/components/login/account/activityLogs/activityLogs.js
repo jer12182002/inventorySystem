@@ -79,6 +79,34 @@ export default class activityLogs extends React.Component {
 	}
 
 
+	quickSort (field, array, left, right) {
+		var centr = array[Math.floor((right + left) / 2)][field];
+		var i = left;
+		var k = right;
+		while (i < k) {
+			while (array[i][field] < centr) {
+				i++;
+			}
+			while (array[k][field] > centr) {
+				k--;
+			}
+			if (i <= k) {
+				[array[i], array[k]] = [array[k], array[i]]
+				i++;
+				k--;
+			}
+		}
+		if (left < k) {
+			this.quickSort(field, array, left, k);
+			
+		}
+		if (i < right) {
+			this.quickSort(field, array, i, right);
+		}
+		return array;
+	}
+
+
 	sortLogs(e, type, field) {
 		e.preventDefault();
 		let btnText = $(`#${type}-${field}-sortToggle`).text();
@@ -89,12 +117,16 @@ export default class activityLogs extends React.Component {
 		}else {
 			sortData = this.state.chk_pickupLogs;
 		}
+	
+		sortData = this.quickSort(field, sortData, 0, sortData.length-1);
 
-		sortData = sortData.sort((a,b)=>{
-			return btnText === "ASC"? a[field.toUpperCase()].localeCompare(b[field.toUpperCase()]) : b[field.toUpperCase()].localeCompare(a[field.toUpperCase()]);
-		})
+		if(btnText === "ASC") {
+			$(`#${type}-${field}-sortToggle`).text("DESC");			
+		}else {
+			$(`#${type}-${field}-sortToggle`).text("ASC");
+			sortData.reverse();			
+		}
 
-		 $(`#${type}-${field}-sortToggle`).text(btnText === "ASC"? "DESC" : "ASC");
 		
 		if(type === "inventory") {
 			this.setState({inventoryLogs:sortData});
@@ -104,6 +136,8 @@ export default class activityLogs extends React.Component {
 
 	}
 
+
+	
 
 
 	componentDidMount() {
