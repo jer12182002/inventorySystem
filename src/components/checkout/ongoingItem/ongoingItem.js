@@ -7,7 +7,7 @@ import "./ongoingItem.scss";
 
 
 export default class ongoingItem extends React.Component {
-	intervalName = "chkoutOrderNote";
+	intervalName = "chkoutOrderNotes";
 
 	constructor(props) {
 		super(props);	
@@ -109,14 +109,13 @@ export default class ongoingItem extends React.Component {
 		this.loadOrderInfo();
 
 		//THIS IS TO MAKE SURE RECEIVING THE REAL TIME MESSAGES
-		this.intervalName = setInterval((e)=>{
-			this.loadNotes();
-		},1000);
+		this.interValName = setInterval(()=>this.loadNotes(),1000);
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.intervalName);
 	}
+
 
 	//******************************** Helper Functions *****************************************
 	organizeData(data) {
@@ -251,10 +250,7 @@ export default class ongoingItem extends React.Component {
 
 	getPickUpData(data){
 		let pickupItems = new Set();
-
 		data.filter(item => !pickupItems.has(item["ORDER_ITEM_ID"]) && pickupItems.add(item));
-	
-
 	}
 
 

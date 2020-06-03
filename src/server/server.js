@@ -59,11 +59,11 @@ app.get('/login',(req,res)=>{
 	const {account, password } = req.query;
 	var sqlQuery = `SELECT * FROM ACCOUNT_LIST WHERE ACCOUNT = '${account}' AND PASSWORD = '${password}'`;
 
+	console.log("login");
 	connection.query(sqlQuery,(err, result) =>{
 		if(err){
 			res.send(err);
 		}else {
-			console.log(result);
 			return res.json({data:result})
 		}
 	});
@@ -71,10 +71,9 @@ app.get('/login',(req,res)=>{
 
 
 app.get('/login/account',(req,res)=>{
-	console.log("Get request for fetch data from all user");
-
 	var sqlQuery = `SELECT * FROM account_list where ID != 1`;
 
+	console.log("Get information for all users except IT");
 	connection.query(sqlQuery,(err,result) => {
 		if(err){
 			res.send(err);
@@ -88,15 +87,12 @@ app.get('/login/account',(req,res)=>{
 
 app.get('/login/account/register',(req,res) =>{	
 	let newUserInfo = JSON.parse(req.query.newUserInfo);
-	console.log(newUserInfo);
-	
 	let sqlQuery = `INSERT INTO account_list(USERNAME, ACCOUNT, PASSWORD, CREATEDBY) VALUES ('${newUserInfo.username}', '${newUserInfo.account}', '${newUserInfo.password}', '${newUserInfo.createdBy}');`;
-	console.log(sqlQuery);
+	
+	console.log("register");
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);
-			console.log("err");
-			console.log(err);
 		}else {
 			return res.json({data:result})
 		}
@@ -105,12 +101,10 @@ app.get('/login/account/register',(req,res) =>{
 
 
 app.get('/login/account/resetpassword',(req,res)=>{
-	console.log("Received Data from resetPassword");
 	let userPwdInfo = JSON.parse(req.query.newUserInfo);
-
 	var sqlQuery = `UPDATE account_list set PASSWORD = '${userPwdInfo.newPassword}' where ID = ${userPwdInfo.id}`;
-	console.log(sqlQuery);
-
+	
+	console.log("Reset password");
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);
@@ -126,6 +120,7 @@ app.get('/login/account/displayActivities',(req,res)=> {
 	let sqlQueries = 'SELECT * FROM inventory_activity_logs ORDER BY TIME DESC;';
 	    sqlQueries+= 'SELECT * FROM chk_pickup_activity_logs ORDER BY TIME DESC;';
 
+	console.log("Get all activities");
 	connection.query(sqlQueries,(err,result)=>{
 		if(err){
 			res.send(err);
@@ -154,7 +149,6 @@ app.get('/login/account/displayUsers',(req,res) =>{
 			return res.json({data: result})
 		}
 	});
-
 })
 
 
@@ -162,7 +156,8 @@ app.get('/login/account/saveUpdatedUser',(req,res)=>{
 	let userInfo = JSON.parse(req.query.userInfo);
 	
 	var sqlQuery = `UPDATE account_list set ACCESS_LEVEL = ${userInfo.ACCESS_LEVEL}, VIEW_ITEM = ${userInfo.VIEW_ITEM}, ADD_ITEM = ${userInfo.ADD_ITEM}, DELETE_ITEM = ${userInfo.DELETE_ITEM}, NAME_MODIFY=${userInfo.NAME_MODIFY}, QTY_VIEW = ${userInfo.QTY_VIEW}, QTY_MODIFY = ${userInfo.QTY_MODIFY}, TYPE_VIEW = ${userInfo.TYPE_VIEW}, TYPE_MODIFY = ${userInfo.TYPE_MODIFY}, SHELF_MODIFY = ${userInfo.SHELF_MODIFY}, GRAM_VIEW = ${userInfo.GRAM_VIEW}, GRAM_MODIFY = ${userInfo.GRAM_MODIFY}, EXP_VIEW = ${userInfo.EXP_VIEW}, EXP_MODIFY = ${userInfo.EXP_MODIFY}, TAG_VIEW = ${userInfo.TAG_VIEW}, TAG_MODIFY = ${userInfo.TAG_MODIFY}, CHK_VIEW = ${userInfo.CHK_VIEW}, CHK_MODIFY = ${userInfo.CHK_MODIFY}, PICKUP_VIEW = ${userInfo.PICKUP_VIEW}, PICKUP_RESPOND = ${userInfo.PICKUP_RESPOND} where ID = ${userInfo.ID}`;
-	console.log(sqlQuery);
+	
+	console.log("Change user permission");
 
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
@@ -183,6 +178,7 @@ app.get('/login/account/saveUpdatedUser',(req,res)=>{
 app.get('/home/loadallannouncements',(req,res)=>{
 	let sqlQuery = 'SELECT * FROM announcements ORDER BY TIME DESC';
 
+	console.log("Load all announcements");
 	connection.query(sqlQuery,(err,result)=>{
 		if(err) {
 			res.send(err);
@@ -198,6 +194,7 @@ app.get('/home/addannouncements',(req,res)=>{
 	
 	let sqlQuery = `INSERT INTO announcements (ANNOUNCEMENT, PERSON) VALUES('${announcementInfo.ANNOUNCEMENT}', '${announcementInfo.PERSON}');`;
 
+	console.log("Add new announcement");
 	connection.query(sqlQuery,(err,result)=>{
 		if(err) {
 			res.send(err);
@@ -214,6 +211,7 @@ app.get('/home/modifyannouncements',(req,res)=>{
 	
 	let sqlQuery = '';
 
+	console.log("Delete or Modify announcement");
 	if(announcementInfo.ACTION === 'update') {
 		sqlQuery = `UPDATE announcements SET ANNOUNCEMENT = '${announcementInfo.ANNOUNCEMENT}' WHERE ID = ${announcementInfo.ID};`;
 	}else if(announcementInfo.ACTION === 'delete') {
@@ -246,7 +244,7 @@ app.get('/inventory/actionbeforloadallitem',(req,res)=>{
 	sqlQueries += 'DELETE FROM hold_item_list WHERE DATE < CURRENT_DATE AND DATE != "0000-00-00";';
 	sqlQueries += 'DELETE FROM item_list WHERE QTY <= 0;';
 	
-	console.log(sqlQueries);
+	console.log("Check if there is any expired on hold items or 0 qty item in inventory");
 	connection.query(sqlQueries,(err, result)=> {
 		if(err) {
 			res.send(err);
@@ -260,7 +258,7 @@ app.get('/inventory/actionbeforloadallitem',(req,res)=>{
 app.get('/inventory/loadSelect',(req,res)=>{
 
 	var sqlQuery = 'SELECT ITEM_TYPE FROM item_list_type_list';
-	console.log('Get request from inventory/loadSelect');
+	console.log('Load all Type');
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);
@@ -280,6 +278,7 @@ app.get('/inventory/addNewItem',(req,res)=>{
 	let actionDetails = `${newItem.ENname} ${newItem.CHname} Type: ${newItem.type}, Shelf No: ${newItem.shelfNo}, Manu.: ${newItem.manufacturer}, QTY: ${newItem.qty}, Exp.: ${newItem.exp}, Gram: ${newItem.gram}`;
 		sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${newItem.createdBy}','Add New Item' ,'${actionDetails}');`;
 
+	console.log("Add new Item");
 	connection.query(sqlQueries,(err,result)=>{
 		if(err){
 			console.log(err);
@@ -293,7 +292,8 @@ app.get('/inventory/addNewItem',(req,res)=>{
 
 
 app.post('/inventory/addbulkItemsRepo',(req,res)=>{
-	//let bulkItems = JSON.parse(req.query.bulkItems);
+	console.log("Add items into bulkItemRepo");
+
 	let bulkItems = req.body.bulkItems;
 	
 	let sqlQueries = '';
@@ -322,6 +322,7 @@ app.post('/inventory/addbulkItemsRepo',(req,res)=>{
 
 
 app.get('/inventory/addbulkItems',(req,res)=>{
+	console.log("Inert all bulkItems from repo to item_list");
 
 	let readyToImport = JSON.parse(req.query.readyToImport);
 	let sqlQueries = '';
@@ -331,7 +332,6 @@ app.get('/inventory/addbulkItems',(req,res)=>{
 
 	sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
 
-	console.log(readyToImport)
 	connection.query(sqlQueries, (err, result)=> {
 		if(err) {
 			res.send(err);
@@ -345,6 +345,7 @@ app.get('/inventory/addbulkItems',(req,res)=>{
 
 
 app.get('/inventory/loadallhistoryItem', (req,res)=>{
+	console.log("Load Hisotory items");
 	let sqlQuery = 'SELECT * FROM history_item_list ORDER BY EXPIRE_DATE';
 
 	connection.query(sqlQuery, (err, result)=>{
@@ -358,6 +359,7 @@ app.get('/inventory/loadallhistoryItem', (req,res)=>{
 
 
 app.get('/inventory/loadAllItem',(req,res)=>{
+	console.log("Load all items in stock now");
 	let filter = req.query.filter;
 
 	let	sqlQuery = `SELECT I.ID, I.TYPE, I.SHELF_NO, I.MANUFACTURE, I.ENGLISH_NAME,I.CHINESE_NAME,I.HOLD_QTY, I.QTY, T.T_QTY, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE,GRAM,I.CREATED_BY,I.LAST_MODIFIED_BY FROM item_list I INNER JOIN (SELECT CONCAT(ENGLISH_NAME, CHINESE_NAME, TYPE) AS T_NAME, SUM(QTY) AS T_QTY FROM item_list GROUP BY CONCAT(CHINESE_NAME, ENGLISH_NAME, TYPE)) T ON CONCAT(I.ENGLISH_NAME, I.CHINESE_NAME, I.TYPE) = T.T_NAME WHERE UPPER(I.TYPE) LIKE '%${filter}%' OR UPPER(I.SHELF_NO) LIKE '%${filter}%' OR UPPER(I.MANUFACTURE) LIKE '%${filter}%' OR UPPER(I.ENGLISH_NAME) LIKE '%${filter}%' OR UPPER(I.CHINESE_NAME) LIKE '%${filter}%' OR EXPIRE_DATE LIKE '%${filter}%' Order by I.TYPE, I.ENGLISH_NAME;`; 
@@ -372,11 +374,8 @@ app.get('/inventory/loadAllItem',(req,res)=>{
 });
 
 app.get('/inventory/loadAllHoldItem',(req,res)=>{
-
+	console.log("Load all items are on hold");
 	let sqlQuery = 'SELECT I.ID, H.ID, H.ITEM_ID, I.CHINESE_NAME, I.ENGLISH_NAME, I.TYPE, DATE_FORMAT(I.EXPIRE_DATE, "%Y-%m-%d") AS EXPIRE_DATE, I.GRAM, I.MANUFACTURE, H.PERSON, H.HOLD_QTY, DATE_FORMAT(H.DATE, "%Y-%m-%d") AS DATE from item_list I INNER JOIN hold_item_list H ON I.ID = H.ITEM_ID';
-
-	console.log('Get hold items');
-	console.log(sqlQuery);
 
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
@@ -389,6 +388,7 @@ app.get('/inventory/loadAllHoldItem',(req,res)=>{
 
 
 app.get('/inventory/updateItems',(req,res)=>{
+	console.log("Update item");
 	let updatedItem = JSON.parse(req.query.updatedItem);
 
 	connection.query(`SELECT * FROM item_list WHERE ID = ${updatedItem.ID}`,(selectErr,selectResult)=>{
@@ -426,6 +426,7 @@ app.get('/inventory/updateItems',(req,res)=>{
 });
 
 app.get('/inventory/deleteItem',(req,res)=>{
+	console.log("Delete item");
 	let deleteInfo = JSON.parse(req.query.deleteInfo);
 
 	connection.query(`SELECT * FROM item_list WHERE ID = ${deleteInfo.ITEM_ID}`,(selectErr,selectResult)=>{
@@ -453,7 +454,7 @@ app.get('/inventory/deleteItem',(req,res)=>{
 
 
 app.post('/inventory/addhold',(req,res)=>{
-	//let bulkItems = JSON.parse(req.query.bulkItems);
+	console.log("Put item to on hold");
 	let holdItems = req.body.holdItems;
 	
 	let sqlQueries = '';
@@ -479,6 +480,7 @@ app.post('/inventory/addhold',(req,res)=>{
 
 
 app.get('/inventory/restockHold',(req,res)=>{
+	console.log("Reset on Hold Item");
 	let restockItem = JSON.parse(req.query.restockInfo);
 	
 	connection.query(`SELECT * FROM item_list WHERE ID = ${restockItem.ITEM_ID}`,(selectErr,selectResult)=>{
@@ -492,7 +494,6 @@ app.get('/inventory/restockHold',(req,res)=>{
 
 			connection.query(sqlQueries,(err,result)=> {
 				if(err) {
-					console.log(err);
 					res.send(err);
 				}else {
 					return (res.json({data:'success'}));
@@ -504,6 +505,7 @@ app.get('/inventory/restockHold',(req,res)=>{
 	
 //*************************************** Checkout **********************************************************************
 app.get("/checkout",(req,res)=> {
+	console.log("Load all Orders in checkout");
 	let sqlQuery = "SELECT * FROM ongoing_order ORDER BY ORDER_TIME DESC";
 
 	connection.query(sqlQuery, (err,result) => {
@@ -517,6 +519,7 @@ app.get("/checkout",(req,res)=> {
 
 
 app.get("/checkout/ongoingordernotifications",(req,res)=>{
+	console.log("Load all new notifications for ONGOING_ORDER every 3 sec");
 	let sqlQuery = 'SELECT ORDER_ID, NEW_MSG_CHKOUT FROM ONGOING_ORDER';  
 
 	connection.query(sqlQuery,(err,result)=>{
@@ -533,6 +536,7 @@ app.get("/checkout/ongoingordernotifications",(req,res)=>{
 
 
 app.get("/checkout/ongoingorder",(req,res)=>{
+	console.log("Load information for chosen ONGOING_ORDER");
 	let {orderId} = req.query;
 	
 	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId};`;
@@ -558,10 +562,10 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 
 
 app.get("/check/ongoingorder/inprocess",(req,res)=> {
+	console.log("Load the information for chosen ONGOING_ORDER if the order is in process");
 	let {orderId} = req.query;
 
 	let sqlQuery = `SELECT ID, PRODUCT AS "ORDER_ITEM_PRODUCT", QTY AS "ORDER_ITEM_QTY",PICKUP_ITEMS AS "DIFFERENT_TYPE" FROM ORDER_ITEM_LIST WHERE ORDER_ID = ${orderId}`;
-	console.log(sqlQuery);
 	connection.query(sqlQuery,(err,result)=>{
 		if(err) {
 			res.send(err);
@@ -573,6 +577,7 @@ app.get("/check/ongoingorder/inprocess",(req,res)=> {
 
 
 app.get("/checkout/order/loadnotes",(req,res)=>{
+	console.log("Load all notes for the chosen order");
 	let {orderId} = req.query;
 
 	let	sqlQuery = `SELECT * FROM checkout_note WHERE ORDER_ID = ${orderId} ORDER BY TIME DESC`;
@@ -589,9 +594,9 @@ app.get("/checkout/order/loadnotes",(req,res)=>{
 
 
 app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
+	console.log("Push RECEIVED order or Pushed Back order to In Process");
 	let orderInfo = JSON.parse(req.query.orderInfo);
 	let pauseTask = false;
-	console.log(orderInfo);
 
 	let actvityLogQuery = `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.ACCOUNTINFO}', 'PUSH TO IN PROCESS', 'Push Order: ${orderInfo.ORDER_NO} from ${orderInfo.CURRENTSTATUS} to IN PROCESS');`;
 	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_PICKUP = NEW_MSG_PICKUP + 1 WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
@@ -600,14 +605,12 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 		
 	orderInfo.ITEMS.forEach(item => {
 		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;
-		console.log(sqlQuery2);
 		connection.query(sqlQuery2,(err,result2) => {
 			if(err) {
 				pauseTask = true;
 			}else {
 				item.DIFFERENT_TYPE.forEach(diffItem => {
 					let sqlQuery3 = `UPDATE item_list SET QTY = QTY - ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ID};`;
-					console.log(sqlQuery3);
 					connection.query(sqlQuery3,(err,result3)=>{
 						if(err) {
 							pauseTask = true;
@@ -618,7 +621,6 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 			}
 		});
 	})
-
 
 	if (!pauseTask) {
 		connection.query(sqlQuery1+actvityLogQuery,(err,result1)=>{
@@ -637,8 +639,8 @@ app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 
 
 app.get("/checkout/ongoingorder/deleteorder",(req,res)=> {
+	console.log("Delete order in ONGOING_ORDER");
 	let orderInfo = JSON.parse(req.query.orderInfo);
-	console.log(orderInfo);
 	let sqlQueries = `UPDATE ongoing_order SET PROCESS_TIME = "${orderInfo.PROCESS_TIME}", PERSON = "${orderInfo.PERSON}", STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
 		sqlQueries+= `UPDATE order_item_list SET STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
 		sqlQueries+= `INSERT INTO checkout_note (ORDER_ID, PERSON,TIME, NOTE, STATUS) VALUES (${orderInfo.ORDER_ID}, '${orderInfo.PERSON}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','DELETED');`;
@@ -659,6 +661,7 @@ app.get("/checkout/ongoingorder/deleteorder",(req,res)=> {
 //*********************************Pick up*******************************************************************************
 
 app.get('/pickup',(req,res)=> {
+	console.log("Load all Pick Up(In PROCESS) orders");
 	let sqlQuery1 = "SELECT * FROM ongoing_order WHERE STATUS = 'IN PROCESS' ORDER BY ORDER_TIME DESC;";
 	
 	connection.query(sqlQuery1,(err,result)=>{
@@ -672,6 +675,7 @@ app.get('/pickup',(req,res)=> {
 
 
 app.get('/pickup/order-detail',(req,res)=> {
+	console.log("Load information for chosen order in PICK UP");
 	let {orderId} = req.query;
 
 	let sqlQueries = `SELECT * FROM order_item_list WHERE STATUS = 'IN PROCESS' AND ORDER_ID = ${orderId};`;
@@ -688,6 +692,7 @@ app.get('/pickup/order-detail',(req,res)=> {
 
 
 app.get('/pickup/order-detail/pushprocess',(req,res)=>{
+	console.log("PUSH BACK order or FINISH order in PICK UP");
 	let actionInstr = JSON.parse(req.query.actionInstr);
 	
 	let sqlQueries = `UPDATE ongoing_order SET PICKUP_PERSON = '${actionInstr.PERSON}' ,STATUS = '${actionInstr.action}' ,NEW_MSG_CHKOUT = NEW_MSG_CHKOUT+1 WHERE ORDER_ID = ${actionInstr.orderNo};`;
@@ -758,7 +763,6 @@ app.use("/shopify", (req, res) => {
 })
 
 app.get('/home', function(req, res) {
-	console.log("@@@@@");
 	if (req.session.loggedin) {
 		res.send('Welcome back, ' + req.session.username + '!');
 	} else {
