@@ -14,7 +14,7 @@ export default class userViewPanel extends React.Component {
 	}
 
 	fetchAllUserInfo(){
-		fetch("http://localhost:4000/login/account")
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/login/account`)
 		.then(res => res.json())
 		.then (data =>{
 			this.setState({users : data.data});		
@@ -49,7 +49,7 @@ export default class userViewPanel extends React.Component {
 		updateUserInfo.PICKUP_RESPOND=$(`#pickup_resp${id}`).prop("checked")? 1 : 0;
 		
 
-		fetch(`http://localhost:4000/login/account/saveUpdatedUser?userInfo=${JSON.stringify(updateUserInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/login/account/saveUpdatedUser?userInfo=${JSON.stringify(updateUserInfo)}`)
 		.then(res=>res.json())
 		.then(data=>{
 			if(data.data === 'success') {

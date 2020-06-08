@@ -5,7 +5,6 @@ import './inventoryItemDisplay.scss';
 import Moment from 'moment';
 import $ from 'jquery';
 
-import ControlPanel from './inventoryControlPanel/inventoryControlPanel';
 
 export default class inventoryItemDisplay extends React.Component {
 
@@ -37,7 +36,7 @@ export default class inventoryItemDisplay extends React.Component {
 
 //======================== Preset load ============================================
 	loadSelect(){
-		fetch(`http://localhost:4000/inventory/loadSelect`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/loadSelect`)
 		.then(res => res.json())
 		.then(datas => {
 			this.setState({types: datas.data});
@@ -62,7 +61,7 @@ export default class inventoryItemDisplay extends React.Component {
 		}
 
 		else {
-			fetch(`http://localhost:4000/inventory/addhold?holdItem=${JSON.stringify(holdItem)}`)
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/addhold?holdItem=${JSON.stringify(holdItem)}`)
 			.then(res => res.json())
 			.then(data=> {
 				if(data.data === 'success') {
@@ -264,7 +263,7 @@ export default class inventoryItemDisplay extends React.Component {
 
 							<td>Shelf No<br/><button id="invSHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
 							
-							<td>Manu.<br/><button id="invMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
+							<td>Mfr.<br/><button id="invMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 
 
 							{this.state.loggedUser.QTY_VIEW || this.state.loggedUser.QTY_MODIFY?
@@ -499,10 +498,7 @@ export default class inventoryItemDisplay extends React.Component {
 					</table>
 				
 				</div>
-				{/*<ControlPanel loggedUser={this.state.loggedUser} 
-							  types={this.state.types} 
-							  filterCall={this.filterCallFromChild.bind(this)}/>
-							  )*/}
+			
 			</div>
 		);
 	}

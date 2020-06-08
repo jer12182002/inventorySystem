@@ -16,7 +16,7 @@ export default class addItem extends React.Component {
 
 
 	loadTypeSelect(){
-		fetch(`http://localhost:4000/inventory/loadSelect`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/loadSelect`)
 		.then(res => res.json())
 		.then(datas => {
 			this.setState({types: datas.data});
@@ -54,7 +54,7 @@ export default class addItem extends React.Component {
 		    newItem.gram = $.trim($("#addGram").val()); 
 		    newItem.createdBy = this.props.loggedUser.USERNAME;
 
-		    fetch(`http://localhost:4000/inventory/addNewItem?newItem=${JSON.stringify(newItem)}`)
+		    fetch(`https://rendeincorg.ngrok.io/inventory/addNewItem?newItem=${JSON.stringify(newItem)}`)
 		    .then(res => res.json())
 		    .then(data => {
 		    	if(data.data === 'success') {
@@ -105,7 +105,7 @@ export default class addItem extends React.Component {
 						<label>Shelf No.:</label>
 						<input id="addShelf" type="text"></input>
 
-						<label>Manu:</label>
+						<label>Mfr.:</label>
 						<input id="addManufact" type="text"></input>
 
 						

@@ -49,7 +49,7 @@ export default class holdItem extends React.Component {
 
 		console.log(holdItems);
 		if(checkKey) {
-			fetch(`http://localhost:4000/inventory/addhold?`,
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/addhold?`,
 				{	method:'POST',  
     				headers: {'Content-Type': 'application/json'},
     				body: JSON.stringify({holdItems:holdItems})
@@ -88,7 +88,7 @@ export default class holdItem extends React.Component {
 		}
 
 		else {
-			fetch(`http://localhost:4000/inventory/addhold?holdItem=${JSON.stringify(holdItem)}`)
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/addhold?holdItem=${JSON.stringify(holdItem)}`)
 			.then(res => res.json())
 			.then(data=> {
 				if(data.data === 'success') {

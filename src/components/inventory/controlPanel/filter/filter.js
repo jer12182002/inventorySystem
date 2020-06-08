@@ -8,8 +8,10 @@ export default class filter extends React.Component {
 
 		this.state = {
 			loggedUser : this.props.loggedUser,
-			selectItems: [],
-			checkedId:[]
+			defaultAllItems:[], // all inventory items
+			selectItems: [],    // all items which have been filtered
+			checkedId:[],		// saved items in whole scope
+			checkAllToggle:false
 		}
 
 	}
@@ -20,7 +22,7 @@ export default class filter extends React.Component {
 
 
 	loadAllItem(receviedFilter='',defaultCall=false){
-		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/loadAllItem?filter=${receviedFilter}`)
 		.then(res => res.json())
 		.then(data =>{
 			if(data) {
@@ -34,7 +36,7 @@ export default class filter extends React.Component {
 					}
 				});
 
-				this.setState({selectItems: data.data}, console.log(this.state.selectItems));
+				this.setState({selectItems: data.data});
 			}
 		});
 	}
@@ -44,6 +46,10 @@ export default class filter extends React.Component {
 
 	filterItemOnChange(){
 		this.loadAllItem($.trim($("#itemFilter").val().toUpperCase()));
+		console.log(this.state.checkedId);
+		this.setState({checkAllToggle: false}); 
+		
+
 	}
 
 
@@ -80,34 +86,76 @@ export default class filter extends React.Component {
 
 	selectCheckBox(e,id){
 		e.stopPropagation();
-
-	 	let checkedIdArray = this.state.checkedId;
+	 	
 	 	let checkedItems = [];
+	 	let selectItems = this.state.selectItems;
+	 	let checkedId = this.state.checkedId;
 
-	    if($(`#checkbox${id}`).prop("checked")){
-	     		checkedIdArray.push(id);   // push in anyway, then delete the duplicate later
-	    }else {
-	    	checkedIdArray = checkedIdArray.filter(ele => {
-	    		return ele !== id;
-	    	});
-	    }
+	 	let index = checkedId.indexOf(id);
+	 	if(index !== -1) {
+			checkedId.splice(index,1);
+		}else {
+			checkedId.push(id);
+		}
 
-	    checkedIdArray = checkedIdArray.filter((v,i)=>checkedIdArray.indexOf(v)===i);  // delete the duplicate
+		this.state.defaultAllItems.forEach(item=>{
+			if(checkedId.includes(item.ID)){
+				checkedItems.push(item);
+			}
+		})
 
-	   
-	    this.state.defaultAllItems.forEach(item=>{
+		selectItems.forEach(item=>{
+			item.checked = false;
+			if(checkedId.includes(item.ID)){
+				item.checked = true;
+			}	
+		})
 
-	    	if(checkedIdArray.includes(item.ID)){
-	    		checkedItems.push(item);
-	    	}
-	    });
-
-		this.setState({checkedId:checkedIdArray});
-		console.log(checkedItems);
+		this.setState({checkedId: checkedId});
+		this.setState({selectItems: selectItems});
 		this.props.filterAllItemsFromChild(checkedItems);
 	}	
 
 
+
+
+	checkAllFilter(e) {
+		e.stopPropagation();
+		let allItems = this.state.defaultAllItems;
+		let checkedId = this.state.checkedId;
+		let selectItems = this.state.selectItems;
+		let checkedItems = [];
+
+		this.setState({checkAllToggle: !this.state.checkAllToggle});
+
+		if(!this.state.checkAllToggle) {   //toggle does not contains filter elements
+			selectItems.forEach(item=>{
+				item.checked = true;
+				checkedId.push(item.ID);
+			})
+		}else {							  //toggle contains filter elements
+			selectItems.forEach(item=>{
+				item.checked = false;
+				let index = checkedId.indexOf(item.ID);
+				if(index !== -1) {
+					checkedId.splice(index,1);
+				}
+			})
+		}
+
+		checkedId = checkedId.filter((v,i)=>checkedId.indexOf(v) === i);  // delete the duplicate
+
+		this.state.defaultAllItems.forEach(item => {
+			if(checkedId.includes(item.ID)) {
+				checkedItems.push(item);
+			}
+		})
+	 	
+	 	this.setState({checkedId: checkedId});
+	 	this.setState({selectItems: selectItems});
+	 	this.props.filterAllItemsFromChild(checkedItems);
+		
+	}
 
 	render() {
 		return (
@@ -115,14 +163,13 @@ export default class filter extends React.Component {
 				<div className="selectfilter-container block display-none" >
 					
 					<div className="selectAll">
-						<h3 className="inline-b">CheckItem</h3>
+						<h3 className={`${this.state.checkAllToggle?"checkAll":""} inline-b`} onClick={e=>this.checkAllFilter(e)}>Select All</h3>
 						<button id="hideBtn" type="button" onClick={e=>this.hideBtn(e)}>Hide</button>
 					</div>
 						
 					<ul className="scroll-container">
 						{this.state.selectItems.map((item,key)=>
-							<li key={`${key}${item.ID}`}>
-								<input key={`${key}${item.ID}`} id={`checkbox${item.ID}`} className="checkBoxDisplay inline-b" type="checkbox" defaultChecked={item.checked} onChange={e=>this.selectCheckBox(e,item.ID)}/>	
+							<li key={`${key}${item.ID}`} className={`${item.checked && item.checked === true? "checked":""}`} onClick={e=>this.selectCheckBox(e,item.ID)}>
 								<p className="inline-b">{item.ENGLISH_NAME}-{item.CHINESE_NAME}<br/>
 								{this.state.loggedUser.EXP_VIEW?<strong>{item.EXPIRE_DATE}-</strong>: null}
 								<strong>{item.MANUFACTURE}</strong></p>

@@ -43,7 +43,7 @@ export default class register extends React.Component {
 
 
 	fetchData(userInfoInput) {
-		fetch(`http://localhost:4000/login/account/register?newUserInfo=${JSON.stringify(userInfoInput)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/login/account/register?newUserInfo=${JSON.stringify(userInfoInput)}`)
 		.then(res => res.json())
 		.then(data =>{
 			console.log(data);

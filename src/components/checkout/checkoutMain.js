@@ -20,7 +20,7 @@ export default class checkoutMain extends React.Component {
 
 
 	loadOngoingOrder() {
-		fetch(`http://localhost:4000/checkout`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout`)
 		.then(res => res.json())
 		.then(data => {
 			
@@ -49,7 +49,7 @@ export default class checkoutMain extends React.Component {
 	}
 
 	loadOrdersNotification() {
-		fetch(`http://localhost:4000/checkout/ongoingordernotifications`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingordernotifications`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {

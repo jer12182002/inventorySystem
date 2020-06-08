@@ -16,7 +16,7 @@ export default class pickupMain extends React.Component {
 	}
 
 	loadAllPickUpOrder() {
-		fetch('http://localhost:4000/pickup')
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.orders) {

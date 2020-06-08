@@ -26,8 +26,6 @@ export default class inventoryMain extends React.Component {
 			holdLock:false,
 			editLock:false
 		}
-
-		
 	}
 
 	componentDidMount() {
@@ -39,17 +37,17 @@ export default class inventoryMain extends React.Component {
 	
 
 	actionBeforeLoadAllItem() {
-		fetch('http://localhost:4000/inventory/actionbeforloadallitem')
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/actionbeforloadallitem`)
 		.then(res  =>res.json())
 		.then(data => {
 			if(data.data && data.data === 'success') {
-				console.log("actionBeforeLoadAllItem succeeds");
+				this.setState({actionbeforloadallitemLock:true});
 			}
 		})
 	}
 
 	loadAllHistoryItem(){
-		fetch(`http://localhost:4000/inventory/loadallhistoryItem`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/loadallhistoryItem`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {
@@ -59,7 +57,7 @@ export default class inventoryMain extends React.Component {
 	}
 
 	loadAllItem(receviedFilter=''){
-		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/loadAllItem?filter=${receviedFilter}`)
 		.then(res => res.json())
 		.then(data =>{
 
@@ -72,7 +70,7 @@ export default class inventoryMain extends React.Component {
 
 
 	loadAllHoldItems() {
-		fetch('http://localhost:4000/inventory/loadAllHoldItem')
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/loadAllHoldItem`)
 		.then(res => res.json())
 		.then(data =>{
 			if(data.data){
@@ -83,7 +81,7 @@ export default class inventoryMain extends React.Component {
 
 
 	loadAllNotificationItems(dateValue = this.state.defaultExpiryDate,receviedFilter=''){
-		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/loadAllItem?filter=${receviedFilter}`)
 		.then(res => res.json())
 		.then(data =>{
 
@@ -97,7 +95,7 @@ export default class inventoryMain extends React.Component {
 	
 
 	updateItem(updatedItemInfo) {
-		fetch(`http://localhost:4000/inventory/updateItems?updatedItem=${JSON.stringify(updatedItemInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/updateItems?updatedItem=${JSON.stringify(updatedItemInfo)}`)
 		    .then(res =>res.json())
 			.then(data => {
 			   	if(data.data.affectedRows) {
@@ -114,13 +112,13 @@ export default class inventoryMain extends React.Component {
 		deleteInfo.ITEM_ID = id;
 		deleteInfo.PERSON = this.state.accountInfo.USERNAME;
 		console.log(deleteInfo);
-		fetch(`http://localhost:4000/inventory/deleteItem?deleteInfo=${JSON.stringify(deleteInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/deleteItem?deleteInfo=${JSON.stringify(deleteInfo)}`)
 		.then(res => res.json())
 		.then(data =>{
-			console.log(data);
 			if(data.data === 'success') {
-				this.loadAllItem();
-				this.loadAllHoldItems(); 
+				// this.loadAllItem();
+				// this.loadAllHoldItems(); 
+				window.location.reload();
 			}else {
 				alert("Something went wrong !!@@");
 			}
@@ -139,7 +137,7 @@ export default class inventoryMain extends React.Component {
 		restockInfo.HOLD_QTY = item.HOLD_QTY;
 		restockInfo.PERSON = this.state.accountInfo.USERNAME;
 
-		fetch(`http://localhost:4000/inventory/restockHold?restockInfo=${JSON.stringify(restockInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/restockHold?restockInfo=${JSON.stringify(restockInfo)}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data === "success") {
@@ -208,6 +206,10 @@ export default class inventoryMain extends React.Component {
 
 	//================================Quick Sort================================================================
 	quickSort (field, array, left, right) {
+		if(right <= 1 ) {
+			return array;
+		} 
+
 		var centr = array[Math.floor((right + left) / 2)][field];
 		var i = left;
 		var k = right;

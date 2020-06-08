@@ -239,12 +239,13 @@ app.get('/home/modifyannouncements',(req,res)=>{
 //****************************Inventroy******************************************************
 app.get('/inventory/actionbeforloadallitem',(req,res)=>{
 	let sqlQueries = '';
-	sqlQueries += 'UPDATE item_list AS I, (SELECT ITEM_ID, HOLD_QTY FROM `hold_item_list` WHERE DATE < CURRENT_DATE AND DATE != "0000-00-0") AS H SET I.HOLD_QTY = I.HOLD_QTY - H.HOLD_QTY WHERE I.ID = H.ITEM_ID;';
+	sqlQueries += 'UPDATE item_list AS I, (SELECT ITEM_ID, HOLD_QTY FROM `hold_item_list` WHERE DATE < CURRENT_DATE() AND DATE != "0000-00-0") AS H SET I.HOLD_QTY = I.HOLD_QTY - H.HOLD_QTY WHERE I.ID = H.ITEM_ID;';
 	sqlQueries += 'INSERT INTO history_item_list SELECT * FROM item_list where QTY = 0;';
 	sqlQueries += 'DELETE FROM hold_item_list WHERE DATE < CURRENT_DATE AND DATE != "0000-00-00";';
 	sqlQueries += 'DELETE FROM item_list WHERE QTY <= 0;';
-	
+
 	console.log("Check if there is any expired on hold items or 0 qty item in inventory");
+	console.log(sqlQueries);
 	connection.query(sqlQueries,(err, result)=> {
 		if(err) {
 			res.send(err);
@@ -301,7 +302,7 @@ app.post('/inventory/addbulkItemsRepo',(req,res)=>{
 	bulkItems.forEach(item=>{
 		sqlQueries += `INSERT INTO bulk_item_list_repository (TYPE, SHELF_NO ,MANUFACTURE,ENGLISH_NAME,CHINESE_NAME, QTY,EXPIRE_DATE,GRAM,CREATED_BY,LAST_MODIFIED_BY) VALUES ('${item.TYPE}', '${item.SHELF_NO}', '${item.MANUFACTURER}', '${item.ENGLISH_NAME}', '${item.CHINESE_NAME}','${item.QTY}', '${item.EXPIRY_DATE}', '${item.GRAM}', '${item.AUTHOR}', '${item.AUTHOR}');`;
 		let actionDetails = `${item.ENGLISH_NAME} ${item.CHINESE_NAME} Type: ${item.TYPE}, Shelf No: ${item.SHELF_NO}, Manu.: ${item.MANUFACTURER}, QTY: ${item.QTY}, Exp.: ${item.EXPIRY_DATE}, Gram: ${item.GRAM}`;	
-			sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${item.AUTHOR}','Add BulkItems' ,'${actionDetails}');`;		
+			
 	})
 	
 	connection.query(sqlQueries, (err,result)=>{
@@ -325,9 +326,12 @@ app.get('/inventory/addbulkItems',(req,res)=>{
 	console.log("Inert all bulkItems from repo to item_list");
 
 	let readyToImport = JSON.parse(req.query.readyToImport);
+	
 	let sqlQueries = '';
 	if(readyToImport) {
 		sqlQueries = 'INSERT INTO item_list( TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY) SELECT TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY FROM bulk_item_list_repository;';
+		sqlQueries+= 'INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) SELECT CREATED_BY, "Add BulkItems", CONCAT(ENGLISH_NAME," ",CHINESE_NAME," Type: ",TYPE,", Shelf No: ",SHELF_NO," ,Mfr: ", MANUFACTURE, ", QTY: ",QTY,", Exp: ", EXPIRE_DATE, ", Gram: ",GRAM) FROM bulk_item_list_repository;';	
+		
 	}
 
 	sqlQueries+= 'DELETE FROM bulk_item_list_repository;';
@@ -463,7 +467,7 @@ app.post('/inventory/addhold',(req,res)=>{
 		console.log(item);
 		sqlQueries += `INSERT INTO hold_item_list (ITEM_ID, PERSON, HOLD_QTY, DATE) VALUES ('${item.ID}', '${holdItems.HOLDFOR}','${item.HOLD_QTY}', '${holdItems.UNTIL}');`;
 		sqlQueries += `UPDATE item_list set HOLD_QTY = HOLD_QTY + ${item.HOLD_QTY} WHERE ID = ${item.ID};`; 
-		sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES('${holdItems.AUTHOR}', 'Hold Item','Item(${item.ENGLISH_NAME} ${item.CHINESE_NAME}-${item.TYPE}-${moment(holdItems.UNTIL).format("YYYY-MM-DD")}) Qty: ${item.HOLD_QTY} for ${holdItems.HOLDFOR} ${holdItems.UNTIL===''?`with no expiry date`:`with expiry date: ${holdItems.UNTIL}`} is holded');`;
+		sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES('${holdItems.AUTHOR}', 'Hold Item','Item(${item.ENGLISH_NAME} ${item.CHINESE_NAME}-${item.TYPE}-${item.EXPIRE_DATE}) Qty: ${item.HOLD_QTY} for ${holdItems.HOLDFOR} ${holdItems.UNTIL===''?`with no expiry date`:`with expiry date: ${holdItems.UNTIL}`} is holded');`;
 
 	})
 	
@@ -487,11 +491,11 @@ app.get('/inventory/restockHold',(req,res)=>{
 		if(selectResult[0]) {
 			let itemInfo = selectResult[0];
 
-			let sqlQueries = `UPDATE item_list set HOLD_QTY = (SELECT HOLD_QTY FROM item_list where ID = ${restockItem.ITEM_ID}) - ${restockItem.HOLD_QTY} where ID = ${restockItem.ITEM_ID};`;
+			let sqlQueries = `UPDATE item_list set HOLD_QTY = HOLD_QTY - ${restockItem.HOLD_QTY} where ID = ${restockItem.ITEM_ID};`;
 				sqlQueries+= `DELETE FROM hold_item_list WHERE ID = ${restockItem.ID};`;
 				sqlQueries+= `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${restockItem.PERSON}','Restock Item','Item(${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME}-${itemInfo.TYPE}-${moment(itemInfo.EXPIRE_DATE).format("YYYY-MM-DD")}) has been restocked');`;
 
-
+			console.log(sqlQueries);
 			connection.query(sqlQueries,(err,result)=> {
 				if(err) {
 					res.send(err);
@@ -501,6 +505,7 @@ app.get('/inventory/restockHold',(req,res)=>{
 			})
 		}
 	});
+	
 })
 	
 //*************************************** Checkout **********************************************************************
@@ -577,7 +582,7 @@ app.get("/check/ongoingorder/inprocess",(req,res)=> {
 
 
 app.get("/checkout/order/loadnotes",(req,res)=>{
-	console.log("Load all notes for the chosen order");
+	console.log("Load all notes for the chosen order every 1 sec");
 	let {orderId} = req.query;
 
 	let	sqlQuery = `SELECT * FROM checkout_note WHERE ORDER_ID = ${orderId} ORDER BY TIME DESC`;
@@ -661,7 +666,7 @@ app.get("/checkout/ongoingorder/deleteorder",(req,res)=> {
 //*********************************Pick up*******************************************************************************
 
 app.get('/pickup',(req,res)=> {
-	console.log("Load all Pick Up(In PROCESS) orders");
+	console.log("Load all Pick Up(In PROCESS) orders every 1 sec");
 	let sqlQuery1 = "SELECT * FROM ongoing_order WHERE STATUS = 'IN PROCESS' ORDER BY ORDER_TIME DESC;";
 	
 	connection.query(sqlQuery1,(err,result)=>{

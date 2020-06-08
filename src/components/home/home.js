@@ -16,7 +16,7 @@ export default class home extends React.Component {
 
 
 	loadAnnouncement() {
-		fetch('http://localhost:4000/home/loadallannouncements')
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/home/loadallannouncements`)
 		.then(res=>res.json())
 		.then(data =>{
 			if(data.data){
@@ -38,7 +38,7 @@ export default class home extends React.Component {
 			PERSON : this.state.accountInfo.USERNAME
 		} 
 
-		fetch(`http://localhost:4000/home/addannouncements?announcementInfo=${JSON.stringify(announcementInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/home/addannouncements?announcementInfo=${JSON.stringify(announcementInfo)}`)
 		.then(res => res.json())
 		.then(data=> {
 			if(data.data && data.data === 'success') {
@@ -57,7 +57,7 @@ export default class home extends React.Component {
 			ACTION: action
 		} 
 		
-		fetch(`http://localhost:4000/home/modifyannouncements?announcementInfo=${JSON.stringify(announcementInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/home/modifyannouncements?announcementInfo=${JSON.stringify(announcementInfo)}`)
 		.then(res => res.json())
 		.then(data=> {
 			if(data.data && data.data === 'success') {
@@ -82,7 +82,7 @@ export default class home extends React.Component {
 						
 						<div className="accouncement-field" key={`announcement${key}`}>
 							<p className="announcementInfo">Time: {Moment(announcement.TIME).format('YYYY-MM-DD')}By.{announcement.PERSON}</p>
-							<textarea id={`announcement-${announcement.ID}`} className="accnounceDisplay-manager" defaultValue={announcement.ANNOUNCEMENT}/>
+							<textarea id={`announcement-${announcement.ID}`} className="announceDisplay-manager" defaultValue={announcement.ANNOUNCEMENT}/>
 		
 							<div className="btnsContainer">
 								<button onClick={e=>this.btnModifyActions(e, 'update',announcement.ID)} className="btn btn-warning">Update</button>
@@ -92,9 +92,7 @@ export default class home extends React.Component {
 						:
 						<div className="accouncement-field" key={`announcement${key}`}>
 							<p className="announcementInfo">Time: {Moment(announcement.TIME).format('YYYY-MM-DD')}    By.{announcement.PERSON}</p>
-							<div className="accnounceDisplay">
-								<p>{announcement.ANNOUNCEMENT}</p>
-							</div>
+							<textarea readonly="readonly" className="announceDisplay">{announcement.ANNOUNCEMENT}</textarea>
 						</div>
 					)}
 				{this.state.accountInfo.ACCESS_LEVEL<3?

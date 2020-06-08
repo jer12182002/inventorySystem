@@ -18,7 +18,7 @@ export default class activityLogs extends React.Component {
 
 
 	fetchAllLogs() {
-		fetch("http://localhost:4000/login/account/displayActivities")
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/login/account/displayActivities`)
 		.then(res=>res.json())
 		.then(data=> {
 			if(data && (data.inventoryLog[0] || data.chk_pickupLog[0])) {
@@ -80,6 +80,10 @@ export default class activityLogs extends React.Component {
 
 
 	quickSort (field, array, left, right) {
+		if(right <= 1) {
+			return array;
+		}
+		
 		var centr = array[Math.floor((right + left) / 2)][field];
 		var i = left;
 		var k = right;

@@ -19,7 +19,7 @@ export default class completedOrder extends React.Component {
 
 
 	loadOrderInfo() {
-		fetch(`http://localhost:4000/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
 			.then(res => res.json())
 			.then(data => {
 				if(data.data.order[0]) {
@@ -32,7 +32,7 @@ export default class completedOrder extends React.Component {
 	}
 
 	loadOderNotes() {
-		fetch(`http://localhost:4000/checkout/order/loadnotes?orderId=${this.state.ORDER_ID}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/order/loadnotes?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {

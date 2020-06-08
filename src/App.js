@@ -42,7 +42,7 @@ constructor(props){
 checkPermissionBySeconds(){
   this.intervalId = setInterval (()=>{
     if(this.state.accountInfo.ID){
-       fetch(`http://localhost:4000/chcekPermission?id=${this.state.accountInfo.ID}`)
+       fetch(`${process.env.REACT_APP_INVENTROY_API}/chcekPermission?id=${this.state.accountInfo.ID}`)
        .then(res => res.json())
        .then(data => {
           if(JSON.stringify(data.data[0]) !== JSON.stringify(this.state.accountInfo)) {
@@ -58,7 +58,7 @@ saveAccountFromLogIn(userLogin){
     this.setState ({accountInfo: userLogin},()=>{
       let time = new Date();
       time.setHours(time.getHours() + 2);
-
+      
       let cookiesUser = {ACCOUNT: userLogin.ACCOUNT, PASSWORD: userLogin.PASSWORD, expires: time};
       cookies.set('RenDeIncInventorySys', cookiesUser,{expires:time, path:'/'});
       this.checkPermissionBySeconds();
@@ -74,7 +74,7 @@ clearAccountInfo(){
 
 
 cookiesUserLogin(cookiesUser) {
-  fetch(`http://localhost:4000/login?account=${cookiesUser.ACCOUNT}&password=${cookiesUser.PASSWORD}`)
+  fetch(`${process.env.REACT_APP_INVENTROY_API}/login?account=${cookiesUser.ACCOUNT}&password=${cookiesUser.PASSWORD}`)
     .then(res => res.json())
     .then(data => {
       if(data.data[0]){

@@ -32,7 +32,7 @@ class Login extends Component {
   }
 
   getAccount(){
-    fetch(`http://localhost:4000/login?account=${this.state.user.account}&password=${this.state.user.password}`)
+    fetch(`${process.env.REACT_APP_INVENTROY_API}/login?account=${this.state.user.account}&password=${this.state.user.password}`)
     .then(res => res.json())
     .then(data => {
       if(data.data[0]){

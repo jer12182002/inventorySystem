@@ -95,7 +95,7 @@ export default class holdItemsDisplay extends React.Component {
 										<td>Type<br/><button id="invholdTYPE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"TYPE")}>ASC</button></td> : null
 									}
 
-									<td>Manu.<br/><button id="invholdMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
+									<td>Mfr.<br/><button id="invholdMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 									
 									{this.props.loggedUser.EXP_VIEW ?
 										<td>Expiry Date<br/><button id="invholdEXPIRE_DATE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"EXPIRE_DATE")}>ASC</button></td> : null
@@ -124,11 +124,6 @@ export default class holdItemsDisplay extends React.Component {
 
 							<tbody>
 								{this.state.allHoldItems.map((item,key)=> 
-									item.DATE === this.props.today?
-									this.props.restockAction(item)
-									
-									:
-
 									<tr key={key+1}>
 										<td>{key+1}</td>
 										<td className="text-left bg-width">{item.ENGLISH_NAME}</td>

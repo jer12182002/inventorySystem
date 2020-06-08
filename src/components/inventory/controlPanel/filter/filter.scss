@@ -21,6 +21,17 @@
 			border-bottom: 3px solid black;
 			h3 {
 				margin-left: 10px;
+				height: 100%;
+				
+				&:hover {
+					font-weight: 600;
+					cursor: pointer;
+				}
+
+				&.checkAll {
+					color: #962E3D;
+					font-weight: 900;
+				}
 			}
 
 			#hideBtn {
@@ -33,17 +44,27 @@
 		}
 
 			.scroll-container {
-			overflow:scroll;
-			position:absolute;
-			bottom: 0;
-			height:530px;
-			width:100%;
-			padding:5px;
+				overflow-y:scroll;
+				overflow-x:hidden;
+				position:absolute;
+				bottom: 0;
+				height:530px;
+				width:100%;
+				padding:5px;
 			
 				li {
 					list-style-type: none;
 					border-bottom: 2px solid black;
+					
+					&.checked {
+						background-color: #962E3D;
+						color: white;
+					}
 
+					&:hover {
+						font-weight: 600;
+						cursor: pointer;
+					}
 					
 					input {
 						height: 25px;
@@ -55,7 +76,7 @@
 					p {
 						margin-left: 10px;
 						display:inline-block;
-						width: 80%;
+						width: 100%;
 					}
 				}
 			
@@ -77,3 +98,4 @@
 
 	}
 }
+

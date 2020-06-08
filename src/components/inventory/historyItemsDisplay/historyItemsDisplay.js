@@ -83,7 +83,7 @@ export default class historyItemsDisplay extends React.Component {
 									<td className="margin-center text-center verticalMiddle number">Row<br/>Span</td>
 									
 
-									<td className="name">En_Name<br/><button id="invHistoryENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
+									<td className="name">Name<br/><button id="invHistoryENGLISH_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"ENGLISH_NAME")}>ASC</button></td>
 
 									<td className="name">商品名稱<br/><button id="invHistoryCHINESE_NAME-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"CHINESE_NAME")}>ASC</button></td>
 
@@ -93,7 +93,7 @@ export default class historyItemsDisplay extends React.Component {
 
 									<td className="margin-center text-center number">Shelf No<br/><button id="invHistorySHELF_NO-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"SHELF_NO")}>ASC</button></td>
 									
-									<td>Manu.<br/><button id="invNotiMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
+									<td>Mfr.<br/><button id="invNotiMANUFACTURE-sortToggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"MANUFACTURE")}>ASC</button></td>
 
 
 									{this.props.loggedUser.QTY_VIEW || this.props.loggedUser.QTY_MODIFY?

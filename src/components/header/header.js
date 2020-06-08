@@ -20,7 +20,7 @@ class header extends React.Component {
 		return (
 			<div className="header-wrapper">
 				<header>
-
+	
 					<h1><NavLink to="/"><img src={logo} alt=""/>Ren De Inc Inventory System</NavLink></h1>
 				
 					{this.props.accountInfo.USERNAME?

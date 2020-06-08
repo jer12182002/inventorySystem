@@ -19,7 +19,7 @@ export default class pickupOrderDetail extends React.Component {
 	}
 
 	loadOrderInfo () {
-		fetch(`http://localhost:4000/pickup/order-detail?orderId=${this.state.ORDER_INFO.ORDER_ID}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup/order-detail?orderId=${this.state.ORDER_INFO.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.orderDetail) {
@@ -30,7 +30,7 @@ export default class pickupOrderDetail extends React.Component {
 
 
 	loadNotes() {
-		fetch(`http://localhost:4000/checkout/order/loadnotes?orderId=${this.state.ORDER_INFO.ORDER_ID}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/order/loadnotes?orderId=${this.state.ORDER_INFO.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {
@@ -107,7 +107,7 @@ export default class pickupOrderDetail extends React.Component {
 				PROCESS_TIME: today
 			}
 
-			fetch(`http://localhost:4000/pickup/order-detail/pushprocess?actionInstr=${JSON.stringify(actionInstr)}`)
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup/order-detail/pushprocess?actionInstr=${JSON.stringify(actionInstr)}`)
 			.then(res => res.json())
 			.then(data => {
 				if(data.data && data.data === 'success') {

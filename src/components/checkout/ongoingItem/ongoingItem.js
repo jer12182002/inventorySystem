@@ -22,7 +22,7 @@ export default class ongoingItem extends React.Component {
 	}
 
 	loadOrderInfo() {
-		fetch(`http://localhost:4000/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data=> {
 			if(data.data) {
@@ -43,7 +43,7 @@ export default class ongoingItem extends React.Component {
 
 
 	loadPickupOrderInfo() {
-		fetch(`http://localhost:4000/check/ongoingorder/inprocess?orderId=${this.state.ORDER_ID}`)
+		fetch(`https://rendeincorg.ngrok.io/check/ongoingorder/inprocess?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data){
@@ -67,7 +67,7 @@ export default class ongoingItem extends React.Component {
 
 
 	loadNotes() {
-		fetch(`http://localhost:4000/checkout/order/loadnotes?orderId=${this.state.ORDER_ID}`)
+		fetch(`https://rendeincorg.ngrok.io/checkout/order/loadnotes?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {
@@ -81,7 +81,6 @@ export default class ongoingItem extends React.Component {
 
 
 	pushItemToBack(){
-		
 		let orderInfo = {};
 
 		orderInfo.ORDER_NO = this.state.ORDER_ID;
@@ -93,7 +92,7 @@ export default class ongoingItem extends React.Component {
 
 		orderInfo.NEXTSTATUS = "IN PROCESS";
 		
-		fetch(`http://localhost:4000/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
+		fetch(`https://rendeincorg.ngrok.io/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data && data.data === "success") {
@@ -347,7 +346,7 @@ export default class ongoingItem extends React.Component {
 			orderInfo.PERSON = this.state.accountInfo.USERNAME;
 			orderInfo.PROCESS_TIME = this.getTime();
 			
-			fetch (`http://localhost:4000/checkout/ongoingorder/deleteorder?orderInfo=${JSON.stringify(orderInfo)}`)
+			fetch (`https://rendeincorg.ngrok.io/checkout/ongoingorder/deleteorder?orderInfo=${JSON.stringify(orderInfo)}`)
 			.then(res=> res.json())
 			.then(data => {
 				if(data.data && data.data === 'success') {
@@ -364,7 +363,6 @@ export default class ongoingItem extends React.Component {
 
 
 	render() {
-		this.loadNotes();
 		return (
 			<div className="ongoingItem-wrapper">
 				<div className="header-section">

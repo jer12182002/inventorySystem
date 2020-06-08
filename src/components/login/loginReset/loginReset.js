@@ -32,7 +32,7 @@ export default class loginReset extends React.Component {
 			newUserInfo.id = this.state.accountInfo.ID;
 			newUserInfo.newPassword = $.trim($('#resetPwd').val());
 
-			fetch(`http://localhost:4000/login/account/resetpassword?newUserInfo=${JSON.stringify(newUserInfo)}`)
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/login/account/resetpassword?newUserInfo=${JSON.stringify(newUserInfo)}`)
 			.then(res => res.json())
 			.then(data => {
 			
