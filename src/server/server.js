@@ -213,7 +213,7 @@ app.get('/home/modifyannouncements',(req,res)=>{
 
 	console.log("Delete or Modify announcement");
 	if(announcementInfo.ACTION === 'update') {
-		sqlQuery = `UPDATE announcements SET ANNOUNCEMENT = '${announcementInfo.ANNOUNCEMENT}' WHERE ID = ${announcementInfo.ID};`;
+		sqlQuery = `UPDATE announcements SET ANNOUNCEMENT = '${announcementInfo.ANNOUNCEMENT}', TIME = SYSDATE() WHERE ID = ${announcementInfo.ID};`;
 	}else if(announcementInfo.ACTION === 'delete') {
 		sqlQuery = `DELETE FROM announcements WHERE ID = ${announcementInfo.ID};`;
 	}
