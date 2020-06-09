@@ -54,7 +54,7 @@ export default class addItem extends React.Component {
 		    newItem.gram = $.trim($("#addGram").val()); 
 		    newItem.createdBy = this.props.loggedUser.USERNAME;
 
-		    fetch(`https://rendeincorg.ngrok.io/inventory/addNewItem?newItem=${JSON.stringify(newItem)}`)
+		    fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/addNewItem?newItem=${JSON.stringify(newItem)}`)
 		    .then(res => res.json())
 		    .then(data => {
 		    	if(data.data === 'success') {
