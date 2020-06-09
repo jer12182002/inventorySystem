@@ -122,7 +122,8 @@ export default class inventoryItemDisplay extends React.Component {
 	
 		if(this.state.loggedUser.NAME_MODIFY) {
 			updatedItemInfo.ENGLISH_NAME = $.trim($("#NAME_EN_M" + id).val().toLowerCase().replace(/\s\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase());
-			updatedItemInfo.CHINESE_NAME = $.trim($("#NAME_CH_M" + id).val().replace(/\s\s/g, ''));
+			updatedItemInfo.CHINESE_NAME = $.trim($("#NAME_CH_M" + id).val().toString().split("").filter(char => /\p{Script=Han}/u.test(char)).join(""))+$.trim($("#NAME_CH_M" + id).val().toString().replace(/[^0-9]/gi,''));
+
 		}
 		 
 		if(this.state.loggedUser.TYPE_MODIFY) {

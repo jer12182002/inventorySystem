@@ -48,7 +48,7 @@ export default class addItem extends React.Component {
 			newItem.shelfNo = $.trim($("#addShelf").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '').toUpperCase());
 			newItem.manufacturer = $.trim($("#addManufact").val().replace(/[\u4e00-\u9fa5]/g,'a').replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '').toUpperCase());
 		   	newItem.ENname = $.trim($("#addENName").val().toLowerCase().replace(/\s\s/g, '').replace(/[^a-zA-Z0-9-]+(.)/g, (m, chr) => ' '+ chr.toUpperCase())).replace(/^[a-z]/g,c => c.toUpperCase());
-		   	newItem.CHname = ($.trim(data[i].data[4].toString().split("").filter(char => /\p{Script=Han}/u.test(char)).join("")))+$.trim(data[i].data[4].toString().replace(/[^0-9]/gi,''));
+		   	newItem.CHname = $.trim($("#addCHName").val().toString().split("").filter(char => /\p{Script=Han}/u.test(char)).join("")) + $.trim($("#addCHName").val().toString().replace(/[^0-9]/gi,''));
 		   	newItem.qty = $.trim($("#addQty").val());
 		   	newItem.exp = $.trim($("#addExp").val());
 		    newItem.gram = $.trim($("#addGram").val()); 
