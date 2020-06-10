@@ -30,8 +30,10 @@ export default class ongoingItem extends React.Component {
 
 				if(data.data.order[0].STATUS === "RECEIVED") {
 					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
+					console.log("@@");
 				}else if(data.data.order[0].STATUS === "PUSHED BACK"){
 					this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});
+					console.log("!!");
 				}
 				else if(data.data.order[0].STATUS === "IN PROCESS"){
 					this.loadPickupOrderInfo();
@@ -43,7 +45,7 @@ export default class ongoingItem extends React.Component {
 
 
 	loadPickupOrderInfo() {
-		fetch(`https://rendeincorg.ngrok.io/check/ongoingorder/inprocess?orderId=${this.state.ORDER_ID}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/check/ongoingorder/inprocess?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data){
@@ -67,7 +69,7 @@ export default class ongoingItem extends React.Component {
 
 
 	loadNotes() {
-		fetch(`https://rendeincorg.ngrok.io/checkout/order/loadnotes?orderId=${this.state.ORDER_ID}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/order/loadnotes?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data) {
@@ -92,7 +94,7 @@ export default class ongoingItem extends React.Component {
 
 		orderInfo.NEXTSTATUS = "IN PROCESS";
 		
-		fetch(`https://rendeincorg.ngrok.io/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data && data.data === "success") {
