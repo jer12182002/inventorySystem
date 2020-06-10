@@ -30,10 +30,8 @@ export default class ongoingItem extends React.Component {
 
 				if(data.data.order[0].STATUS === "RECEIVED") {
 					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
-					console.log("@@");
 				}else if(data.data.order[0].STATUS === "PUSHED BACK"){
 					this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});
-					console.log("!!");
 				}
 				else if(data.data.order[0].STATUS === "IN PROCESS"){
 					this.loadPickupOrderInfo();
