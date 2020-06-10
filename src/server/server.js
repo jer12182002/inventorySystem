@@ -751,10 +751,12 @@ app.use("/shopify", (req, res) => {
 	let valueItems = [];
 
 	shopifyData.line_items.forEach(item => {
-		if(item.grams) {
-			valueItems.push([shopifyData.order_number, item.name , item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity), 'RECEIVED']);
-		}else {
-			valueItems.push([shopifyData.order_number, item.name , parseInt(item.quantity), 'RECEIVED']);
+		if(item.name !== 'Tablet Service -200g' && item.name !== 'Tablet Service -100g'){
+			if(item.grams) {
+				valueItems.push([shopifyData.order_number, item.name , item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity), 'RECEIVED']);
+			}else {
+				valueItems.push([shopifyData.order_number, item.name , parseInt(item.quantity), 'RECEIVED']);
+			}
 		}
 	});
 	
