@@ -744,8 +744,9 @@ app.get('/pickup/order-detail/pushprocess',(req,res)=>{
 app.use("/shopify", (req, res) => {
 	let shopifyData = req.body;
 	console.log(shopifyData);
-	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS) VALUES ('${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED');`;
+	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS, NEW_MSG_CHKOUT) VALUES ('${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED', 1);`;
 	sqlQuery += 'INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) VALUES ?';
+
 
 
 	let valueItems = [];
