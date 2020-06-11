@@ -755,6 +755,7 @@ app.use("/shopify", (req, res) => {
 
 	connection.query(sqlQuery, (err,result) => {
 		if(err) {
+			console.log(err);
 			res.send(err);
 		}else {
 			console.log("Shopify data has been saved");
