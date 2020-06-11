@@ -26,7 +26,7 @@ export default class completedOrder extends React.Component {
 					this.setState({COMPLETED_ORDER : data.data.order[0]});
 				}
 				if(data.data.orderItems) {
-					this.setState({ORDER_ITEMS : this.organizeData(data.data.orderItems)});
+					this.setState({ORDER_ITEMS : this.organizeData(data.data.orderItems)}, ()=>console.log(this.state.ORDER_ITEMS));
 				}
 			});
 	}
@@ -111,8 +111,8 @@ export default class completedOrder extends React.Component {
 								<div className="col-4 text-left"><h3>{item.ITEMENNAME}</h3><h3>{item.ITEMCHNAME}</h3></div>
 								<div className="col-1"><h3>{item.ORDER_ITEM_QTY}</h3></div>
 								<div className="col-7">
-								
-								{item.PICKUP_ITEMS.map((diffItem,diffKey)=>
+								{item.PICKUP_ITEMS?
+								item.PICKUP_ITEMS.map((diffItem,diffKey)=>
 									diffItem.PICKUPVALUE > 0 ?
 									<div className="row" key={`diffItem${diffKey+1}`}>
 										<div className="col-2"><h3>{diffItem.SHELF_NO}</h3></div>
@@ -123,7 +123,10 @@ export default class completedOrder extends React.Component {
 									</div>
 									:
 									null
-									)}
+									)
+								:
+								null
+								}
 								</div>
 								
 							</div>
