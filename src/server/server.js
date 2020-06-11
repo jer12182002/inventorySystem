@@ -140,7 +140,7 @@ app.get('/login/account/displayActivities',(req,res)=> {
 
 app.get('/login/account/displayUsers',(req,res) =>{
 	var sqlQuery = `SELECT * FROM account_list where ID = ${req.query.id}`;
-	console.log(sqlQuery);
+	
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
 			res.send(err);
@@ -245,7 +245,7 @@ app.get('/inventory/actionbeforloadallitem',(req,res)=>{
 	sqlQueries += 'DELETE FROM item_list WHERE QTY <= 0;';
 
 	console.log("Check if there is any expired on hold items or 0 qty item in inventory");
-	console.log(sqlQueries);
+	
 	connection.query(sqlQueries,(err, result)=> {
 		if(err) {
 			res.send(err);
@@ -495,7 +495,7 @@ app.get('/inventory/restockHold',(req,res)=>{
 				sqlQueries+= `DELETE FROM hold_item_list WHERE ID = ${restockItem.ID};`;
 				sqlQueries+= `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${restockItem.PERSON}','Restock Item','Item(${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME}-${itemInfo.TYPE}-${moment(itemInfo.EXPIRE_DATE).format("YYYY-MM-DD")}) has been restocked');`;
 
-			console.log(sqlQueries);
+		
 			connection.query(sqlQueries,(err,result)=> {
 				if(err) {
 					res.send(err);
@@ -548,7 +548,6 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY",O.PICKUP_ITEMS AS "PICKUP_ITEMS", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE, i.TYPE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON LOWER(o.product) = LOWER(CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME)) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
 	let sqlQuery3 = `UPDATE ONGOING_ORDER SET NEW_MSG_CHKOUT = 0 WHERE ORDER_ID = ${orderId}`;
 
-	console.log(sqlQuery2);
 	let data = [];
 	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=>{
 		if(err) {
@@ -745,30 +744,23 @@ app.get('/pickup/order-detail/pushprocess',(req,res)=>{
 app.use("/shopify", (req, res) => {
 	let shopifyData = req.body;
 	console.log(shopifyData);
-	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS, NEW_MSG_CHKOUT) VALUES ('${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED', 1);`;
-	sqlQuery += 'INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) VALUES ?';
 
-
-
-	let valueItems = [];
+	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS, NEW_MSG_CHKOUT) SELECT '${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED', 1 FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM ongoing_order WHERE ORDER_ID = ${shopifyData.order_number});`;
 
 	shopifyData.line_items.forEach(item => {
 		if(item.name !== 'Tablet Service -200g' && item.name !== 'Tablet Service -100g'){
-			if(item.grams) {
-				valueItems.push([shopifyData.order_number, item.name , item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity), 'RECEIVED']);
-			}else {
-				valueItems.push([shopifyData.order_number, item.name , parseInt(item.quantity), 'RECEIVED']);
-			}
-		}
-	});
-	
-	connection.query(sqlQuery,[valueItems],(err,result)=>{
-		if(err){
-			res.send(err);
-		}else {
-			return (res.json({data:result}));
+			sqlQuery += `INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) SELECT '${shopifyData.order_number}', '${item.name}', '${item.grams && item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity)}','RECEIVED' FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM order_item_list WHERE ORDER_ID = ${shopifyData.order_number} AND PRODUCT = '${item.name}');`;
 		}
 	})
+
+	connection.query(sqlQuery, (err,result) => {
+		if(err) {
+			res.send(err);
+		}else {
+			console.log("Shopify data has been saved");
+			return (res.json({data:result}));
+		}
+	})	
 })
 
 app.get('/home', function(req, res) {
