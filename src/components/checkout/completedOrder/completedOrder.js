@@ -111,7 +111,7 @@ export default class completedOrder extends React.Component {
 								<div className="col-4 text-left"><h3>{item.ITEMENNAME}</h3><h3>{item.ITEMCHNAME}</h3></div>
 								<div className="col-1"><h3>{item.ORDER_ITEM_QTY}</h3></div>
 								<div className="col-7">
-				
+								
 								{item.PICKUP_ITEMS.map((diffItem,diffKey)=>
 									diffItem.PICKUPVALUE > 0 ?
 									<div className="row" key={`diffItem${diffKey+1}`}>
