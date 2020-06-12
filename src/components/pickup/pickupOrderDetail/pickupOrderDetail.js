@@ -106,8 +106,15 @@ export default class pickupOrderDetail extends React.Component {
 				PERSON: this.state.accountInfo.USERNAME,
 				PROCESS_TIME: today
 			}
+			
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup/order-detail/pushprocess?`,
+				{	method:'POST',  
+    				headers: {'Content-Type': 'application/json'},
+    				body: JSON.stringify(actionInstr)
+    			}	
+    		)
 
-			fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup/order-detail/pushprocess?actionInstr=${JSON.stringify(actionInstr)}`)
+			//fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup/order-detail/pushprocess?actionInstr=${JSON.stringify(actionInstr)}`)
 			.then(res => res.json())
 			.then(data => {
 				if(data.data && data.data === 'success') {

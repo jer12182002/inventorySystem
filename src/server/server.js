@@ -699,9 +699,10 @@ app.get('/pickup/order-detail',(req,res)=> {
 })
 
 
-app.get('/pickup/order-detail/pushprocess',(req,res)=>{
+app.post('/pickup/order-detail/pushprocess',(req,res)=>{
 	console.log("PUSH BACK order or FINISH order in PICK UP");
-	let actionInstr = JSON.parse(req.query.actionInstr);
+	//let actionInstr = JSON.parse(req.query.actionInstr);
+	let actionInstr = req.body;
 	
 	let sqlQueries = `UPDATE ongoing_order SET PICKUP_PERSON = '${actionInstr.PERSON}' ,STATUS = '${actionInstr.action}' ,NEW_MSG_CHKOUT = NEW_MSG_CHKOUT+1 WHERE ORDER_ID = ${actionInstr.orderNo};`;
 		sqlQueries += `UPDATE order_item_list SET STATUS = '${actionInstr.action}' WHERE ORDER_ID = ${actionInstr.orderNo};`;
