@@ -249,7 +249,7 @@ export default class checkoutMain extends React.Component {
 																ORDER_ID: order.ORDER_ID
 															}
 														}}
-														className="btn btn-primary">Porceed</Link>
+														className="btn btn-primary">Proceed</Link>
 													</td>
 													:
 													null
