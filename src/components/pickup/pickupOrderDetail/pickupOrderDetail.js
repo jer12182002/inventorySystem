@@ -201,8 +201,8 @@ export default class pickupOrderDetail extends React.Component {
 					<div className="actionContainer">
 						<label className="block">Note:</label>
 						<textarea id="noteInput" className="block" onKeyUp={this.noteInputBtnToggle()}></textarea>
-						<button id="pushBackBtn" className="btn btn-warning disabled" onClick={e => this.btnsToggle(e,"PUSHED BACK")}>Push Back</button>
-						<button className={`btn btn-success ${this.state.ORDER_ITEMS_COUNT === 0? "": "disabled"}`} onClick={e=>this.btnsToggle(e, "COMPLETED")}>Finish</button>
+						<button id="pushBackBtn" className="block btn btn-warning disabled" onClick={e => this.btnsToggle(e,"PUSHED BACK")}>Push Back</button>
+						<button className={`block btn btn-success ${this.state.ORDER_ITEMS_COUNT === 0? "": "disabled"}`} onClick={e=>this.btnsToggle(e, "COMPLETED")}>Finish</button>
 					</div>
 
 				</div>
