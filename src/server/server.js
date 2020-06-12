@@ -599,9 +599,11 @@ app.get("/checkout/order/loadnotes",(req,res)=>{
 
 
 
-app.get("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
+app.post("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	console.log("Push RECEIVED order or Pushed Back order to In Process");
-	let orderInfo = JSON.parse(req.query.orderInfo);
+
+	let orderInfo = req.body;
+	
 	let pauseTask = false;
 
 	let actvityLogQuery = `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.ACCOUNTINFO}', 'PUSH TO IN PROCESS', 'Push Order: ${orderInfo.ORDER_NO} from ${orderInfo.CURRENTSTATUS} to IN PROCESS');`;
@@ -763,6 +765,22 @@ app.use("/shopify", (req, res) => {
 			return (res.json({data:result}));
 		}
 	})	
+})
+
+
+app.use("/draft", (req, res) => {
+	let shopifyData = req.body;
+	console.log(shopifyData);
+
+	
+})
+
+app.use("/draftdelete", (req, res) => {
+	let shopifyData = req.body;
+	console.log("@@@@@");
+	console.log(shopifyData);
+
+	
 })
 
 app.get('/home', function(req, res) {

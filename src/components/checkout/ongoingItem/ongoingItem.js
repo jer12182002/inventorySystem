@@ -92,7 +92,12 @@ export default class ongoingItem extends React.Component {
 
 		orderInfo.NEXTSTATUS = "IN PROCESS";
 		
-		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/pushtoprocess?orderInfo=${JSON.stringify(orderInfo)}`)
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/pushtoprocess?`,
+				{	method:'POST',  
+    				headers: {'Content-Type': 'application/json'},
+    				body: JSON.stringify(orderInfo)
+    			}	
+    	)
 		.then(res => res.json())
 		.then(data => {
 			if(data.data && data.data === "success") {
