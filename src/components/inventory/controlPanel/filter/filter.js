@@ -1,7 +1,8 @@
 import React from 'react';
 import './filter.scss';
-
+import Moment from 'moment';
 import $ from 'jquery';
+
 export default class filter extends React.Component {
 	constructor(props) {
 		super(props);
@@ -11,9 +12,16 @@ export default class filter extends React.Component {
 			defaultAllItems:[], // all inventory items
 			selectItems: [],    // all items which have been filtered
 			checkedId:[],		// saved items in whole scope
-			checkAllToggle:false
+			checkAllToggle:false, 
+			allHistoryItems: [], 
+			allHistoryItemsDisplay:[]
 		}
+	}
 
+	componentWillReceiveProps(newProps) {
+		if(this.state.allHistoryItems !== newProps.allHistoryItems) {
+			this.setState ({allHistoryItems: newProps.allHistoryItems});
+		}
 	}
 
 	componentDidMount() {
@@ -45,11 +53,14 @@ export default class filter extends React.Component {
 
 
 	filterItemOnChange(){
-		this.loadAllItem($.trim($("#itemFilter").val().toUpperCase()));
-		console.log(this.state.checkedId);
-		this.setState({checkAllToggle: false}); 
+		let inputVal = $.trim($("#itemFilter").val().toUpperCase());
+		let allHistoryItemsDisplay = [];
+		allHistoryItemsDisplay = this.state.allHistoryItems.filter(
+			item => (item.ENGLISH_NAME + item.CHINESE_NAME + item.TYPE + Moment(item.EXPIRE_DATE).format('YYYY-MM-DD') + item.MANUFACTURE).toUpperCase().includes(inputVal));
 		
-
+		this.loadAllItem(inputVal);
+		this.setState({allHistoryItemsDisplay: allHistoryItemsDisplay});
+		this.setState({checkAllToggle: false}); 
 	}
 
 
@@ -57,6 +68,7 @@ export default class filter extends React.Component {
 		e.preventDefault();
 		if($("#filterBtn").text()==="Filter"){
 			$("#itemFilter").removeClass("display-none");
+			$("#itemFilter").focus();
 			$(".selectfilter-container").removeClass("display-none");
 			$("#filterBtn").text("Close");
 		}else {
@@ -174,6 +186,14 @@ export default class filter extends React.Component {
 								{this.state.loggedUser.EXP_VIEW?<strong>{item.EXPIRE_DATE}-</strong>: null}
 								<strong>{item.MANUFACTURE}</strong></p>
 							</li>					
+						)}
+						{this.state.allHistoryItemsDisplay.map((item,key)=>
+							<li key={`historyItem${key}`} className="historyItem">
+								<p className="inline-b">{item.ENGLISH_NAME}-{item.CHINESE_NAME}<br/>
+								{this.state.loggedUser.EXP_VIEW?<strong>{Moment(item.EXPIRE_DATE).format('YYYY-MM-DD')}-</strong>: null}
+								<strong>{item.MANUFACTURE}</strong></p>
+							</li>
+
 						)}						
 					</ul>
 				</div>

@@ -56,6 +56,11 @@
 					list-style-type: none;
 					border-bottom: 2px solid black;
 					
+					&.historyItem {
+						background-color: lightblue;
+						cursor: none !important;
+					}
+
 					&.checked {
 						background-color: #962E3D;
 						color: white;

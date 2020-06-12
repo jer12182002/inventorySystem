@@ -14,13 +14,19 @@ export default class controlPanel extends React.Component {
 		this.state = {
 			loggedUser : this.props.loggedUser, 
 			today: this.props.today,
-			allItems: []
+			allItems: [], 
+			allHistoryItems:[]
 		}
+			
 	}
 
 	componentWillReceiveProps(newProps) {
 	  if (this.state.allItems !== newProps.allItems) {
 	    this.setState({allItems: newProps.allItems});
+	  }
+
+	  if(this.state.allHistoryItems !== newProps.allHistoryItems) {
+	  	this.setState({allHistoryItems: newProps.allHistoryItems});
 	  }
 	}
 
@@ -47,6 +53,7 @@ export default class controlPanel extends React.Component {
 						   allItems={this.props.allItems}
 						   lockHoldLock={this.props.lockHoldLock}/>
 				<Filter loggedUser = {this.state.loggedUser} 
+						allHistoryItems = {this.state.allHistoryItems}
 						filterAllItemsFromChild = {this.props.filterAllItemsFromChild}/>
 			</div>
 		);

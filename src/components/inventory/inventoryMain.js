@@ -303,7 +303,8 @@ export default class inventoryMain extends React.Component {
 										   setStateWithRowSpan = {this.setStateWithRowSpan.bind(this)}/>
 					
 					<ControlPanel 	loggedUser = {this.state.accountInfo} 
-									allItems = {this.state.allItems} 
+									allItems = {this.state.allItems}
+									allHistoryItems = {this.state.allHistoryItems} 
 									today = {this.state.today}
 									lockHoldLock = {this.lockHoldLock.bind(this)}
 									lockEditLock = {this.lockEditLock.bind(this)}
