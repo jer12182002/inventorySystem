@@ -58,7 +58,8 @@
 					
 					&.historyItem {
 						background-color: lightblue;
-						cursor: none !important;
+						cursor: default !important;
+						font-weight: normal !important;
 					}
 
 					&.checked {
