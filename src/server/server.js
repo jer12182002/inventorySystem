@@ -508,8 +508,51 @@ app.get('/inventory/restockHold',(req,res)=>{
 	});
 	
 })
+
+
+
+
+
+
+
+//**************************************Orders All Sections ***********************************************************	
+app.get("/orders/changeOrderId", (req,res)=>{
+	console.log("Change Order Id");
+	let orderInfo = JSON.parse(req.query.orderId);
 	
+	let sqlQueries = `UPDATE ongoing_order SET ORDER_ID = '${orderInfo.newOrderId}' WHERE ORDER_ID = '${orderInfo.orderId}' AND (SELECT COUNT(ORDER_ID) FROM ongoing_order WHERE ORDER_ID = '${orderInfo.newOrderId}') > 0;`;
+		sqlQueries+= `UPDATE order_item_list SET ORDER_ID = '${orderInfo.newOrderId}' WHERE ORDER_ID = '${orderInfo.orderId}' AND (SELECT COUNT(ORDER_ID) FROM order_item_list WHERE ORDER_ID = '${orderInfo.newOrderId}') > 0;`;
+
+		connection.query(sqlQueries, (err,result)=>{
+			if(err) {
+				res.send(err);
+			}else {
+				if(result[0].changedRows > 0) {
+					return (res.json({data:'success'}));
+				}
+
+				return (res.json({data: 'error'}));
+			}
+		});
+
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //*************************************** Checkout **********************************************************************
+
+
 app.get("/checkout",(req,res)=> {
 	console.log("Load all Orders in checkout");
 	let sqlQuery = "SELECT * FROM ongoing_order ORDER BY ORDER_TIME DESC";
@@ -522,6 +565,7 @@ app.get("/checkout",(req,res)=> {
 		}
 	});
 });
+
 
 
 app.get("/checkout/ongoingordernotifications",(req,res)=>{
@@ -545,9 +589,9 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 	console.log("Load information for chosen ONGOING_ORDER");
 	let {orderId} = req.query;
 	
-	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = ${orderId};`;
-	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY",O.PICKUP_ITEMS AS "PICKUP_ITEMS", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE, i.TYPE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON LOWER(o.product) = LOWER(CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME)) where o.ORDER_ID = ${orderId} ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
-	let sqlQuery3 = `UPDATE ONGOING_ORDER SET NEW_MSG_CHKOUT = 0 WHERE ORDER_ID = ${orderId}`;
+	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = '${orderId}';`;
+	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY",O.PICKUP_ITEMS AS "PICKUP_ITEMS", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE, i.TYPE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON LOWER(o.product) = LOWER(CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME)) where o.ORDER_ID = '${orderId}' ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
+	let sqlQuery3 = `UPDATE ONGOING_ORDER SET NEW_MSG_CHKOUT = 0 WHERE ORDER_ID = '${orderId}'`;
 
 	let data = [];
 	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=>{
@@ -586,7 +630,7 @@ app.get("/checkout/order/loadnotes",(req,res)=>{
 	console.log("Load all notes for the chosen order every 1 sec");
 	let {orderId} = req.query;
 
-	let	sqlQuery = `SELECT * FROM checkout_note WHERE ORDER_ID = ${orderId} ORDER BY TIME DESC`;
+	let	sqlQuery = `SELECT * FROM checkout_note WHERE ORDER_ID = '${orderId}' ORDER BY TIME DESC`;
 
 	connection.query(sqlQuery, (err,result)=>{
 		if(err) {
@@ -651,7 +695,7 @@ app.get("/checkout/ongoingorder/deleteorder",(req,res)=> {
 	let orderInfo = JSON.parse(req.query.orderInfo);
 	let sqlQueries = `UPDATE ongoing_order SET PROCESS_TIME = "${orderInfo.PROCESS_TIME}", PERSON = "${orderInfo.PERSON}", STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
 		sqlQueries+= `UPDATE order_item_list SET STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
-		sqlQueries+= `INSERT INTO checkout_note (ORDER_ID, PERSON,TIME, NOTE, STATUS) VALUES (${orderInfo.ORDER_ID}, '${orderInfo.PERSON}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','DELETED');`;
+		sqlQueries+= `INSERT INTO checkout_note (ORDER_ID, PERSON,TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_ID}', '${orderInfo.PERSON}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','DELETED');`;
 		sqlQueries+= `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.PERSON}','DELETE ORDER', 'Delete Order: ${orderInfo.ORDER_ID}');`;
 		
 	connection.query(sqlQueries,(err,result)=> {
@@ -745,10 +789,10 @@ app.post('/pickup/order-detail/pushprocess',(req,res)=>{
 //***********************************************************************************************************************
 
 //receiving Orders from shopify
-app.use("/shopify", (req, res) => {
+app.use("/shopifyOrder", (req, res) => {
 	let shopifyData = req.body;
-	console.log(shopifyData);
-
+	console.log(`Order:${shopifyData.order_number} from Shopify Formal order`);
+	
 	let sqlQuery = `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS, NEW_MSG_CHKOUT) SELECT '${shopifyData.order_number}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED', 1 FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM ongoing_order WHERE ORDER_ID = ${shopifyData.order_number});`;
 
 	shopifyData.line_items.forEach(item => {
@@ -769,20 +813,38 @@ app.use("/shopify", (req, res) => {
 })
 
 
-app.use("/draft", (req, res) => {
+app.use("/shopifyDraft", (req, res) => {
 	let shopifyData = req.body;
-	console.log(shopifyData);
+	let shopifyDraftOrderNo = shopifyData.name.replace(/[^a-z0-9]/gi,'');
+	console.log(shopifyDraftOrderNo);
 
-	
+	console.log(`Order:${shopifyDraftOrderNo} from Shopify Draft-order`);
+
+	let sqlQueries  = `DELETE FROM ongoing_order WHERE ORDER_ID = '${shopifyDraftOrderNo}';`;
+		sqlQueries += `DELETE FROM order_item_list WHERE ORDER_ID = '${shopifyDraftOrderNo}';`; // This is to make sure that order info from shopify is the latest
+
+	    sqlQueries += `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS, NEW_MSG_CHKOUT) VALUES ('${shopifyDraftOrderNo}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED', 1 );`;
+
+	shopifyData.line_items.forEach(item => {
+		if(item.name !== 'Tablet Service -200g' && item.name !== 'Tablet Service -100g'){	
+			sqlQueries += `INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) VALUES ('${shopifyDraftOrderNo}', '${item.name}', '${item.grams && item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity)}','RECEIVED');`;
+		
+		}
+	})
+
+	connection.query(sqlQueries, (err,result) => {
+		if(err) {
+			console.log(err);
+			res.send(err);
+		}else {
+			console.log("Shopify data has been saved");
+			return (res.json({data:result}));
+		}
+	})	
 })
 
-app.use("/draftdelete", (req, res) => {
-	let shopifyData = req.body;
-	console.log("@@@@@");
-	console.log(shopifyData);
 
-	
-})
+
 
 app.get('/home', function(req, res) {
 	if (req.session.loggedin) {

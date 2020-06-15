@@ -17,8 +17,10 @@ export default class ongoingItem extends React.Component {
 			ONGOING_ORDER:[],
 			ORDER_ITEMS:[],
 			ORDER_NOTES: [],
-			ITEM_NOT_ENOUGH: null
+			ITEM_NOT_ENOUGH: null, 
+			CHECK_IF_DRAFTORDER: false
 		}
+		console.log(this.props.location);
 	}
 
 	loadOrderInfo() {
@@ -91,7 +93,7 @@ export default class ongoingItem extends React.Component {
 		orderInfo.CURRENTSTATUS = this.state.ONGOING_ORDER.STATUS;
 
 		orderInfo.NEXTSTATUS = "IN PROCESS";
-		
+
 		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/pushtoprocess?`,
 				{	method:'POST',  
     				headers: {'Content-Type': 'application/json'},
@@ -111,6 +113,9 @@ export default class ongoingItem extends React.Component {
 
 	componentDidMount() {
 		this.loadOrderInfo();
+		if(this.state.ORDER_ID.match(/[^0-9]/gi)) {
+			this.setState({CHECK_IF_DRAFTORDER : true});
+		}
 
 		//THIS IS TO MAKE SURE RECEIVING THE REAL TIME MESSAGES
 		this.interValName = setInterval(()=>this.loadNotes(),1000);
@@ -122,6 +127,42 @@ export default class ongoingItem extends React.Component {
 
 
 	//******************************** Helper Functions *****************************************
+
+	changeOrderId (e) {
+		e.preventDefault();
+		let newOrderInput = $(`#draftOrder${this.state.ORDER_ID}`).val();
+
+		if(newOrderInput.match(/[^0-9]/gi)) {
+			alert("Order ID cannot cantain any character");
+		}else {	
+			//call api to change the order_id in database and refresh entire page when updating is done!!
+			let orderChangeInfo = {
+				orderId : this.state.ORDER_ID, 
+				newOrderId : newOrderInput 
+			}
+			
+
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/orders/changeOrderId?orderId=${JSON.stringify(orderChangeInfo)}`)
+			.then(res => res.json())
+			.then(data => {
+				if(data.data && data.data === 'success') {
+				
+					this.props.history.replace({state: {
+							ORDER_ID : newOrderInput, 
+							accountInfo : this.state.accountInfo
+					}});
+					window.location.reload();
+				}else {
+					alert("Please make sure you have parse draft order into formal order!");
+				}
+			})
+
+
+		}
+	}
+
+
+
 	organizeData(data) {
 		let uniqueData = [];
 		data.forEach(item=> {
@@ -372,7 +413,18 @@ export default class ongoingItem extends React.Component {
 			<div className="ongoingItem-wrapper">
 				<div className="header-section">
 					<div className="order-info row ">
-						<div className="col-6 col-lg-2"><h4>Order No: {this.state.ORDER_ID}</h4></div>
+						{this.state.ONGOING_ORDER.STATUS === 'RECEIVED' && this.state.CHECK_IF_DRAFTORDER || this.state.accountInfo.ACCESS_LEVEL < 3?
+							<div className="col-6 col-lg-2">
+								<h4>Order No: </h4>
+								<input id={`draftOrder${this.state.ORDER_ID}`} type="text" className="inline-b" defaultValue={this.state.ORDER_ID}/>
+								<button type="button" onClick={e => this.changeOrderId(e)}>Change</button>
+							</div>
+							:
+							<div className="col-6 col-lg-2">
+								<h4>Order No: {this.state.ORDER_ID}</h4>
+							</div>
+						}
+						
 						<div className="col-6 col-lg-3"><h4>Customer: {this.state.ONGOING_ORDER.CUSTOMER}</h4></div>
 						<div className="col-6 col-lg-4"><h4>Time Received: {Moment(this.state.ONGOING_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h4></div>
 						<div className="col-6 col-lg-3"><h4>Status: {this.state.ONGOING_ORDER.STATUS}</h4></div>
@@ -443,42 +495,46 @@ export default class ongoingItem extends React.Component {
 					{/*mobile display*/}
 
 
-
-					<div className="noteContainer">
-						{this.state.ORDER_NOTES.map((note,key) =>
-							<div className={`container-fluid note-row ${key === 0? `firstRow`:``}`} key={`note${key+1}`}>
-								<div className="row note-header">
-									<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD HH:mm:ss')}</h4></div>
-									<div className="col-4 col-md-4 text-center"><h4>Author: {note.PERSON}</h4></div>
-									<div className="col-4 col-md-4 text-center"><h4>Status: {note.STATUS}</h4></div>
-								</div>
-								<div className="note-info">
-									<h4>{note.NOTE}</h4>
-								</div>
+					{this.state.CHECK_IF_DRAFTORDER? 
+						<></>
+						:
+						<>
+							<div className="noteContainer">
+								{this.state.ORDER_NOTES.map((note,key) =>
+									<div className={`container-fluid note-row ${key === 0? `firstRow`:``}`} key={`note${key+1}`}>
+										<div className="row note-header">
+											<div className="col-4 col-md-4 text-center"><h4>Time: {Moment(note.TIME).format('YYYY-MM-DD HH:mm:ss')}</h4></div>
+											<div className="col-4 col-md-4 text-center"><h4>Author: {note.PERSON}</h4></div>
+											<div className="col-4 col-md-4 text-center"><h4>Status: {note.STATUS}</h4></div>
+										</div>
+										<div className="note-info">
+											<h4>{note.NOTE}</h4>
+										</div>
+									</div>
+								)}
 							</div>
-						)}
-					</div>
 
-					<div className="actionContainer">
-						<label className="block">Note:</label>
-						<textarea id={`note${this.state.ORDER_ID}`} className="block" onKeyUp={this.noteInputBtnToggle()}></textarea>
-						{this.state.ITEM_NOT_ENOUGH? 
-							this.state.accountInfo.VIEW_ITEM &&	this.state.accountInfo.ADD_ITEM?
-								<Link className ="btn btn-warning" to="/inventory">Add Item</Link>
-								:
-								<h3>Please report this problem to the correspondant.</h3>
+							<div className="actionContainer">
+								<label className="block">Note:</label>
+								<textarea id={`note${this.state.ORDER_ID}`} className="block" onKeyUp={this.noteInputBtnToggle()}></textarea>
+								{this.state.ITEM_NOT_ENOUGH? 
+									this.state.accountInfo.VIEW_ITEM &&	this.state.accountInfo.ADD_ITEM?
+										<Link className ="btn btn-warning" to="/inventory">Add Item</Link>
+										:
+										<h3>Please report this problem to the correspondant.</h3>
 
-							:
-							<button type="button" className="block btn btn-success" onClick = {e => this.pushBtnClicked(e)}>
-								{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"? "Push" : "Add Note"}
-							</button>
-						}
-						{this.state.ONGOING_ORDER.STATUS === "IN PROCESS"? 
-							null: <button id="deleteBtn" type="button" className="block btn btn-danger disabled" onClick = {e => this.deleteBtnClicked(e)}>Delete</button>
-						}
-						
-					</div>
-					
+									:
+									<button type="button" className="block btn btn-success" onClick = {e => this.pushBtnClicked(e)}>
+										{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"? "Push" : "Add Note"}
+									</button>
+								}
+								{this.state.ONGOING_ORDER.STATUS === "IN PROCESS"? 
+									null: <button id="deleteBtn" type="button" className="block btn btn-danger disabled" onClick = {e => this.deleteBtnClicked(e)}>Delete</button>
+								}
+								
+							</div>
+						</>
+					}
 				</div>
 			</div>
 		);
