@@ -646,6 +646,47 @@ app.get("/checkout/order/loadnotes",(req,res)=>{
 
 
 
+app.post("/checkout/ongoingorder/mergedraft", (req,res)=> {
+	console.log("Merge draft order into Formal order");
+	let orderInfo = req.body;
+	
+	connection.query(`SELECT COUNT(ORDER_ID) FROM ongoing_order WHERE ORDER_ID = '${orderInfo.NEW_ORDER_NO}' AND STATUS = 'RECEIVED';`, (err, result)=>{
+		if(err) {
+			res.send(err);
+		}else {
+
+			if(result[0]['COUNT(ORDER_ID)'] > 0){
+				let sqlQueries = `DELETE FROM ongoing_order WHERE ORDER_ID = ${orderInfo.NEW_ORDER_NO} AND STATUS = 'RECEIVED';`;
+					sqlQueries += `DELETE FROM order_item_list WHERE ORDER_ID = ${orderInfo.NEW_ORDER_NO} AND STATUS = 'RECEIVED';`;
+
+				    sqlQueries += `UPDATE ongoing_order SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}' WHERE ORDER_ID = '${orderInfo.ORDER_NO}';`;
+
+				orderInfo.ITEMS.forEach(item => {
+					sqlQueries += `UPDATE order_item_list SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;	
+				});
+
+				let actvityLogQuery = `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.ACCOUNTINFO}', 'MERGE Order', 'Merge Draft Order: ${orderInfo.ORDER_NO} into formal Order: ${orderInfo.NEW_ORDER_NO}');`;
+				
+				connection.query(sqlQueries + actvityLogQuery, (err2, result2) => {
+					if(err2) {
+						res.send(err2);
+					}else {
+						return res.json({data:'success'});
+					}
+				})
+			}else {
+				return res.json({data: 'fail'});
+			}
+		}
+	});
+
+});
+
+
+
+
+
+
 app.post("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	console.log("Push RECEIVED order or Pushed Back order to In Process");
 

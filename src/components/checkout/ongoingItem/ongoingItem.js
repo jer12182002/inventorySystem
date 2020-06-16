@@ -17,8 +17,7 @@ export default class ongoingItem extends React.Component {
 			ONGOING_ORDER:[],
 			ORDER_ITEMS:[],
 			ORDER_NOTES: [],
-			ITEM_NOT_ENOUGH: null, 
-			CHECK_IF_DRAFTORDER: false
+			ITEM_NOT_ENOUGH: null
 		}
 	}
 
@@ -28,16 +27,17 @@ export default class ongoingItem extends React.Component {
 		.then(data=> {
 			if(data.data) {
 				this.setState({ONGOING_ORDER : data.data.order[0]});
+				console.log(data.data.orderItems);
 
-				if(data.data.order[0].STATUS === "RECEIVED" || data.data.order[0].STATUS === "DRAFT") {
-					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
-				}else if(data.data.order[0].STATUS === "PUSHED BACK"){
-					this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});
-				}
-				else if(data.data.order[0].STATUS === "IN PROCESS"){
+				if(data.data.order[0].STATUS === "IN PROCESS") {
 					this.loadPickupOrderInfo();
-				}
-				
+				}else {
+					if(data.data.orderItems[0].PICKUP_ITEMS) {
+						this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});	
+					}else {
+						this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});	
+					}
+				}				
 			}
 		})
 	}
@@ -112,9 +112,7 @@ export default class ongoingItem extends React.Component {
 
 	componentDidMount() {
 		this.loadOrderInfo();
-		if(this.state.ORDER_ID.match(/[^0-9]/gi)) {
-			this.setState({CHECK_IF_DRAFTORDER : true});
-		}
+		
 
 		//THIS IS TO MAKE SURE RECEIVING THE REAL TIME MESSAGES
 		this.interValName = setInterval(()=>this.loadNotes(),1000);
@@ -160,7 +158,50 @@ export default class ongoingItem extends React.Component {
 
 
 	parseDraftToFormalOrder(e) {
-		alert("draft");
+		
+		let newOrderInput = $.trim($(`#draftOrder${this.state.ORDER_ID}`).val());
+
+		if(newOrderInput.match(/[^0-9]/gi)||newOrderInput.length <= 0) {
+			alert("Please make sure new Order Number doesn't contain any character or is not empty!");
+		}else {
+			let orderInfo = {};
+
+			orderInfo.ORDER_NO = this.state.ORDER_ID;
+			orderInfo.NEW_ORDER_NO = newOrderInput;
+			orderInfo.ITEMS = this.state.ORDER_ITEMS;
+			orderInfo.ACCOUNTINFO = this.state.accountInfo.USERNAME;
+			orderInfo.NOTE = '';
+			orderInfo.PROCESS_TIME = this.getTime();
+			orderInfo.CURRENTSTATUS = this.state.ONGOING_ORDER.STATUS;
+			orderInfo.NEXTSTATUS = "RECEIVED";
+
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/mergedraft?`,
+					{	method:'POST',  
+	    				headers: {'Content-Type': 'application/json'},
+	    				body: JSON.stringify(orderInfo)
+	    			}	
+	    	)
+			.then(res => res.json())
+			.then(data => {
+				console.log(data.data);
+				if(data.data) {
+					if(data.data === "fail") {
+						alert("Error! No existing order for merging!");
+					}else if(data.data === "success") {
+						this.props.history.replace({state: {
+							ORDER_ID : newOrderInput, 
+							accountInfo : this.state.accountInfo
+						}});
+
+						window.location.reload();
+					}else {
+						alert("Unknown error! Please ask IT to inspect");
+					}
+				}
+			})
+
+		}
+
 	}
 
 
@@ -414,7 +455,7 @@ export default class ongoingItem extends React.Component {
 			<div className="ongoingItem-wrapper">
 				<div className="header-section">
 					<div className="order-info row ">
-						{this.state.CHECK_IF_DRAFTORDER?
+						{this.state.ONGOING_ORDER.STATUS === "DRAFT"?
 							<div className="col-6 col-lg-2">
 								<h4>Order No: </h4>
 								<input id={`draftOrder${this.state.ORDER_ID}`} type="text" className="inline-b" defaultValue={this.state.ORDER_ID}/>
@@ -505,7 +546,7 @@ export default class ongoingItem extends React.Component {
 					{/*mobile display*/}
 
 
-					{this.state.CHECK_IF_DRAFTORDER? 
+					{this.state.ONGOING_ORDER.STATUS === "DRAFT"? 
 						<></>
 						:
 						<>
