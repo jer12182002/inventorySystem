@@ -826,11 +826,11 @@ app.use("/shopifyDraft", (req, res) => {
 	let sqlQueries  = `DELETE FROM ongoing_order WHERE ORDER_ID = '${shopifyDraftOrderNo}';`;
 		sqlQueries += `DELETE FROM order_item_list WHERE ORDER_ID = '${shopifyDraftOrderNo}';`; // This is to make sure that order info from shopify is the latest
 
-	    sqlQueries += `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS, NEW_MSG_CHKOUT) VALUES ('${shopifyDraftOrderNo}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'RECEIVED', 1 );`;
+	    sqlQueries += `INSERT INTO ongoing_order(ORDER_ID, CUSTOMER, ORDER_TIME, STATUS, NEW_MSG_CHKOUT) VALUES ('${shopifyDraftOrderNo}' , '${shopifyData.customer.first_name} ${shopifyData.customer.last_name}' , '${shopifyData.updated_at}', 'DRAFT', 1 );`;
 
 	shopifyData.line_items.forEach(item => {
 		if(item.name !== 'Tablet Service -200g' && item.name !== 'Tablet Service -100g'){	
-			sqlQueries += `INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) VALUES ('${shopifyDraftOrderNo}', '${item.name}', '${item.grams && item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity)}','RECEIVED');`;
+			sqlQueries += `INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) VALUES ('${shopifyDraftOrderNo}', '${item.name}', '${item.grams && item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity)}','DRAFT');`;
 		
 		}
 	})

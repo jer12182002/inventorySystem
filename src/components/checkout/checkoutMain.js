@@ -28,7 +28,7 @@ export default class checkoutMain extends React.Component {
 			let saveCompletedOrders= [];
 
 			data.data.forEach(order => {
-				if(order.STATUS === 'RECEIVED' || order.STATUS === 'IN PROCESS' || order.STATUS === 'PUSHED BACK') {
+				if(order.STATUS === 'DRAFT' ||order.STATUS === 'RECEIVED' || order.STATUS === 'IN PROCESS' || order.STATUS === 'PUSHED BACK') {
 					saveOngoingOrders.push(order);
 				}else if(order.STATUS === 'COMPLETED' || order.STATUS === 'DELETED') {
 					saveCompletedOrders.push(order);

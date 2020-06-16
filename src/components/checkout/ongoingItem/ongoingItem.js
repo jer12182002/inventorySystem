@@ -29,7 +29,7 @@ export default class ongoingItem extends React.Component {
 			if(data.data) {
 				this.setState({ONGOING_ORDER : data.data.order[0]});
 
-				if(data.data.order[0].STATUS === "RECEIVED") {
+				if(data.data.order[0].STATUS === "RECEIVED" || data.data.order[0].STATUS === "DRAFT") {
 					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});
 				}else if(data.data.order[0].STATUS === "PUSHED BACK"){
 					this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});
@@ -158,6 +158,10 @@ export default class ongoingItem extends React.Component {
 		}
 	}
 
+
+	parseDraftToFormalOrder(e) {
+		alert("draft");
+	}
 
 
 	organizeData(data) {
@@ -389,7 +393,7 @@ export default class ongoingItem extends React.Component {
 			orderInfo.PERSON = this.state.accountInfo.USERNAME;
 			orderInfo.PROCESS_TIME = this.getTime();
 			
-			fetch (`https://rendeincorg.ngrok.io/checkout/ongoingorder/deleteorder?orderInfo=${JSON.stringify(orderInfo)}`)
+			fetch (`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/deleteorder?orderInfo=${JSON.stringify(orderInfo)}`)
 			.then(res=> res.json())
 			.then(data => {
 				if(data.data && data.data === 'success') {
@@ -414,7 +418,7 @@ export default class ongoingItem extends React.Component {
 							<div className="col-6 col-lg-2">
 								<h4>Order No: </h4>
 								<input id={`draftOrder${this.state.ORDER_ID}`} type="text" className="inline-b" defaultValue={this.state.ORDER_ID}/>
-								<button type="button" onClick={e => this.changeOrderId(e)}>Change</button>
+								<button type="button" onClick={e => this.parseDraftToFormalOrder(e)}>Merge</button>
 							</div>
 							:
 							this.state.accountInfo.ACCESS_LEVEL < 3?
@@ -429,8 +433,6 @@ export default class ongoingItem extends React.Component {
 							</div>
 
 						}
-
-
 
 					
 						<div className="col-6 col-lg-3"><h4>Customer: {this.state.ONGOING_ORDER.CUSTOMER}</h4></div>
@@ -451,7 +453,7 @@ export default class ongoingItem extends React.Component {
 								<div className="col-2"><h3 className="text-center">Stock Qty</h3></div>
 								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
 								<div className="col-2">
-								{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
+								{this.state.ONGOING_ORDER.STATUS === "DRAFT" || this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
 									<h3 className="text-center">Tablet Qty</h3>:null
 								}
 								</div>
@@ -470,7 +472,7 @@ export default class ongoingItem extends React.Component {
 									<div className="col-2"><h4 className="text-center">{diffItem.MANUFACTURE}</h4></div>
 									<div className="col-2"><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
 									
-									{this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
+									{this.state.ONGOING_ORDER.STATUS === "DRAFT" || this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
 										<>
 											<div className="col-2"><h4 className="text-center">{diffItem.QTY}</h4></div>
 											<div className="col-2 text-center"><input id={`${key+1}pickupQty${diffKey+1}`} type="number" className="pickupQty text-center" defaultValue={diffItem.PICKUPVALUE} min="0" onChange={e => this.pickUpQtyChange(e,item.ORDER_ITEM_ID,diffItem.ID,diffKey+1,key+1)}></input></div>
