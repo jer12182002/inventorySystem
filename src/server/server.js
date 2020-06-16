@@ -515,13 +515,31 @@ app.get('/inventory/restockHold',(req,res)=>{
 
 
 
-//**************************************Orders All Sections ***********************************************************	
+//**************************************Orders in All Sections ***********************************************************	
+
+
+
+app.get("/orders/changeOrderfromdraft", (req,res)=> {
+	console.log("Change draft order into formal order");
+})
+
+
+
+
+
+
+
+
+
+
+
+//*************************************** Checkout **********************************************************************
 app.get("/orders/changeOrderId", (req,res)=>{
 	console.log("Change Order Id");
 	let orderInfo = JSON.parse(req.query.orderId);
 	
-	let sqlQueries = `UPDATE ongoing_order SET ORDER_ID = '${orderInfo.newOrderId}' WHERE ORDER_ID = '${orderInfo.orderId}' AND (SELECT COUNT(ORDER_ID) FROM ongoing_order WHERE ORDER_ID = '${orderInfo.newOrderId}') > 0;`;
-		sqlQueries+= `UPDATE order_item_list SET ORDER_ID = '${orderInfo.newOrderId}' WHERE ORDER_ID = '${orderInfo.orderId}' AND (SELECT COUNT(ORDER_ID) FROM order_item_list WHERE ORDER_ID = '${orderInfo.newOrderId}') > 0;`;
+	let sqlQueries = `UPDATE ongoing_order SET ORDER_ID = '${orderInfo.newOrderId}' WHERE ORDER_ID = '${orderInfo.orderId}' AND (SELECT COUNT(ORDER_ID) FROM ongoing_order WHERE ORDER_ID = '${orderInfo.newOrderId}') = 0;`;
+		sqlQueries+= `UPDATE order_item_list SET ORDER_ID = '${orderInfo.newOrderId}' WHERE ORDER_ID = '${orderInfo.orderId}' AND (SELECT COUNT(ORDER_ID) FROM order_item_list WHERE ORDER_ID = '${orderInfo.newOrderId}') = 0;`;
 
 		connection.query(sqlQueries, (err,result)=>{
 			if(err) {
@@ -536,21 +554,6 @@ app.get("/orders/changeOrderId", (req,res)=>{
 		});
 
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//*************************************** Checkout **********************************************************************
 
 
 app.get("/checkout",(req,res)=> {

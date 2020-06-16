@@ -20,7 +20,6 @@ export default class ongoingItem extends React.Component {
 			ITEM_NOT_ENOUGH: null, 
 			CHECK_IF_DRAFTORDER: false
 		}
-		console.log(this.props.location);
 	}
 
 	loadOrderInfo() {
@@ -130,10 +129,10 @@ export default class ongoingItem extends React.Component {
 
 	changeOrderId (e) {
 		e.preventDefault();
-		let newOrderInput = $(`#draftOrder${this.state.ORDER_ID}`).val();
+		let newOrderInput = $(`#changeOrderNo${this.state.ORDER_ID}`).val();
 
-		if(newOrderInput.match(/[^0-9]/gi)) {
-			alert("Order ID cannot cantain any character");
+		if(newOrderInput.match(/[^0-9]/gi)||newOrderInput.length <= 0) {
+			alert("Please make sure new Order Number doesn't contain any character or is not empty!");
 		}else {	
 			//call api to change the order_id in database and refresh entire page when updating is done!!
 			let orderChangeInfo = {
@@ -153,11 +152,9 @@ export default class ongoingItem extends React.Component {
 					}});
 					window.location.reload();
 				}else {
-					alert("Please make sure you have parse draft order into formal order!");
+					alert("Error!  Duplicate order number!");
 				}
 			})
-
-
 		}
 	}
 
@@ -413,18 +410,29 @@ export default class ongoingItem extends React.Component {
 			<div className="ongoingItem-wrapper">
 				<div className="header-section">
 					<div className="order-info row ">
-						{this.state.ONGOING_ORDER.STATUS === 'RECEIVED' && this.state.CHECK_IF_DRAFTORDER || this.state.accountInfo.ACCESS_LEVEL < 3?
+						{this.state.CHECK_IF_DRAFTORDER?
 							<div className="col-6 col-lg-2">
 								<h4>Order No: </h4>
 								<input id={`draftOrder${this.state.ORDER_ID}`} type="text" className="inline-b" defaultValue={this.state.ORDER_ID}/>
 								<button type="button" onClick={e => this.changeOrderId(e)}>Change</button>
 							</div>
 							:
+							this.state.accountInfo.ACCESS_LEVEL < 3?
+							<div className="col-6 col-lg-2">
+								<h4>Order No: </h4>
+								<input id={`changeOrderNo${this.state.ORDER_ID}`} type="text" className="inline-b" defaultValue={this.state.ORDER_ID}/>
+								<button type="button" onClick={e => this.changeOrderId(e)}>Change</button>
+							</div>
+							:
 							<div className="col-6 col-lg-2">
 								<h4>Order No: {this.state.ORDER_ID}</h4>
 							</div>
+
 						}
-						
+
+
+
+					
 						<div className="col-6 col-lg-3"><h4>Customer: {this.state.ONGOING_ORDER.CUSTOMER}</h4></div>
 						<div className="col-6 col-lg-4"><h4>Time Received: {Moment(this.state.ONGOING_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h4></div>
 						<div className="col-6 col-lg-3"><h4>Status: {this.state.ONGOING_ORDER.STATUS}</h4></div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import Moment from 'moment';
 import "./completedOrder.scss";
+import $ from 'jquery';
 
 export default class completedOrder extends React.Component {
 
@@ -78,12 +79,55 @@ export default class completedOrder extends React.Component {
 	}
 
 
+	changeOrderId (e) {
+		e.preventDefault();
+		let newOrderInput = $(`#changeOrderNo${this.state.ORDER_ID}`).val();
+
+		if(newOrderInput.match(/[^0-9]/gi)||newOrderInput.length <= 0) {
+			alert("Please make sure new Order Number doesn't contain any character or is not empty!");
+		}else {	
+			//call api to change the order_id in database and refresh entire page when updating is done!!
+			let orderChangeInfo = {
+				orderId : this.state.ORDER_ID, 
+				newOrderId : newOrderInput 
+			}
+			
+
+			fetch(`${process.env.REACT_APP_INVENTROY_API}/orders/changeOrderId?orderId=${JSON.stringify(orderChangeInfo)}`)
+			.then(res => res.json())
+			.then(data => {
+				if(data.data && data.data === 'success') {
+				
+					this.props.history.replace({state: {
+							ORDER_ID : newOrderInput, 
+							accountInfo : this.state.accountInfo
+					}});
+					window.location.reload();
+				}else {
+					alert("Error!  Duplicate order number!");
+				}
+			})
+		}
+	}
+
 	render() {
 		return (
 			<div className="completedOrder-wrapper">
 				<div className="head-section container-fluid">
 					<div className="order-info row">
-						<div className="col-3 col-lg-2"><h3>Order No: {this.state.COMPLETED_ORDER.ORDER_ID}</h3></div>
+
+						{this.state.accountInfo.ACCESS_LEVEL < 3?
+							<div className="col-3 col-lg-2">
+								<h3>Order No: </h3>
+								<input id={`changeOrderNo${this.state.ORDER_ID}`} type="text" className="inline-b" defaultValue={this.state.ORDER_ID}/>
+								<button type="button" onClick={e => this.changeOrderId(e)}>Change</button>
+							</div>
+							:
+							<div className="col-3 col-lg-2">
+								<h3>Order No: {this.state.COMPLETED_ORDER.ORDER_ID}</h3>
+							</div>
+						}
+
 						<div className="col-4 col-lg-2"><h3>Customer: {this.state.COMPLETED_ORDER.CUSTOMER}</h3></div>
 						<div className="col-5 col-lg-4"><h3>Order Received: {Moment(this.state.COMPLETED_ORDER.ORDER_TIME).format('YYYY-MM-DD  HH:mm:s')}</h3></div>
 						<div className="col-6 col-lg-2"><h3>Sales: {this.state.COMPLETED_ORDER.PERSON}</h3></div>

@@ -130,8 +130,9 @@ export default class checkoutMain extends React.Component {
 		}else {
 			this.setState({ongoingOrders:sortData});
 		} 
-
 	}
+
+
 
 	render() {
 		return (
@@ -246,7 +247,8 @@ export default class checkoutMain extends React.Component {
 															pathname:`/checkout/ongoingorder`,
 															state: {
 																accountInfo: this.props.accountInfo,
-																ORDER_ID: order.ORDER_ID
+																ORDER_ID: order.ORDER_ID,
+																changeOrderId: this.changeOrderId
 															}
 														}}
 														className="btn btn-primary">Proceed</Link>
