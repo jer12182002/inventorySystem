@@ -126,7 +126,9 @@ export default class ongoingItem extends React.Component {
 		})
 		.then(res=>res.json())
 		.then(data=> {
-			console.log(data);
+			if(!(data.data && data.data === "success")) {
+				alert("Something went wrong, please tell IT to check the QTY updater api!");
+			}
 		})
 	}
 
