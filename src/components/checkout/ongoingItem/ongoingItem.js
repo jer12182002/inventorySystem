@@ -109,6 +109,20 @@ export default class ongoingItem extends React.Component {
 	}
 
 
+	storeItemQtyandTabletqty() {
+		console.log(this.state.ORDER_ITEMS);
+		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/updateqty?`,
+		{
+			method:'POST',
+			headers: {'Content-Type':'application/json'},
+			body: JSON.stringify(this.state.ORDER_ITEMS)
+		})
+		.then(res=>res.json())
+		.then(data=> {
+			console.log(data);
+		})
+	}
+
 
 	componentDidMount() {
 		this.loadOrderInfo();
@@ -342,6 +356,12 @@ export default class ongoingItem extends React.Component {
 
 
 
+
+
+
+
+
+
 	pickUpQtyChange(e,itemId,diffId,diffKey,key) {
 		e.preventDefault();
 
@@ -366,7 +386,10 @@ export default class ongoingItem extends React.Component {
 			});
 		});
 
-		this.setState({ORDER_ITEMS : items},()=>this.wanringChecker(this.state.ORDER_ITEMS,itemId,key));		
+		this.setState({ORDER_ITEMS : items},()=>{
+			this.wanringChecker(this.state.ORDER_ITEMS,itemId,key);		
+			this.storeItemQtyandTabletqty();
+		})
 	}
 
 
@@ -392,8 +415,10 @@ export default class ongoingItem extends React.Component {
 			})
 		});
 
-		this.setState({ORDER_ITEMS : orderItems});
+		this.setState({ORDER_ITEMS : orderItems}, ()=> this.storeItemQtyandTabletqty());
 	}
+
+
 
 	getTime() {
 		let today = new Date();
@@ -402,11 +427,12 @@ export default class ongoingItem extends React.Component {
 		return today;
 	}
 
+
+
 	wanringChecker(items,itemId,key){
 
 		items.forEach(item=> {
 			if(itemId === item.ORDER_ITEM_ID){
-				
 				if(item.ORDER_ITEM_QTY !== item.DIFFERENT_TYPE.reduce((acc,diffItem)=>acc+diffItem.PICKUPVALUE,0)) {
 					$(`#orderQty${key}`).addClass("warning");
 				}else {
@@ -543,9 +569,7 @@ export default class ongoingItem extends React.Component {
 						</div>
 					)}
 
-					{/*mobile display*/}
-
-
+				
 					{this.state.ONGOING_ORDER.STATUS === "DRAFT"? 
 						<></>
 						:

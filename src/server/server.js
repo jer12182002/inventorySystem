@@ -645,6 +645,23 @@ app.get("/checkout/order/loadnotes",(req,res)=>{
 });
 
 
+app.post("/checkout/ongoingorder/updateqty", (req,res)=> {
+	let orderItems = req.body;
+	let sqlQueries = '';
+	orderItems.forEach(item=>{
+		sqlQueries += `UPDATE order_item_list SET PICKUP_ITEMS = '${JSON.stringify(item.DIFFERENT_TYPE)}' WHERE ID = '${item.ORDER_ITEM_ID}';`;
+	});
+
+	connection.query(sqlQueries,(err, result)=> {
+		if(err) {
+			res.send(err);
+		}else {
+			return res.json({data:'success'});
+		}
+	});
+})
+
+
 
 app.post("/checkout/ongoingorder/mergedraft", (req,res)=> {
 	console.log("Merge draft order into Formal order");
