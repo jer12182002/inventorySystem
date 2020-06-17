@@ -21,7 +21,7 @@ export default class ongoingItem extends React.Component {
 		}
 	}
 
-	loadOrderInfo() {
+	loadOrderInfo() {    
 		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder?orderId=${this.state.ORDER_ID}`)
 		.then(res => res.json())
 		.then(data=> {
@@ -33,8 +33,15 @@ export default class ongoingItem extends React.Component {
 					this.loadPickupOrderInfo();
 				}else {
 					if(data.data.orderItems[0].PICKUP_ITEMS) {
-						this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)});	
-					}else {
+						this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)}, ()=>
+							{
+							for(let i = 0 ; i < this.state.ORDER_ITEMS.length ; i++) {
+								this.wanringChecker(this.state.ORDER_ITEMS, this.state.ORDER_ITEMS[i].ORDER_ITEM_ID, i+1);
+							}
+						});	
+					}
+
+					else {
 						this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});	
 					}
 				}				
@@ -343,21 +350,9 @@ export default class ongoingItem extends React.Component {
 				this.setState({ITEM_NOT_ENOUGH : true});
 			}
 		});
+
 		return uniqueData;
 	} 
-
-
-
-
-	getPickUpData(data){
-		let pickupItems = new Set();
-		data.filter(item => !pickupItems.has(item["ORDER_ITEM_ID"]) && pickupItems.add(item));
-	}
-
-
-
-
-
 
 
 
