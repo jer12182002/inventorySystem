@@ -27,8 +27,7 @@ export default class ongoingItem extends React.Component {
 		.then(data=> {
 			if(data.data) {
 				this.setState({ONGOING_ORDER : data.data.order[0]});
-				console.log(data.data.orderItems);
-
+				
 				if(data.data.order[0].STATUS === "IN PROCESS") {
 					this.loadPickupOrderInfo();
 				}else {
@@ -117,7 +116,6 @@ export default class ongoingItem extends React.Component {
 
 
 	storeItemQtyandTabletqty() {
-		console.log(this.state.ORDER_ITEMS);
 		fetch(`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/updateqty?`,
 		{
 			method:'POST',
