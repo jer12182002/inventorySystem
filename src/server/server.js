@@ -43,7 +43,7 @@ connection.connect();
 //****************************Account*************************************
 app.get('/chcekPermission',(req,res)=>{
 	var userId = req.query.id;
-	const sqlQuery = `SELECT * FROM account_list where ID = ${userId}`;
+	const sqlQuery = `SELECT * FROM account_list where ID = '${userId}'`;
 	
 	connection.query(sqlQuery,(err,result)=>{
 		if(err) {
@@ -102,7 +102,7 @@ app.get('/login/account/register',(req,res) =>{
 
 app.get('/login/account/resetpassword',(req,res)=>{
 	let userPwdInfo = JSON.parse(req.query.newUserInfo);
-	var sqlQuery = `UPDATE account_list set PASSWORD = '${userPwdInfo.newPassword}' where ID = ${userPwdInfo.id}`;
+	var sqlQuery = `UPDATE account_list set PASSWORD = '${userPwdInfo.newPassword}' where ID = '${userPwdInfo.id}'`;
 	
 	console.log("Reset password");
 	connection.query(sqlQuery,(err,result)=>{
@@ -139,7 +139,7 @@ app.get('/login/account/displayActivities',(req,res)=> {
 
 
 app.get('/login/account/displayUsers',(req,res) =>{
-	var sqlQuery = `SELECT * FROM account_list where ID = ${req.query.id}`;
+	var sqlQuery = `SELECT * FROM account_list where ID = '${req.query.id}'`;
 	
 	connection.query(sqlQuery,(err,result)=>{
 		if(err){
@@ -155,7 +155,7 @@ app.get('/login/account/displayUsers',(req,res) =>{
 app.get('/login/account/saveUpdatedUser',(req,res)=>{
 	let userInfo = JSON.parse(req.query.userInfo);
 	
-	var sqlQuery = `UPDATE account_list set ACCESS_LEVEL = ${userInfo.ACCESS_LEVEL}, VIEW_ITEM = ${userInfo.VIEW_ITEM}, ADD_ITEM = ${userInfo.ADD_ITEM}, DELETE_ITEM = ${userInfo.DELETE_ITEM}, NAME_MODIFY=${userInfo.NAME_MODIFY}, QTY_VIEW = ${userInfo.QTY_VIEW}, QTY_MODIFY = ${userInfo.QTY_MODIFY}, TYPE_VIEW = ${userInfo.TYPE_VIEW}, TYPE_MODIFY = ${userInfo.TYPE_MODIFY}, SHELF_MODIFY = ${userInfo.SHELF_MODIFY}, GRAM_VIEW = ${userInfo.GRAM_VIEW}, GRAM_MODIFY = ${userInfo.GRAM_MODIFY}, EXP_VIEW = ${userInfo.EXP_VIEW}, EXP_MODIFY = ${userInfo.EXP_MODIFY}, TAG_VIEW = ${userInfo.TAG_VIEW}, TAG_MODIFY = ${userInfo.TAG_MODIFY}, CHK_VIEW = ${userInfo.CHK_VIEW}, CHK_MODIFY = ${userInfo.CHK_MODIFY}, PICKUP_VIEW = ${userInfo.PICKUP_VIEW}, PICKUP_RESPOND = ${userInfo.PICKUP_RESPOND} where ID = ${userInfo.ID}`;
+	var sqlQuery = `UPDATE account_list set ACCESS_LEVEL = ${userInfo.ACCESS_LEVEL}, VIEW_ITEM = ${userInfo.VIEW_ITEM}, ADD_ITEM = ${userInfo.ADD_ITEM}, DELETE_ITEM = ${userInfo.DELETE_ITEM}, NAME_MODIFY=${userInfo.NAME_MODIFY}, QTY_VIEW = ${userInfo.QTY_VIEW}, QTY_MODIFY = ${userInfo.QTY_MODIFY}, TYPE_VIEW = ${userInfo.TYPE_VIEW}, TYPE_MODIFY = ${userInfo.TYPE_MODIFY}, SHELF_MODIFY = ${userInfo.SHELF_MODIFY}, GRAM_VIEW = ${userInfo.GRAM_VIEW}, GRAM_MODIFY = ${userInfo.GRAM_MODIFY}, EXP_VIEW = ${userInfo.EXP_VIEW}, EXP_MODIFY = ${userInfo.EXP_MODIFY}, TAG_VIEW = ${userInfo.TAG_VIEW}, TAG_MODIFY = ${userInfo.TAG_MODIFY}, CHK_VIEW = ${userInfo.CHK_VIEW}, CHK_MODIFY = ${userInfo.CHK_MODIFY}, PICKUP_VIEW = ${userInfo.PICKUP_VIEW}, PICKUP_RESPOND = ${userInfo.PICKUP_RESPOND} where ID = '${userInfo.ID}'`;
 	
 	console.log("Change user permission");
 
@@ -213,9 +213,9 @@ app.get('/home/modifyannouncements',(req,res)=>{
 
 	console.log("Delete or Modify announcement");
 	if(announcementInfo.ACTION === 'update') {
-		sqlQuery = `UPDATE announcements SET ANNOUNCEMENT = '${announcementInfo.ANNOUNCEMENT}', TIME = SYSDATE() WHERE ID = ${announcementInfo.ID};`;
+		sqlQuery = `UPDATE announcements SET ANNOUNCEMENT = '${announcementInfo.ANNOUNCEMENT}', TIME = SYSDATE() WHERE ID = '${announcementInfo.ID}';`;
 	}else if(announcementInfo.ACTION === 'delete') {
-		sqlQuery = `DELETE FROM announcements WHERE ID = ${announcementInfo.ID};`;
+		sqlQuery = `DELETE FROM announcements WHERE ID = '${announcementInfo.ID}';`;
 	}
  
 	connection.query(sqlQuery,(err,result)=>{
@@ -396,7 +396,7 @@ app.get('/inventory/updateItems',(req,res)=>{
 	console.log("Update item");
 	let updatedItem = JSON.parse(req.query.updatedItem);
 
-	connection.query(`SELECT * FROM item_list WHERE ID = ${updatedItem.ID}`,(selectErr,selectResult)=>{
+	connection.query(`SELECT * FROM item_list WHERE ID = '${updatedItem.ID}'`,(selectErr,selectResult)=>{
 		if(selectResult[0]) {
 			let itemInfo = selectResult[0];
 			
@@ -434,12 +434,12 @@ app.get('/inventory/deleteItem',(req,res)=>{
 	console.log("Delete item");
 	let deleteInfo = JSON.parse(req.query.deleteInfo);
 
-	connection.query(`SELECT * FROM item_list WHERE ID = ${deleteInfo.ITEM_ID}`,(selectErr,selectResult)=>{
+	connection.query(`SELECT * FROM item_list WHERE ID = '${deleteInfo.ITEM_ID}'`,(selectErr,selectResult)=>{
 		if(selectResult[0]) {
 			let itemInfo = selectResult[0];
 			
-			let sqlQueries = `DELETE FROM hold_item_list WHERE ITEM_ID = ${deleteInfo.ITEM_ID};`; 
-				sqlQueries+= `DELETE FROM item_list where ID = ${deleteInfo.ITEM_ID};`;
+			let sqlQueries = `DELETE FROM hold_item_list WHERE ITEM_ID = '${deleteInfo.ITEM_ID}';`; 
+				sqlQueries+= `DELETE FROM item_list where ID = '${deleteInfo.ITEM_ID}';`;
 				
 			let actionDetails = `${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME} Type: ${itemInfo.TYPE}, Shelf No: ${itemInfo.SHELF_NO}, Manu.: ${itemInfo.MANUFACTURE}, QTY: ${itemInfo.QTY}, Exp.: ${moment(itemInfo.EXPIRE_DATE).format('YYYY-MM-DD')}, Gram: ${itemInfo.GRAM}`;
 			sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${deleteInfo.PERSON}','Delete Item' ,'${actionDetails}');`;
@@ -467,7 +467,7 @@ app.post('/inventory/addhold',(req,res)=>{
 	holdItems.ITEMS.forEach(item=>{
 		console.log(item);
 		sqlQueries += `INSERT INTO hold_item_list (ITEM_ID, PERSON, HOLD_QTY, DATE) VALUES ('${item.ID}', '${holdItems.HOLDFOR}','${item.HOLD_QTY}', '${holdItems.UNTIL}');`;
-		sqlQueries += `UPDATE item_list set HOLD_QTY = HOLD_QTY + ${item.HOLD_QTY} WHERE ID = ${item.ID};`; 
+		sqlQueries += `UPDATE item_list set HOLD_QTY = HOLD_QTY + ${item.HOLD_QTY} WHERE ID = '${item.ID}';`; 
 		sqlQueries += `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES('${holdItems.AUTHOR}', 'Hold Item','Item(${item.ENGLISH_NAME} ${item.CHINESE_NAME}-${item.TYPE}-${item.EXPIRE_DATE}) Qty: ${item.HOLD_QTY} for ${holdItems.HOLDFOR} ${holdItems.UNTIL===''?`with no expiry date`:`with expiry date: ${holdItems.UNTIL}`} is holded');`;
 
 	})
@@ -488,12 +488,12 @@ app.get('/inventory/restockHold',(req,res)=>{
 	console.log("Reset on Hold Item");
 	let restockItem = JSON.parse(req.query.restockInfo);
 	
-	connection.query(`SELECT * FROM item_list WHERE ID = ${restockItem.ITEM_ID}`,(selectErr,selectResult)=>{
+	connection.query(`SELECT * FROM item_list WHERE ID = '${restockItem.ITEM_ID}'`,(selectErr,selectResult)=>{
 		if(selectResult[0]) {
 			let itemInfo = selectResult[0];
 
-			let sqlQueries = `UPDATE item_list set HOLD_QTY = HOLD_QTY - ${restockItem.HOLD_QTY} where ID = ${restockItem.ITEM_ID};`;
-				sqlQueries+= `DELETE FROM hold_item_list WHERE ID = ${restockItem.ID};`;
+			let sqlQueries = `UPDATE item_list set HOLD_QTY = HOLD_QTY - ${restockItem.HOLD_QTY} where ID = '${restockItem.ITEM_ID}';`;
+				sqlQueries+= `DELETE FROM hold_item_list WHERE ID = '${restockItem.ID}';`;
 				sqlQueries+= `INSERT INTO inventory_activity_logs (PERSON, ACTION, DETAIL) VALUES ('${restockItem.PERSON}','Restock Item','Item(${itemInfo.ENGLISH_NAME} ${itemInfo.CHINESE_NAME}-${itemInfo.TYPE}-${moment(itemInfo.EXPIRE_DATE).format("YYYY-MM-DD")}) has been restocked');`;
 
 		
@@ -514,7 +514,7 @@ app.get('/inventory/restockHold',(req,res)=>{
 app.get("/inventory/getinventoryiteminformation",(req,res)=>{
 	let itemId = req.query.itemId;
 
-	connection.query(`SELECT * FROM item_list WHERE ID = ${itemId};`,(err,result) => {
+	connection.query(`SELECT * FROM item_list WHERE ID = '${itemId}';`,(err,result) => {
 		if(err) {
 			res.send(err);
 		}else {
@@ -629,7 +629,7 @@ app.get("/check/ongoingorder/inprocess",(req,res)=> {
 	console.log("Load the information for chosen ONGOING_ORDER if the order is in process");
 	let {orderId} = req.query;
 
-	let sqlQuery = `SELECT ID, PRODUCT AS "ORDER_ITEM_PRODUCT", QTY AS "ORDER_ITEM_QTY",PICKUP_ITEMS AS "DIFFERENT_TYPE" FROM ORDER_ITEM_LIST WHERE ORDER_ID = ${orderId}`;
+	let sqlQuery = `SELECT ID, PRODUCT AS "ORDER_ITEM_PRODUCT", QTY AS "ORDER_ITEM_QTY",PICKUP_ITEMS AS "DIFFERENT_TYPE" FROM ORDER_ITEM_LIST WHERE ORDER_ID = '${orderId}'`;
 	connection.query(sqlQuery,(err,result)=>{
 		if(err) {
 			res.send(err);
@@ -684,13 +684,13 @@ app.post("/checkout/ongoingorder/mergedraft", (req,res)=> {
 		}else {
 
 			if(result[0]['COUNT(ORDER_ID)'] > 0){
-				let sqlQueries = `DELETE FROM ongoing_order WHERE ORDER_ID = ${orderInfo.NEW_ORDER_NO} AND STATUS = 'RECEIVED';`;
-					sqlQueries += `DELETE FROM order_item_list WHERE ORDER_ID = ${orderInfo.NEW_ORDER_NO} AND STATUS = 'RECEIVED';`;
+				let sqlQueries = `DELETE FROM ongoing_order WHERE ORDER_ID = '${orderInfo.NEW_ORDER_NO}' AND STATUS = 'RECEIVED';`;
+					sqlQueries += `DELETE FROM order_item_list WHERE ORDER_ID = '${orderInfo.NEW_ORDER_NO}' AND STATUS = 'RECEIVED';`;
 
 				    sqlQueries += `UPDATE ongoing_order SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}' WHERE ORDER_ID = '${orderInfo.ORDER_NO}';`;
 
 				orderInfo.ITEMS.forEach(item => {
-					sqlQueries += `UPDATE order_item_list SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;	
+					sqlQueries += `UPDATE order_item_list SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = '${item.ORDER_ITEM_ID}';`;	
 				});
 
 				let actvityLogQuery = `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.ACCOUNTINFO}', 'MERGE Order', 'Merge Draft Order: ${orderInfo.ORDER_NO} into formal Order: ${orderInfo.NEW_ORDER_NO}');`;
@@ -723,18 +723,18 @@ app.post("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 	let pauseTask = false;
 
 	let actvityLogQuery = `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.ACCOUNTINFO}', 'PUSH TO IN PROCESS', 'Push Order: ${orderInfo.ORDER_NO} from ${orderInfo.CURRENTSTATUS} to IN PROCESS');`;
-	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_PICKUP = NEW_MSG_PICKUP + 1 WHERE ORDER_ID = ${orderInfo.ORDER_NO};`;
+	let sqlQuery1 = `UPDATE ongoing_order SET PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}', NEW_MSG_PICKUP = NEW_MSG_PICKUP + 1 WHERE ORDER_ID = '${orderInfo.ORDER_NO}';`;
 		sqlQuery1 += orderInfo.NOTE ? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_NO}', '${orderInfo.ACCOUNTINFO}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','${orderInfo.CURRENTSTATUS}');` : ``;
 
 		
 	orderInfo.ITEMS.forEach(item => {
-		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = ${item.ORDER_ITEM_ID};`;
+		let sqlQuery2 = `UPDATE order_item_list SET PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = '${item.ORDER_ITEM_ID}';`;
 		connection.query(sqlQuery2,(err,result2) => {
 			if(err) {
 				pauseTask = true;
 			}else {
 				item.DIFFERENT_TYPE.forEach(diffItem => {
-					let sqlQuery3 = `UPDATE item_list SET QTY = QTY - ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ID};`;
+					let sqlQuery3 = `UPDATE item_list SET QTY = QTY - ${diffItem.PICKUPVALUE} WHERE ID = '${diffItem.ID}';`;
 					connection.query(sqlQuery3,(err,result3)=>{
 						if(err) {
 							pauseTask = true;
@@ -765,9 +765,9 @@ app.post("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 app.get("/checkout/ongoingorder/deleteorder",(req,res)=> {
 	console.log("Delete order in ONGOING_ORDER");
 	let orderInfo = JSON.parse(req.query.orderInfo);
-	let sqlQueries = `UPDATE ongoing_order SET PROCESS_TIME = "${orderInfo.PROCESS_TIME}", PERSON = "${orderInfo.PERSON}", STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
-		sqlQueries+= `UPDATE order_item_list SET STATUS = "DELETED" WHERE ORDER_ID = ${orderInfo.ORDER_ID};`;
-		sqlQueries+= `INSERT INTO checkout_note (ORDER_ID, PERSON,TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_ID}', '${orderInfo.PERSON}', '${orderInfo.PROCESS_TIME}', '${orderInfo.NOTE}','DELETED');`;
+	let sqlQueries = `UPDATE ongoing_order SET PROCESS_TIME = "${orderInfo.PROCESS_TIME}", PERSON = "${orderInfo.PERSON}", STATUS = "DELETED" WHERE ORDER_ID = '${orderInfo.ORDER_ID}';`;
+		sqlQueries+= `UPDATE order_item_list SET STATUS = "DELETED" WHERE ORDER_ID = '${orderInfo.ORDER_ID}';`;
+		sqlQueries+= `INSERT INTO checkout_note (ORDER_ID, PERSON,TIME, NOTE, STATUS) VALUES ('${orderInfo.ORDER_ID}', '${orderInfo.PERSON}', SYSDATE(), '${orderInfo.NOTE}','DELETED');`;
 		sqlQueries+= `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.PERSON}','DELETE ORDER', 'Delete Order: ${orderInfo.ORDER_ID}');`;
 		
 	connection.query(sqlQueries,(err,result)=> {
@@ -802,8 +802,8 @@ app.get('/pickup/order-detail',(req,res)=> {
 	console.log("Load information for chosen order in PICK UP");
 	let {orderId} = req.query;
 
-	let sqlQueries = `SELECT * FROM order_item_list WHERE STATUS = 'IN PROCESS' AND ORDER_ID = ${orderId};`;
-		sqlQueries+= `UPDATE ongoing_order SET NEW_MSG_PICKUP = 0 WHERE ORDER_ID = ${orderId};`
+	let sqlQueries = `SELECT * FROM order_item_list WHERE STATUS = 'IN PROCESS' AND ORDER_ID = '${orderId}';`;
+		sqlQueries+= `UPDATE ongoing_order SET NEW_MSG_PICKUP = 0 WHERE ORDER_ID = '${orderId}';`
 
 	connection.query(sqlQueries,(err,result)=> {
 		if (err) {
@@ -820,7 +820,7 @@ app.post('/pickup/order-detail/pushprocess',(req,res)=>{
 	let actionInstr = req.body;
 	
 	let sqlQueries = `UPDATE ongoing_order SET PICKUP_PERSON = '${actionInstr.PERSON}' ,STATUS = '${actionInstr.action}' ,NEW_MSG_CHKOUT = NEW_MSG_CHKOUT+1 WHERE ORDER_ID = ${actionInstr.orderNo};`;
-		sqlQueries += `UPDATE order_item_list SET STATUS = '${actionInstr.action}' WHERE ORDER_ID = ${actionInstr.orderNo};`;
+		sqlQueries += `UPDATE order_item_list SET STATUS = '${actionInstr.action}' WHERE ORDER_ID = '${actionInstr.orderNo}';`;
 
 		sqlQueries += actionInstr.note? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES (${actionInstr.orderNo}, '${actionInstr.PERSON}',SYSDATE(),'${actionInstr.note}', '${actionInstr.action}');`: ``;
 
@@ -829,7 +829,7 @@ app.post('/pickup/order-detail/pushprocess',(req,res)=>{
 			actionInstr.orderItems.forEach(item => {
 				item.PICKUP_ITEMS.forEach(diffItem => {
 					if(diffItem.ITEMINFO && diffItem.ITEMINFO[0]) {
-						sqlQueries += `UPDATE item_list SET QTY = QTY + ${diffItem.PICKUPVALUE} WHERE ID = ${diffItem.ITEMINFO[0].ID};`;
+						sqlQueries += `UPDATE item_list SET QTY = QTY + ${diffItem.PICKUPVALUE} WHERE ID = '${diffItem.ITEMINFO[0].ID}';`;
 					}
 				})
 			})
@@ -869,7 +869,7 @@ app.use("/shopifyOrder", (req, res) => {
 
 	shopifyData.line_items.forEach(item => {
 		if(item.name !== 'Tablet Service -200g' && item.name !== 'Tablet Service -100g'){
-			sqlQuery += `INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) SELECT '${shopifyData.order_number}', '${item.name}', '${item.grams && item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity)}','RECEIVED' FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM order_item_list WHERE ORDER_ID = ${shopifyData.order_number} AND PRODUCT = '${item.name}');`;
+			sqlQuery += `INSERT INTO order_item_list(ORDER_ID, PRODUCT, QTY, STATUS) SELECT '${shopifyData.order_number}', '${item.name}', '${item.grams && item.grams === 200? parseInt(item.quantity)*2 : parseInt(item.quantity)}','RECEIVED' FROM DUAL WHERE NOT EXISTS(SELECT 1 FROM order_item_list WHERE ORDER_ID = '${shopifyData.order_number}' AND PRODUCT = '${item.name}');`;
 		}
 	})
 
