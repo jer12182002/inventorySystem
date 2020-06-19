@@ -511,6 +511,17 @@ app.get('/inventory/restockHold',(req,res)=>{
 
 
 
+app.get("/inventory/getinventoryiteminformation",(req,res)=>{
+	let itemId = req.query.itemId;
+
+	connection.query(`SELECT * FROM item_list WHERE ID = ${itemId};`,(err,result) => {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data:result}));
+		}
+	})
+})
 
 
 
@@ -797,7 +808,7 @@ app.get('/pickup/order-detail',(req,res)=> {
 	connection.query(sqlQueries,(err,result)=> {
 		if (err) {
 			res.send(err);
-		}else {
+		}else {	
 			return res.json({orderDetail:result[0]});
 		}
 	})

@@ -61,16 +61,55 @@ export default class pickupOrderDetail extends React.Component {
 			let englishName = item.PRODUCT.split(" " + chineseName);
 				englishName = englishName[0];
 
+
+
+			let pickup_items = [];
+
+
+			let PICKUP_ITEMS = JSON.parse(item.PICKUP_ITEMS);
+			PICKUP_ITEMS.forEach((diffItem => {
+				let ITEMINFO = [];
+				let INVQTY = this.getinventoryiteminformation(diffItem.ID);
+				INVQTY.then(data => {ITEMINFO.push(data.data[0])});
+				
+
+				pickup_items.push({
+					EXPIRE_DATE: diffItem.EXPIRE_DATE, 
+					MANUFACTURE: diffItem.MANUFACTURE, 
+					PICKUPVALUE: diffItem.PICKUPVALUE, 
+					QTY: diffItem.QTY, 
+					TABLETQTY: diffItem.TABLETQTY, 
+					SHELF_NO: diffItem.SHELF_NO, 
+					TYPE: diffItem.TYPE,
+					ITEMINFO: ITEMINFO
+				})
+			}));
+
+
+		
+
 			orderItems.push({
 								CHINESENAME : chineseName,
 								ENGLISHNAME : englishName,
 								QTY: item.QTY,
-								PICKUP_ITEMS: JSON.parse(item.PICKUP_ITEMS)
+								PICKUP_ITEMS: pickup_items
 							})
+
 		})
+
 		return orderItems;
 	}
 
+
+
+	
+	async getinventoryiteminformation(itemId) {
+		let itemInfo = await fetch(`${process.env.REACT_APP_INVENTROY_API}/inventory/getinventoryiteminformation?itemId=${itemId}`)
+		.then(res => res.json());
+		
+		return itemInfo;
+		
+	}
 
 
 	itemChecked(e,key) {
@@ -113,8 +152,6 @@ export default class pickupOrderDetail extends React.Component {
     				body: JSON.stringify(actionInstr)
     			}	
     		)
-
-			//fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup/order-detail/pushprocess?actionInstr=${JSON.stringify(actionInstr)}`)
 			.then(res => res.json())
 			.then(data => {
 				if(data.data && data.data === 'success') {
@@ -149,7 +186,8 @@ export default class pickupOrderDetail extends React.Component {
 							<div className="col-6">
 								<div className="row">
 									<div className="col-1"><h3>Shelf No.</h3></div>
-									<div className="col-3"><h3>Manu.</h3></div>
+									<div className="col-2"><h3>Manu.</h3></div>
+									<div className="col-1"><h3>Inv. Qty</h3></div>
 									<div className="col-4"><h3>Exp Date</h3></div>
 									<div className="col-2"><h3>Pick Up Qty</h3></div>
 									<div className="col-1"><h3>Tablet Qty</h3></div>
@@ -170,7 +208,8 @@ export default class pickupOrderDetail extends React.Component {
 										pickUpItem.PICKUPVALUE > 0 ? 
 										<div className="row pickupItem-container" key={`pickUpkey${pickUpkey+1}`}>
 											<div className="col-1"><h3>{pickUpItem.SHELF_NO}</h3></div>
-											<div className="col-3"><h3>{pickUpItem.MANUFACTURE}</h3></div>
+											<div className="col-2"><h3>{pickUpItem.MANUFACTURE}</h3></div>
+											<div className="col-1"><h3>{pickUpItem.ITEMINFO && pickUpItem.ITEMINFO[0]?pickUpItem.ITEMINFO[0].QTY:'0'}</h3></div>
 											<div className="col-4"><h3>{Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h3></div>
 											<div className="col-2"><h3>{pickUpItem.PICKUPVALUE}</h3></div>
 											<div className={`col-1 ${pickUpItem.TABLETQTY > 0 ? 'tablet-warning' : null}`}><h3>{pickUpItem.TABLETQTY}</h3></div>
