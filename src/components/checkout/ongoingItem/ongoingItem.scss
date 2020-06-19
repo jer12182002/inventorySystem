@@ -34,6 +34,14 @@
 					padding-top: 0;
 				}
 			}
+			
+			.about-expired {
+				background-color: pink;
+			}
+
+			.expired-date {
+				background-color: red;
+			}
 
 			.pickupQty, .tabletQty {
 				font-size: 20px;

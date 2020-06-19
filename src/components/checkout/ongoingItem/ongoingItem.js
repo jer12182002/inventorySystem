@@ -17,7 +17,9 @@ export default class ongoingItem extends React.Component {
 			ONGOING_ORDER:[],
 			ORDER_ITEMS:[],
 			ORDER_NOTES: [],
-			ITEM_NOT_ENOUGH: null
+			ITEM_NOT_ENOUGH: null, 
+			today: new Date().toISOString().slice(0, 10),
+			aboutExpiredDate:null
 		}
 	}
 
@@ -134,7 +136,8 @@ export default class ongoingItem extends React.Component {
 	componentDidMount() {
 		this.loadOrderInfo();
 		
-
+	    this.setState({aboutExpiredDate: Moment(new Date(this.state.today).setMonth(new Date(this.state.today).getMonth()+4)).format('YYYY-MM')});
+		
 		//THIS IS TO MAKE SURE RECEIVING THE REAL TIME MESSAGES
 		this.interValName = setInterval(()=>this.loadNotes(),1000);
 	}
@@ -510,7 +513,7 @@ export default class ongoingItem extends React.Component {
 						<div className="col-7 col-md-7">
 							<div className="row">
 								<div className="col-2"><h3 className="text-center">Shelf No.</h3></div>
-								<div className="col-2"><h3 className="text-center">Manu.</h3></div>
+								<div className="col-2"><h3 className="text-center">Mfr.</h3></div>
 								<div className="col-2"><h3 className="text-center">Exp Date</h3></div>
 								<div className="col-2"><h3 className="text-center">Stock Qty</h3></div>
 								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
@@ -532,7 +535,7 @@ export default class ongoingItem extends React.Component {
 								<div className="row" key={`diffKey${diffKey}`}>
 									<div className="col-2"><h4 className="text-center">{diffItem.SHELF_NO}</h4></div>
 									<div className="col-2"><h4 className="text-center">{diffItem.MANUFACTURE}</h4></div>
-									<div className="col-2"><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
+									<div className={`col-2 ${Moment(diffItem.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.state.toady).format('YYYY-MM')? 'expired-date': Moment(diffItem.EXPIRE_DATE).format('YYYY-MM') < this.state.aboutExpiredDate? 'about-expired' : ''  }`}><h4 className="text-center">{Moment(diffItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h4></div>
 									
 									{this.state.ONGOING_ORDER.STATUS === "DRAFT" || this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
 										<>

@@ -15,7 +15,8 @@ export default class pickupOrderDetail extends React.Component {
 			ORDER_ITEMS: [],
 			ORDER_ITEMS_COUNT: 0,
 			NOTES: [], 
-			today: new Date().toISOString().slice(0, 10)
+			today: new Date().toISOString().slice(0, 10), 
+			aboutExpiredDate:null
 		}
 	}
 
@@ -43,6 +44,8 @@ export default class pickupOrderDetail extends React.Component {
 
 	componentDidMount() {
 		this.loadOrderInfo();
+
+		this.setState({aboutExpiredDate: Moment(new Date(this.state.today).setMonth(new Date(this.state.today).getMonth()+4)).format('YYYY-MM')});
 		this.interValName = setInterval(()=>this.loadNotes(),1000);
 	}
 
@@ -183,7 +186,7 @@ export default class pickupOrderDetail extends React.Component {
 							<div className="col-6">
 								<div className="row">
 									<div className="col-1"><h3>Shelf No.</h3></div>
-									<div className="col-2"><h3>Manu.</h3></div>
+									<div className="col-2"><h3>Mfr.</h3></div>
 									<div className="col-1"><h3>Qty Left</h3></div>
 									<div className="col-4"><h3>Exp Date</h3></div>
 									<div className="col-2"><h3>Pick Up Qty</h3></div>

@@ -143,7 +143,7 @@ export default class completedOrder extends React.Component {
 							<div className="col-7">
 								<div className="row">
 									<div className="col-2"><h3>Shelf No.</h3></div>
-									<div className="col-2"><h3>Manu.</h3></div>
+									<div className="col-2"><h3>Mfr.</h3></div>
 									<div className="col-4"><h3>Exp Date</h3></div>
 									<div className="col-2"><h3>Pick Up Qty</h3></div>
 									<div className="col-2"><h3>Tablet Qty</h3></div>
