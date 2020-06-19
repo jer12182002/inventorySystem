@@ -46,6 +46,14 @@
 			.pickupItem-container {
 				padding-bottom: 15px;
 				
+				.about-expired {
+					background-color: pink;
+				}
+
+				.expired-date {
+					background-color: red;
+				}
+
 				.tablet-warning {
 					background-color: red;
 					border-radius: 25px;

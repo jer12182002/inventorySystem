@@ -14,7 +14,8 @@ export default class pickupOrderDetail extends React.Component {
 			ORDER_INFO: this.props.location.state.orderInfo,
 			ORDER_ITEMS: [],
 			ORDER_ITEMS_COUNT: 0,
-			NOTES: []
+			NOTES: [], 
+			today: new Date().toISOString().slice(0, 10)
 		}
 	}
 
@@ -85,9 +86,6 @@ export default class pickupOrderDetail extends React.Component {
 				})
 			}));
 
-
-		
-
 			orderItems.push({
 								CHINESENAME : chineseName,
 								ENGLISHNAME : englishName,
@@ -134,16 +132,13 @@ export default class pickupOrderDetail extends React.Component {
 
 		if((btnAction === "PUSHED BACK" && $.trim($("#noteInput").val())) || btnAction === "COMPLETED") {
 
-			let today = new Date();
-			today = today.getFullYear() + "-" + ("0" + (today.getMonth() +1)).slice(-2) + "-" + ("0" + today.getDate()).slice(-2) + " " + ("0" + today.getHours()).slice(-2) + ":" + ("0" + today.getMinutes()).slice(-2) + ":" + ("0" + today.getSeconds()).slice(-2);
-
+	
 			let actionInstr = {
 				action: btnAction,
 				orderNo: this.state.ORDER_INFO.ORDER_ID,
 				orderItems: this.state.ORDER_ITEMS,
 				note: $("#noteInput").val(),
-				PERSON: this.state.accountInfo.USERNAME,
-				PROCESS_TIME: today
+				PERSON: this.state.accountInfo.USERNAME
 			}
 			
 			fetch(`${process.env.REACT_APP_INVENTROY_API}/pickup/order-detail/pushprocess?`,
@@ -154,9 +149,11 @@ export default class pickupOrderDetail extends React.Component {
     		)
 			.then(res => res.json())
 			.then(data => {
+				console.log(data);
 				if(data.data && data.data === 'success') {
 					window.location.href="/pickup";
 				}else {
+					console.log(data.data);
 					alert("something went wrong");
 				}
 			});
@@ -182,12 +179,12 @@ export default class pickupOrderDetail extends React.Component {
 						<div className="row header-container">
 							<div className="col-1"><h3>Index</h3></div>
 							<div className="col-3 text-left"><h3>Item</h3></div>
-							<div className="col-1"><h3>QTY</h3></div>
+							<div className="col-1"><h3>Order Qty</h3></div>
 							<div className="col-6">
 								<div className="row">
 									<div className="col-1"><h3>Shelf No.</h3></div>
 									<div className="col-2"><h3>Manu.</h3></div>
-									<div className="col-1"><h3>Inv. Qty</h3></div>
+									<div className="col-1"><h3>Qty Left</h3></div>
 									<div className="col-4"><h3>Exp Date</h3></div>
 									<div className="col-2"><h3>Pick Up Qty</h3></div>
 									<div className="col-1"><h3>Tablet Qty</h3></div>
@@ -210,7 +207,7 @@ export default class pickupOrderDetail extends React.Component {
 											<div className="col-1"><h3>{pickUpItem.SHELF_NO}</h3></div>
 											<div className="col-2"><h3>{pickUpItem.MANUFACTURE}</h3></div>
 											<div className="col-1"><h3>{pickUpItem.ITEMINFO && pickUpItem.ITEMINFO[0]?pickUpItem.ITEMINFO[0].QTY:'0'}</h3></div>
-											<div className="col-4"><h3>{Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h3></div>
+											<div className={`col-4 ${Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM') <= Moment(this.props.toady).format('YYYY-MM')? 'expired-date': Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM') < this.state.aboutExpiredDate? 'about-expired' : ''  }`}><h3>{Moment(pickUpItem.EXPIRE_DATE).format('YYYY-MM-DD')}</h3></div>
 											<div className="col-2"><h3>{pickUpItem.PICKUPVALUE}</h3></div>
 											<div className={`col-1 ${pickUpItem.TABLETQTY > 0 ? 'tablet-warning' : null}`}><h3>{pickUpItem.TABLETQTY}</h3></div>
 										</div>

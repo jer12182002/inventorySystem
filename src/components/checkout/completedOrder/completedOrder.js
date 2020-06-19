@@ -27,7 +27,7 @@ export default class completedOrder extends React.Component {
 					this.setState({COMPLETED_ORDER : data.data.order[0]});
 				}
 				if(data.data.orderItems) {
-					this.setState({ORDER_ITEMS : this.organizeData(data.data.orderItems)}, ()=>console.log(this.state.ORDER_ITEMS));
+					this.setState({ORDER_ITEMS : this.organizeData(data.data.orderItems)});
 				}
 			});
 	}
