@@ -33,18 +33,25 @@ export default class ongoingItem extends React.Component {
 				if(data.data.order[0].STATUS === "IN PROCESS") {
 					this.loadPickupOrderInfo();
 				}else {
-					if(data.data.orderItems[0].PICKUP_ITEMS) {
-						this.setState({ORDER_ITEMS : this.organizeDataForPushBack(data.data.orderItems)}, ()=>
-							{
-							for(let i = 0 ; i < this.state.ORDER_ITEMS.length ; i++) {
-								this.wanringChecker(this.state.ORDER_ITEMS, this.state.ORDER_ITEMS[i].ORDER_ITEM_ID, i+1);
-							}
-						});	
-					}
+					// if(data.data.orderItems[0].PICKUP_ITEMS) {
+					// 	this.setState({ORDER_ITEMS : this.organizeData(data.data.orderItems)}, ()=>
+					// 		{
+					// 		for(let i = 0 ; i < this.state.ORDER_ITEMS.length ; i++) {
+					// 			this.wanringChecker(this.state.ORDER_ITEMS, this.state.ORDER_ITEMS[i].ORDER_ITEM_ID, i+1);
+					// 		}
+					// 	});	
+					// }
 
-					else {
-						this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});	
-					}
+					// else {
+					// 	this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});	
+					// }
+					
+
+					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)}, ()=>{
+						for(let i = 0 ; i < this.state.ORDER_ITEMS.length ; i++) {
+							this.wanringChecker(this.state.ORDER_ITEMS, this.state.ORDER_ITEMS[i].ORDER_ITEM_ID, i+1);
+						}
+					});	
 				}				
 			}
 		})
@@ -231,6 +238,7 @@ export default class ongoingItem extends React.Component {
 
 	organizeData(data) {
 		let uniqueData = [];
+
 		data.forEach(item=> {
 			if(uniqueData.some((uniqueItem,index)=>{
 				if(uniqueItem.ORDER_ITEM_ID === item.ORDER_ITEM_ID) {
@@ -279,30 +287,108 @@ export default class ongoingItem extends React.Component {
 			}
 		});
 
-		//SET PICKUPVALUE, SET TABLETQTY = 0, AND CHECK FOR SUFFICIENCY OF ITEMS
-		uniqueData.forEach(item=>{
+		
+		// Save all PICKUP_ITEMS into temp array only the item has been stored before
+		let allSavedItems = [];
+
+		data.forEach(item => {
+			item.PICKUP_ITEMS = JSON.parse(item.PICKUP_ITEMS);
+			if(item.PICKUP_ITEMS) {
+				item.PICKUP_ITEMS.forEach(diffItem => {
+					if(diffItem.PICKUPVALUE !== null) {
+						allSavedItems.push(diffItem);
+					}
+				})
+			}
+		})
+
+
+		uniqueData.forEach(item => {
 			let orderQty = item.ORDER_ITEM_QTY;
 			let diffItemSum = 0;
-			
-			item.DIFFERENT_TYPE.forEach(diffItem=>{
-				//CHECK IF WE THERE ARE SUFFICIENT ITEMS IN INVENTORY
-				diffItemSum += diffItem.QTY;
-				if(diffItem.ID === null) {
+
+			item.DIFFERENT_TYPE.map((diffItem,index)=> {
+				diffItemSum += diffItem.QTY;	
+
+				if(diffItem.ID === null) {  //To check if we still have this item in item_list, then lock the PUSH button if it cannot find the item
 					this.setState({ITEM_NOT_ENOUGH : true});
-				}else {
+				}else {  // If we have the item, automatically distribute the pickupvalue
 					diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
 					orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
-
 					diffItem.TABLETQTY = 0;
+				
+
 				}
+
+
+				allSavedItems.forEach(savedItem => {  //Achieve the restored PICKUP_ITEMS and save into the items.
+					if(savedItem.ID === diffItem.ID){
+						item.DIFFERENT_TYPE[index] = savedItem;
+						item.DIFFERENT_TYPE[index].QTY = diffItem.QTY;
+					}
+				})
 			})
 
-			//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
 			if(item.ORDER_ITEM_QTY > diffItemSum) {
 				this.setState({ITEM_NOT_ENOUGH : true});
 			}
-		});
+		})
+		
+		
+		// if(data[0].PICKUP_ITEMS) {  //SEE IF THE PICKUP DATA HAS BEEN SAVED BEFORE. ACCESS THE DATA AND RETORE IF THE DATA EXISTS
+		// 	let allSavedItems = [];
 
+		// 	data.forEach(item => {
+		// 		item.PICKUP_ITEMS = JSON.parse(item.PICKUP_ITEMS);
+		// 		item.PICKUP_ITEMS.forEach(diffItem => {
+		// 			allSavedItems.push(diffItem);
+		// 		})
+		// 	})
+
+		// 	console.log(allSavedItems);
+
+		// 	uniqueData.map(item => {
+		// 		item.DIFFERENT_TYPE.map((diffItem,index) => {
+		// 			allSavedItems.forEach(savedItem => {
+		// 				if(savedItem.ID === diffItem.ID) {
+		// 					//diffItem = savedItem;
+		// 					item.DIFFERENT_TYPE[index] = savedItem;
+
+		// 				}
+		// 			})
+		// 		})
+		// 	})
+
+		// 	console.log(data);
+		// 	console.log(uniqueData);
+		// }
+
+		// else {   // IF THE PICKUPDATA HAS NEVER BEEN STORE, THEN SET DEFAULT PICKUPVALUE, SET TABLETQTY = 0, AND CHECK FOR SUFFICIENCY OF ITEMS
+		
+		// 	uniqueData.forEach(item=>{
+		// 		let orderQty = item.ORDER_ITEM_QTY;
+		// 		let diffItemSum = 0;
+				
+		// 		item.DIFFERENT_TYPE.forEach(diffItem=>{
+		// 			//CHECK IF WE THERE ARE SUFFICIENT ITEMS IN INVENTORY
+		// 			diffItemSum += diffItem.QTY;
+		// 			if(diffItem.ID === null) {
+		// 				this.setState({ITEM_NOT_ENOUGH : true});
+		// 			}else {
+		// 				diffItem.PICKUPVALUE = diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+		// 				orderQty -= diffItem.QTY > orderQty? orderQty : diffItem.QTY;
+
+		// 				diffItem.TABLETQTY = 0;
+		// 			}
+		// 		})
+
+
+		// 		//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
+		// 		if(item.ORDER_ITEM_QTY > diffItemSum) {
+		// 			this.setState({ITEM_NOT_ENOUGH : true});
+		// 		}
+		// 	});
+		// }
 		return uniqueData;
 	}
 
@@ -310,52 +396,54 @@ export default class ongoingItem extends React.Component {
 
 
 
-	organizeDataForPushBack (data) {
-		let uniqueData = {};
+	// organizeDataForPushBack (data) {
+	// 	let uniqueData = {};
 		
-		// This is to kill duplicates
-		uniqueData = data.reduce((acc, item)=>{
-			if(!acc.find(el=>el["ORDER_ITEM_PRODUCT"] === item["ORDER_ITEM_PRODUCT"])) {
-				acc.push(item);
-			}
-			return acc;
-		},[]);
+	// 	// This is to kill duplicates
+	// 	uniqueData = data.reduce((acc, item)=>{
+	// 		if(!acc.find(el=>el["ORDER_ITEM_PRODUCT"] === item["ORDER_ITEM_PRODUCT"])) {
+	// 			acc.push(item);
+	// 		}
+	// 		return acc;
+	// 	},[]);
 
-		uniqueData.forEach(item => {
-			let chineseName = item.ORDER_ITEM_PRODUCT.split(" ");
-				chineseName = chineseName[chineseName.length-1];
+	// 	uniqueData.forEach(item => {
+	// 		let chineseName = item.ORDER_ITEM_PRODUCT.split(" ");
+	// 			chineseName = chineseName[chineseName.length-1];
 				
-			let englishName = item.ORDER_ITEM_PRODUCT.split(" " + chineseName);
-				englishName = englishName[0];
+	// 		let englishName = item.ORDER_ITEM_PRODUCT.split(" " + chineseName);
+	// 			englishName = englishName[0];
 			
-			item.ITEMCHNAME = chineseName;
-			item.ITEMENNAME = englishName;
-			item.DIFFERENT_TYPE = JSON.parse(item.PICKUP_ITEMS);
+	// 		item.ITEMCHNAME = chineseName;
+	// 		item.ITEMENNAME = englishName;
+	// 		item.DIFFERENT_TYPE = JSON.parse(item.PICKUP_ITEMS);
 
-		//This is to give the inventory QTY to diffItem
-			item.DIFFERENT_TYPE.forEach(diffItem => {
-				data.forEach(originalItem => {
-					if(diffItem.ID === originalItem.ID) {
-						diffItem.QTY = originalItem.QTY;
+	// 	//This is to give the inventory QTY to diffItem
+	// 		item.DIFFERENT_TYPE.forEach(diffItem => {
+	// 			data.forEach(originalItem => {
+	// 				if(diffItem.ID === originalItem.ID) {
+	// 					diffItem.QTY = originalItem.QTY;
 
-					}
-				})
-			})
-		}); 	
+	// 				}
+	// 			})
+	// 		})
+	// 	}); 	
 
 
-		uniqueData.forEach(item=>{
+	// 	uniqueData.forEach(item=>{
 			
-			//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
-			let diffItemSum = item.DIFFERENT_TYPE.reduce((acc, diffItem)=>acc + diffItem.QTY,0);
+	// 		//CHECK IF THERE ARE SUFFICIENT ITEMS IN INVENTORY
+	// 		let diffItemSum = item.DIFFERENT_TYPE.reduce((acc, diffItem)=>acc + diffItem.QTY,0);
 
-			if(item.ORDER_ITEM_QTY > diffItemSum) {
-				this.setState({ITEM_NOT_ENOUGH : true});
-			}
-		});
+	// 		if(item.ORDER_ITEM_QTY > diffItemSum) {
+	// 			this.setState({ITEM_NOT_ENOUGH : true});
+	// 		}
+	// 	});
 
-		return uniqueData;
-	} 
+	// 	console.log(data);
+	// 	console.log(uniqueData);
+	// 	return uniqueData;
+	// } 
 
 
 
@@ -461,6 +549,7 @@ export default class ongoingItem extends React.Component {
 			fetch (`${process.env.REACT_APP_INVENTROY_API}/checkout/ongoingorder/deleteorder?orderInfo=${JSON.stringify(orderInfo)}`)
 			.then(res=> res.json())
 			.then(data => {
+
 				if(data.data && data.data === 'success') {
 					window.location.href="/checkout";
 				}

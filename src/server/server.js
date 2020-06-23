@@ -606,7 +606,7 @@ app.get("/checkout/ongoingorder",(req,res)=>{
 	let sqlQuery1 = `SELECT * FROM ongoing_order WHERE ORDER_ID = '${orderId}';`;
 	let	sqlQuery2 = `SELECT O.ID AS "ORDER_ITEM_ID", O.PRODUCT AS "ORDER_ITEM_PRODUCT", o.QTY AS "ORDER_ITEM_QTY",O.PICKUP_ITEMS AS "PICKUP_ITEMS", i.ID, i.SHELF_NO,I.MANUFACTURE, i.QTY, i.EXPIRE_DATE, i.TYPE FROM ORDER_ITEM_LIST o LEFT JOIN item_list i ON LOWER(o.product) = LOWER(CONCAT(i.ENGLISH_NAME,' ',i.CHINESE_NAME)) where o.ORDER_ID = '${orderId}' ORDER BY O.PRODUCT, I.EXPIRE_DATE ASC;`;
 	let sqlQuery3 = `UPDATE ONGOING_ORDER SET NEW_MSG_CHKOUT = 0 WHERE ORDER_ID = '${orderId}'`;
-
+	console.log(sqlQuery2);
 	let data = [];
 	connection.query(sqlQuery1+sqlQuery2+sqlQuery3,(err,result)=>{
 		if(err) {
@@ -819,10 +819,10 @@ app.post('/pickup/order-detail/pushprocess',(req,res)=>{
 	console.log("PUSH BACK order or FINISH order in PICK UP");
 	let actionInstr = req.body;
 	
-	let sqlQueries = `UPDATE ongoing_order SET PICKUP_PERSON = '${actionInstr.PERSON}' ,STATUS = '${actionInstr.action}' ,NEW_MSG_CHKOUT = NEW_MSG_CHKOUT+1 WHERE ORDER_ID = ${actionInstr.orderNo};`;
+	let sqlQueries = `UPDATE ongoing_order SET PICKUP_PERSON = '${actionInstr.PERSON}' ,STATUS = '${actionInstr.action}' ,NEW_MSG_CHKOUT = NEW_MSG_CHKOUT+1 WHERE ORDER_ID = '${actionInstr.orderNo}';`;
 		sqlQueries += `UPDATE order_item_list SET STATUS = '${actionInstr.action}' WHERE ORDER_ID = '${actionInstr.orderNo}';`;
 
-		sqlQueries += actionInstr.note? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES (${actionInstr.orderNo}, '${actionInstr.PERSON}',SYSDATE(),'${actionInstr.note}', '${actionInstr.action}');`: ``;
+		sqlQueries += actionInstr.note? `INSERT INTO checkout_note (ORDER_ID, PERSON, TIME, NOTE, STATUS) VALUES ('${actionInstr.orderNo}', '${actionInstr.PERSON}',SYSDATE(),'${actionInstr.note}', '${actionInstr.action}');`: ``;
 
 		if(actionInstr.action === 'PUSHED BACK') {
 			sqlQueries+= `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${actionInstr.PERSON}', 'PUSH BACK ORDER', 'Push back Order: ${actionInstr.orderNo} From Pick Up Station');`;
