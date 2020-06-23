@@ -325,6 +325,9 @@ export default class ongoingItem extends React.Component {
 					if(savedItem.ID === diffItem.ID){
 						item.DIFFERENT_TYPE[index] = savedItem;
 						item.DIFFERENT_TYPE[index].QTY = diffItem.QTY;
+						item.DIFFERENT_TYPE[index].SHELF_NO = diffItem.SHELF_NO;
+						item.DIFFERENT_TYPE[index].TYPE = diffItem.TYPE;
+						item.DIFFERENT_TYPE[index].MANUFACTURE = diffItem.MANUFACTURE;
 					}
 				})
 			})
