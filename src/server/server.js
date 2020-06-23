@@ -689,8 +689,10 @@ app.post("/checkout/ongoingorder/mergedraft", (req,res)=> {
 
 				    sqlQueries += `UPDATE ongoing_order SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PROCESS_TIME = '${orderInfo.PROCESS_TIME}', PERSON = '${orderInfo.ACCOUNTINFO}' , STATUS = '${orderInfo.NEXTSTATUS}' WHERE ORDER_ID = '${orderInfo.ORDER_NO}';`;
 
+				    sqlQueries += `UPDATE checkout_note SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}' WHERE ORDER_ID = '${orderInfo.ORDER_NO}';`;
 				orderInfo.ITEMS.forEach(item => {
-					sqlQueries += `UPDATE order_item_list SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = '${item.ORDER_ITEM_ID}';`;	
+					//sqlQueries += `UPDATE order_item_list SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ID = '${item.ORDER_ITEM_ID}';`;	
+					sqlQueries += `UPDATE order_item_list SET ORDER_ID = '${orderInfo.NEW_ORDER_NO}', PICKUP_ITEMS ='${JSON.stringify(item.DIFFERENT_TYPE)}', STATUS='${orderInfo.NEXTSTATUS}' WHERE ORDER_ID = '${orderInfo.ORDER_NO}' AND PRODUCT = trim('${item.ITEMNAME}');`;	
 				});
 
 				let actvityLogQuery = `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${orderInfo.ACCOUNTINFO}', 'MERGE Order', 'Merge Draft Order: ${orderInfo.ORDER_NO} into formal Order: ${orderInfo.NEW_ORDER_NO}');`;
