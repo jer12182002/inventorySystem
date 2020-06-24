@@ -44,7 +44,7 @@ export default class bulkItemImporter extends React.Component {
     	}
     	
     	if(passCheck) {
-	    	if(!types.find(t => t.ITEM_TYPE.toString().toUpperCase() === data[i].data[0].toString().toUpperCase())) {
+	    	if(!types.find(t => t.ITEM_TYPE.toString().toUpperCase() === $.trim(data[i].data[0].toString()).toUpperCase())) {
 	    		passCheck = false;
 	    		console.log("type chk fails");
 	    	}
