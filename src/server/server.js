@@ -4,13 +4,25 @@ const cors = require('cors');
 const mysql = require ('mysql');
 const moment = require('moment');
 
-const connection = mysql.createConnection({
+// const connection = mysql.createConnection({
+// 	host: 'localhost',
+// 	user: 'root',
+// 	password:'',
+// 	database:'inventorysystem',
+// 	multipleStatements: true
+// });
+
+// connection.connect();
+
+
+const database_config = {
 	host: 'localhost',
 	user: 'root',
 	password:'',
 	database:'inventorysystem',
 	multipleStatements: true
-});
+}
+
 
 
 var app = express();
@@ -38,7 +50,30 @@ app.use(function (req, res, next) {
   next();
 });
 
-connection.connect();
+
+//re-connect to the database while connection is dead
+handleDisconnect = () => {    
+	connection = mysql.createConnection(database_config);
+
+	connection.connect((err)=> {
+		if(err) {
+			console.log("Error when connectibng to database: ", err);
+			setTimeout(handleDisconnect(),2000);
+		}
+	});
+
+	connection.on('err', err=> {
+		console.log('database error', err);
+		if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+			handleDisconnect();
+		} else {
+			throw err;
+		}
+	})
+}
+
+handleDisconnect();
+
 
 //****************************Account*************************************
 app.get('/chcekPermission',(req,res)=>{
