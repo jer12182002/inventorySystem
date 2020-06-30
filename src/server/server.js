@@ -281,7 +281,7 @@ app.get('/inventory/actionbeforloadallitem',(req,res)=>{
 	sqlQueries += 'DELETE FROM item_list WHERE QTY <= 0;';
 
 	console.log("Check if there is any expired on hold items or 0 qty item in inventory");
-	
+	console.log(sqlQueries);
 	connection.query(sqlQueries,(err, result)=> {
 		if(err) {
 			res.send(err);
@@ -771,13 +771,14 @@ app.post("/checkout/ongoingorder/pushtoprocess",(req,res)=>{
 				pauseTask = true;
 			}else {
 				item.DIFFERENT_TYPE.forEach(diffItem => {
-					let sqlQuery3 = `UPDATE item_list SET QTY = QTY - ${diffItem.PICKUPVALUE} WHERE ID = '${diffItem.ID}';`;
+					let sqlQuery3 = `INSERT INTO order_item_info SELECT ID, TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, HOLD_QTY, '${diffItem.PICKUPVALUE}', EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY, '${orderInfo.ORDER_NO}' FROM item_list WHERE ID = '${diffItem.ID}';`;
+					    sqlQuery3+= `UPDATE item_list SET QTY = QTY - ${diffItem.PICKUPVALUE} WHERE ID = '${diffItem.ID}';`;
 					connection.query(sqlQuery3,(err,result3)=>{
 						if(err) {
 							pauseTask = true;
 						}
 					});
-
+					console.log(sqlQuery3);
 				});
 			}
 		});
@@ -863,8 +864,11 @@ app.post('/pickup/order-detail/pushprocess',(req,res)=>{
 
 		if(actionInstr.action === 'PUSHED BACK') {
 			sqlQueries+= `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${actionInstr.PERSON}', 'PUSH BACK ORDER', 'Push back Order: ${actionInstr.orderNo} From Pick Up Station');`;
+			sqlQueries+= `INSERT INTO item_list (SELECT ID, TYPE, SHELF_NO, MANUFACTURE, ENGLISH_NAME, CHINESE_NAME, HOLD_QTY, QTY, EXPIRE_DATE, GRAM, CREATED_BY, LAST_MODIFIED_BY FROM order_item_info WHERE ORDER_ID = '${actionInstr.orderNo}' AND ID NOT IN (SELECT ID FROM item_list));`;
+			
 			actionInstr.orderItems.forEach(item => {
-				item.PICKUP_ITEMS.forEach(diffItem => {
+				item.PICKUP_ITEMS.forEach((diffItem,index) => {
+					
 					if(diffItem.ITEMINFO && diffItem.ITEMINFO[0]) {
 						sqlQueries += `UPDATE item_list SET QTY = QTY + ${diffItem.PICKUPVALUE} WHERE ID = '${diffItem.ITEMINFO[0].ID}';`;
 					}
@@ -874,6 +878,8 @@ app.post('/pickup/order-detail/pushprocess',(req,res)=>{
 			sqlQueries+= `INSERT INTO chk_pickup_activity_logs (PERSON, ACTION, DETAIL) VALUES('${actionInstr.PERSON}', 'Complete ORDER', 'Complete Order: ${actionInstr.orderNo} From Pick Up Station');`;
 		}
 
+	sqlQueries += `DELETE FROM order_item_info WHERE ORDER_ID = '${actionInstr.orderNo}';`;
+	
 	connection.query(sqlQueries,(err,result)=> {
 		if(err) {
 			res.send(err);

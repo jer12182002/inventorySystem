@@ -98,6 +98,7 @@ export default class pickupOrderDetail extends React.Component {
 
 		})
 
+		console.log(orderItems);
 		return orderItems;
 	}
 
