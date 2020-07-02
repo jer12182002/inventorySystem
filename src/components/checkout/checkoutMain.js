@@ -35,12 +35,16 @@ export default class checkoutMain extends React.Component {
 				}
 			});
 
+		
+			
+			
+		
 			this.setState(
 				{
 					ongoingOrders : saveOngoingOrders, 
 					completedOrders : saveCompletedOrders,
 					ongoingOrders_BACKUP : saveOngoingOrders, 
-					completedOrders_BACKUP : saveCompletedOrders
+					completedOrders_BACKUP : saveCompletedOrders.splice(10)
 			
 				}
 			);
@@ -132,6 +136,11 @@ export default class checkoutMain extends React.Component {
 		} 
 	}
 
+	loadMoreCompletedOrders(e){
+		e.preventDefault();
+		this.setState({completedOrders: this.state.completedOrders_BACKUP});	
+	}
+
 
 
 	render() {
@@ -157,61 +166,6 @@ export default class checkoutMain extends React.Component {
 					</div>
 
 						<div className="row">
-						{/**********************************************COMPLETED Panel*****************************************************/}
-
-							<div className="col-12 col-md-12 col-lg-6 completed-container">
-								<div className="subContainer-head">
-									<h3 className="text-center">Completed Order</h3>
-									<div className="search-container inline-b">
-										<h4>Filter: </h4>
-										<input id="COMPLETED-search" type="text" onKeyUp={e=>this.searchKeyword(e,"COMPLETED")}/>
-									</div>
-								</div>
-								<div className="subContainer-main">
-									<table>
-										<thead>
-											<tr>
-												<td>Order Number <button id="COMPLETED-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","ORDER_ID")}>ASC</button></td>
-												<td>Customer <button id="COMPLETED-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","CUSTOMER")}>ASC</button></td>
-												<td>Time <button id="COMPLETED-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","ORDER_TIME")}>ASC</button></td>
-												<td>Status <button id="COMPLETED-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","STATUS")}>ASC</button></td>
-												{this.props.accountInfo.CHK_MODIFY? 
-													<td>Action</td>:null
-												}
-											</tr>
-										</thead>
-										<tbody>
-											{this.state.completedOrders.map((order, key) => 
-												<tr key={key+1}>
-													<td>{order.ORDER_ID}</td>
-													<td>{order.CUSTOMER}</td>
-													<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  HH:mm:ss')}</td> 
-													<td>{order.STATUS}</td>
-													{this.props.accountInfo.CHK_MODIFY? 
-													<td>
-														<Link to={{
-															pathname:`/checkout/completedOrder`,
-															state: {
-																accountInfo: this.props.accountInfo,
-																ORDER_ID: order.ORDER_ID
-															}
-														}}
-														className="btn btn-primary">Proceed</Link>
-													</td>
-													:
-													null
-													}
-												</tr>
-											)}										
-										</tbody>
-									</table>	
-								</div>
-							</div>
-							
-
-
-
-
 						{/**********************************************ONGOING Panel*****************************************************/}
 							<div className="col-12 col-md-12 col-lg-6 ongoing-container">
 								<div className="subContainer-head">
@@ -260,6 +214,58 @@ export default class checkoutMain extends React.Component {
 											)}										
 										</tbody>
 									</table>
+								</div>
+							</div>
+
+						{/**********************************************COMPLETED Panel*****************************************************/}
+
+							<div className="col-12 col-md-12 col-lg-6 completed-container">
+								<div className="subContainer-head">
+									<h3 className="text-center">Completed Order</h3>
+									<div className="search-container inline-b">
+										<h4>Filter: </h4>
+										<input id="COMPLETED-search" type="text" onKeyUp={e=>this.searchKeyword(e,"COMPLETED")}/>
+									</div>
+								</div>
+								<div className="subContainer-main">
+									<table>
+										<thead>
+											<tr>
+												<td>Order Number <button id="COMPLETED-ORDER_ID-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","ORDER_ID")}>ASC</button></td>
+												<td>Customer <button id="COMPLETED-CUSTOMER-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","CUSTOMER")}>ASC</button></td>
+												<td>Time <button id="COMPLETED-ORDER_TIME-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","ORDER_TIME")}>ASC</button></td>
+												<td>Status <button id="COMPLETED-STATUS-sort-toggleBtn" onClick= {e=>this.sortToggleBtnClick(e,"COMPLETED","STATUS")}>ASC</button></td>
+												{this.props.accountInfo.CHK_MODIFY? 
+													<td>Action</td>:null
+												}
+											</tr>
+										</thead>
+										<tbody>
+											{this.state.completedOrders.map((order, key) => 
+												<tr key={key+1}>
+													<td>{order.ORDER_ID}</td>
+													<td>{order.CUSTOMER}</td>
+													<td>{Moment(order.ORDER_TIME).format('YYYY-MM-DD  HH:mm:ss')}</td> 
+													<td>{order.STATUS}</td>
+													{this.props.accountInfo.CHK_MODIFY? 
+													<td>
+														<Link to={{
+															pathname:`/checkout/completedOrder`,
+															state: {
+																accountInfo: this.props.accountInfo,
+																ORDER_ID: order.ORDER_ID
+															}
+														}}
+														className="btn btn-primary">Proceed</Link>
+													</td>
+													:
+													null
+													}
+												</tr>
+											)}										
+										</tbody>
+									</table>	
+									<button className="loadMoreBtn" type="button" onClick={e => this.loadMoreCompletedOrders(e)}>Load More</button>
 								</div>
 							</div>
 						</div>

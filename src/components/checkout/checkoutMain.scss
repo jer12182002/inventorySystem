@@ -37,6 +37,11 @@
 			
 			.subContainer-main {
 				background-color: lightgreen;
+
+				.loadMoreBtn {
+					width:100%;
+					margin-top:10px;
+				}
 			}
 		}
 
@@ -102,7 +107,6 @@
 		}
 
 		.subContainer-main {
-			height: 195%;
 			display: block;
 			border: 5px solid black;
 			overflow-y:scroll;
