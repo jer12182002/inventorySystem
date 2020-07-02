@@ -136,9 +136,12 @@ export default class checkoutMain extends React.Component {
 		} 
 	}
 
-	loadMoreCompletedOrders(e){
+	loadMoreCompletedOrdersToggle(e){
 		e.preventDefault();
-		this.setState({completedOrders: this.state.completedOrders_BACKUP});	
+
+		this.setState({completedOrders: this.state.completedOrders_BACKUP});
+		$("#completedOrderLoadMoreBtn").addClass("display-none");
+
 	}
 
 
@@ -265,7 +268,7 @@ export default class checkoutMain extends React.Component {
 											)}										
 										</tbody>
 									</table>	
-									<button className="loadMoreBtn" type="button" onClick={e => this.loadMoreCompletedOrders(e)}>Load More</button>
+									<button id="completedOrderLoadMoreBtn" type="button" onClick={e => this.loadMoreCompletedOrdersToggle(e)}>Expand</button>
 								</div>
 							</div>
 						</div>
