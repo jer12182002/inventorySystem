@@ -30,6 +30,7 @@ export default class ongoingItem extends React.Component {
 			if(data.data) {
 				this.setState({ONGOING_ORDER : data.data.order[0]});
 				
+				
 				if(data.data.order[0].STATUS === "IN PROCESS") {
 					this.loadPickupOrderInfo();
 				}else {
@@ -46,13 +47,15 @@ export default class ongoingItem extends React.Component {
 					// 	this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)});	
 					// }
 					
+
 					
 					this.setState({ORDER_ITEMS: this.organizeData(data.data.orderItems)}, ()=>{
 						for(let i = 0 ; i < this.state.ORDER_ITEMS.length ; i++) {
 							this.wanringChecker(this.state.ORDER_ITEMS, this.state.ORDER_ITEMS[i].ORDER_ITEM_ID, i+1);
 						}
 					});	
-				}				
+				}		
+
 			}
 		})
 	}
@@ -610,13 +613,14 @@ export default class ongoingItem extends React.Component {
 								<div className="col-2"><h3 className="text-center">Mfr.</h3></div>
 								<div className="col-1"><h3 className="text-center">Gram</h3></div>
 								<div className="col-2"><h3 className="text-center">Exp Date</h3></div>
-								<div className="col-2"><h3 className="text-center">Stock Qty</h3></div>
-								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
-								<div className="col-2">
-								{this.state.ONGOING_ORDER.STATUS === "DRAFT" || this.state.ONGOING_ORDER.STATUS === "RECEIVED" || this.state.ONGOING_ORDER.STATUS === "PUSHED BACK"?
-									<h3 className="text-center">Tablet Qty</h3>:null
+								
+								{this.state.ONGOING_ORDER.STATUS === "IN PROCESS"? 
+									<></>
+								:
+									<div className="col-2"><h3 className="text-center">Stock Qty</h3></div>
 								}
-								</div>
+								<div className="col-2"><h3 className="text-center">PickUp Qty</h3></div>
+								<div className="col-2"><h3 className="text-center">Tablet Qty</h3></div>
 							</div>
 						</div>
 					</div>
@@ -648,12 +652,14 @@ export default class ongoingItem extends React.Component {
 											<div className="col-2"><h4 className="text-center">{diffItem.PICKUPVALUE}</h4></div> 
 											
 											{diffItem.TYPE === "Single" || diffItem.TYPE === "Formula"? 
-												<>
+												<>	
 													<div className="col-2"><h4 className="text-center">{diffItem.TABLETQTY}</h4></div>
 													<div className="col-2"><h4 className="text-center warning">{diffItem.TABLETQTY > 0 ? "!" : ""}</h4></div> 
 												</>
 											:
+											<>
 												<div className="col-2"><h4 className="text-center">{diffItem.TYPE}</h4></div>
+											</>	
 											}
 										</>
 									}
