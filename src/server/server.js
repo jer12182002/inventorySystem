@@ -53,6 +53,7 @@ app.use(function (req, res, next) {
 
 //re-connect to the database while connection is dead
 handleDisconnect = () => {    
+	console.log("Disconnected because of Idle status, begin to re-connect...");
 	connection = mysql.createConnection(database_config);
 
 	connection.connect((err)=> {
@@ -72,7 +73,19 @@ handleDisconnect = () => {
 	})
 }
 
-handleDisconnect();
+
+keepConnection = () => {
+	handleDisconnect();
+	setInterval(()=> {
+		connection.query(`SELECT * FROM announcements`, (err, result)=>{
+			if(err) {
+				handleDisconnect();
+			}
+		},10000)
+	})
+}
+
+
 
 
 //****************************Account*************************************
@@ -973,4 +986,5 @@ app.get('/home', function(req, res) {
 
 app.listen(4000,()=>{
 	console.log("##############Server listening on port 4000");
+	keepConnection();
 });
