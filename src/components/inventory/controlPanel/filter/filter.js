@@ -38,6 +38,7 @@ export default class filter extends React.Component {
 					this.setState({defaultAllItems:data.data});
 				}
 
+				console.log(data);
 				data.data.forEach(item=>{
 					if(this.state.checkedId.includes(item.ID)){
 							item.checked = true;
