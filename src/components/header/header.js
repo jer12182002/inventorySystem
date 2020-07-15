@@ -27,6 +27,11 @@ class header extends React.Component {
 						(<ul>
 							<li><button href="/" id="logout-btn" onClick = {e => {this.logoutClick(e)}}>Log Out</button></li>
 							<li><NavLink to="/login/account" activeClassName="header-nav-active">{this.props.accountInfo.USERNAME}</NavLink></li>
+							{this.props.accountInfo.ACCESS_LEVEL < 3? 
+								<li><NavLink to="/report" activeClassName="header-nav-active">Report</NavLink></li>
+								:
+								null	
+							}
 							<li><NavLink to="/inventory" activeClassName="header-nav-active">Inventory</NavLink></li>
 							<li><NavLink to="/checkout" activeClassName="header-nav-active">Checkout</NavLink></li>
 							<li><NavLink to="/pickup" activeClassName="header-nav-active">Pick Up</NavLink></li>
