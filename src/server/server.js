@@ -278,12 +278,83 @@ app.get('/home/modifyannouncements',(req,res)=>{
 
 //*******************************************************************************************
 
+//****************************Report*********************************************************
+//****************************Report precursor***********************************************
+app.get('/report/precursor/loadallprecursors', (req, res)=> {
+	let sqlQuery = 'SELECT P.ID, P.NAME, P.RATION, i.ID AS "ITEM_ID", i.ITEM_NAME FROM precursor_list p LEFT JOIN precursor_item_list i ON p.ID = i.PRECURSOR_ID;';
+
+	connection.query(sqlQuery, (err, result) => {
+		if(err) {
+			res.send(err) ;
+		}else {
+			return (res.json({data:result}));
+		}
+	})
+
+})	
+
+
+app.post('/report/precursor/addprecursor', (req, res)=> {
+	let precursor = req.body.precursor;
+	let precursor_ration = req.body.precursor_ration;
+
+	let sqlQuery = `INSERT INTO precursor_list (NAME, RATION) SELECT '${precursor}' , '${precursor_ration}' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM precursor_list WHERE NAME = '${precursor}');`;
+
+	connection.query(sqlQuery, (err, result) => {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data: 'success'}));
+		}
+	})
+})
+
+
+
+app.post('/report/precursor/updateprecursor', (req, res) => {
+	let precursor = req.body.precursor;
+	let sqlQuery = `UPDATE precursor_list SET NAME = '${precursor.newName}', RATION = '${precursor.newRation}' WHERE ID = '${precursor.precursor_id}';`;
+
+	console.log(sqlQuery);
+	connection.query(sqlQuery, (err, result)=> {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data: 'success'}));
+		}
+	})
+
+});
 
 
 
 
 
+app.post('/report/precursor/deleteprecursor', (req, res) => {
+	let precursor = req.body.precursor;
+	
+	let sqlQueries = '';
 
+	precursor.forEach(precursorList => {
+		precursorList.PRECURSOR_ITEMS.forEach(precursorItems => {
+			sqlQueries += `DELETE FROM precursor_item_list WHERE ID = '${precursorItems.ITEM_ID}';`;
+		})
+		sqlQueries += `DELETE FROM precursor_list WHERE ID = '${precursorList.ID}';`;
+	})
+	
+	connection.query(sqlQueries, (err, result)=> {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data:'success'}));
+		}
+	})
+})
+
+
+
+
+//*******************************************************************************************
 //****************************Inventroy******************************************************
 app.get('/inventory/actionbeforloadallitem',(req,res)=>{
 	let sqlQueries = '';

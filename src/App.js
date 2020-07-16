@@ -11,6 +11,8 @@ import Login from "./components/login/login";
 import Account from "./components/login/account/account";
 import Register from "./components/login/register/register";
 import LoginReset from "./components/login/loginReset/loginReset";
+import Report from "./components/report/reportMain";
+import Report_Precursor from "./components/report/precursor/precursor";
 import InventoryMain from "./components/inventory/inventoryMain";
 import CheckOut from "./components/checkout/checkoutMain";
 import OngoingItem from "./components/checkout/ongoingItem/ongoingItem";
@@ -122,7 +124,9 @@ render(){
 
       {this.state.accountInfo.ACCESS_LEVEL < 3 ? (
         <div>
-        <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/> 
+          <Route exact path = "/login/account/register" component = {()=> <Register accountInfo = {this.state.accountInfo}/>}/> 
+          <Route exact path = "/report" component = {Report}/>
+          <Route exact path = "/report/precursor" component = {Report_Precursor}/>
         </div>
       ):null}
     </Router>  

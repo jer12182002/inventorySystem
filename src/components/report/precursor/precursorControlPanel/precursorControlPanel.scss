@@ -1,0 +1,29 @@
+.precursorControlPanel-wrapper {
+	.main-section {
+		.precursorPanel-display {
+			width: 80%;
+			height:200px;
+			border-radius: 25px;
+			margin: 0 auto;
+			padding: 15px;
+			overflow-y: scroll;
+			background-color: cornsilk;
+			border: 2px solid black;
+
+			.precursors {
+				display: inline-block;
+				margin: 5px;
+				padding: 5px;
+				border-radius: 25px;
+				font-size: 20px;
+				background-color: greenyellow;
+			
+				&:hover,&.clicked {
+					cursor: pointer;
+					background-color: green;
+					color: white;
+				}
+			}
+		}	
+	}
+}
