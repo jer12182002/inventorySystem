@@ -1,0 +1,27 @@
+.precurorItemsControlPanel-wrapper {
+	.main-section {
+		.panels {
+			width: 80%;
+			margin: 0 auto;
+			
+			.precursorItemsPanel-display {
+				background-color: green;
+				height: 200px;
+				overflow-y:scroll;
+				border-radius: 25px;
+				margin: 0 auto;
+				padding: 15px;
+			}
+
+			.allItemPanel-display {
+				background-color: red;
+				height: 200px;
+				overflow-y:scroll;
+				border-radius: 25px;
+				margin: 0 auto;
+				padding: 15px;
+			}
+		}
+
+	}
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import './precursor.scss';
 import PrecursorControlPanel from './precursorControlPanel/precursorControlPanel';
+import PrecursorItemsControlPanel from './precursorItemsControlPanel/precursorItemsControlPanel';
 
 import $ from 'jquery';
 
@@ -10,31 +11,58 @@ export default class precursor extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			allItems:[],
+			allPrecursorItems:[],
 			precursors:[], 
-			selectedPrecursor_id:''
+			precursorItems:[],
+			selectedPrecursor_id: ''
 		}
 	}
 
 	componentDidMount() {
 		//load all precursors and items from database
+		this.loadAllItems();
 		this.loadAllPrecursors();
 
 	}
 
+	loadAllItems(receviedFilter='') {
+		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
+			.then(res => res.json())
+			.then(data =>{
+				if(data.data){
+					let allItems = [];
+
+					data.data.forEach(item => {
+						if(allItems.findIndex(x => x ===`${item.ENGLISH_NAME} ${item.CHINESE_NAME}`) === -1) {
+							allItems.push(`${item.ENGLISH_NAME} ${item.CHINESE_NAME}`);
+						}
+					})
+					
+					this.setState({allItems: allItems});
+				}	
+		});
+	}
+
 	loadAllPrecursors() {
-		fetch('http://localhost:4000/report/precursor/loadallprecursors')
+		fetch(`http://localhost:4000/report/precursor/loadallprecursors`)
 		.then(res => res.json())
 		.then(data => {
 			if(data && data.data) {
-				this.setState({precursors: this.organizePrecursorsData(data.data)}, ()=>{console.log(this.state.precursors)});
 				
+				this.setState(	
+								{ 
+									allPrecursorItems: data.data,
+									precursors: this.organizePrecursorsData(data.data)
+								}
+							);
+							  
 			}
 		})
 	}
 
 
 	organizePrecursorsData(data) {
-		
 		let precursorsArr = [];
 		
 		data.forEach(precursor =>{
@@ -45,11 +73,11 @@ export default class precursor extends React.Component {
 						{
 							ID: precursor.ID, 
 							PRECURSOR: precursor.NAME, 
-							RATION: precursor.RATION,
 							PRECURSOR_ITEMS: [
 							{
 							 	ITEM_ID: precursor.ITEM_ID,
-							 	ITEM_NAME: precursor.ITEM_NAME
+							 	ITEM_NAME: precursor.ITEM_NAME,
+							 	RATION: precursor.RATION
 							}
 							]
 						}
@@ -58,7 +86,8 @@ export default class precursor extends React.Component {
 					precursorsArr[index].PRECURSOR_ITEMS.push(
 						{
 							ITEM_ID: precursor.ITEM_ID,
-							ITEM_NAME: precursor.ITEM_NAME
+							ITEM_NAME: precursor.ITEM_NAME,
+							RATION: precursor.RATION
 						}
 					);
 				}
@@ -71,7 +100,12 @@ export default class precursor extends React.Component {
 
 	updateSelectPrecursorId(e, id){
 		e.preventDefault();
-		this.setState({selectedPrecursor_id:id});
+		this.setState(
+						{
+							selectedPrecursor_id:id, 
+							precursorItems: this.state.allPrecursorItems.filter(item => item.ID === id)
+						}
+					);
 	}
 
 
@@ -80,20 +114,19 @@ export default class precursor extends React.Component {
 		e.preventDefault();
 
 		let precursor = $.trim($("#precursor").val().toLowerCase().replace(/\s\s/g, '').replace(/[^a-zA-Z]/g,''));
-		let precursor_ration = $("#precursor-ration").val();
 
 		if(action === "add") {
-			this.precursorActionAdd(precursor, precursor_ration);
+			this.precursorActionAdd(precursor);
 		}else if (action === "update") {
-			this.precursorActionUpdate(precursor, precursor_ration);
+			this.precursorActionUpdate(precursor);
 		}else if(action ==="delete") {
 			this.precursorActionDelete(precursor);
 		}
 	}
 
 
-	precursorActionAdd(precursor, precursor_ration) {
-		if(precursor && precursor_ration) {
+	precursorActionAdd(precursor) {
+		if(precursor) {
 			fetch(`http://localhost:4000/report/precursor/addprecursor`,
 			  	{	
 			  		method:'POST',  
@@ -101,8 +134,7 @@ export default class precursor extends React.Component {
 			    	    'Content-Type': 'application/json'
 			    	},
 			    	body: JSON.stringify({
-			    		precursor: precursor, 
-			    		precursor_ration: precursor_ration
+			    		precursor: precursor
 			    	})
 			    }
 			).then(res => res.json())
@@ -117,8 +149,8 @@ export default class precursor extends React.Component {
 	}
 
 
-	precursorActionUpdate (precursor, precursor_ration) {
-		if(precursor && precursor_ration) {
+	precursorActionUpdate (precursor) {
+		if(precursor) {
 			fetch(`http://localhost:4000/report/precursor/updateprecursor`, 
 				{
 					method:'POST', 
@@ -128,8 +160,7 @@ export default class precursor extends React.Component {
 					body: JSON.stringify({
 						precursor : {
 							precursor_id : this.state.selectedPrecursor_id, 
-							newName : precursor, 
-							newRation : precursor_ration 	
+							newName : precursor
 						}
 					})
 
@@ -202,6 +233,11 @@ export default class precursor extends React.Component {
 						selectedPrecursor_id = {this.state.selectedPrecursor_id}
 						updateSelectPrecursorId = {this.updateSelectPrecursorId.bind(this)}
 						precursorAction={this.precursorAction.bind(this)}/>
+
+					<PrecursorItemsControlPanel
+						allItems = {this.state.allItems}
+						precursorItems = {this.state.precursorItems}
+					/>
 					<h2>display</h2>
 				</div>
 			</div>
