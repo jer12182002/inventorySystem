@@ -4,22 +4,43 @@
 			width: 80%;
 			margin: 0 auto;
 			
-			.precursorItemsPanel-display {
-				background-color: green;
+			.precursorItemsPanel-display, .allItemPanel-display {
 				height: 200px;
 				overflow-y:scroll;
 				border-radius: 25px;
 				margin: 0 auto;
 				padding: 15px;
+
+				div {
+					font-size: 20px;
+					padding: 5px 2px;
+				}
+			}
+
+			.precursorItemsPanel-display {
+				background-color: honeydew;
+				
+				.precursorItems {
+					border-bottom: 1px solid lightgreen;
+					
+					&:hover, &.clicked {
+						background-color: cyan;
+						cursor: pointer;
+					}
+				}
 			}
 
 			.allItemPanel-display {
-				background-color: red;
-				height: 200px;
-				overflow-y:scroll;
-				border-radius: 25px;
-				margin: 0 auto;
-				padding: 15px;
+				background-color: aliceblue;
+
+				.allItems {
+					border-bottom: 1px solid lightblue;
+
+					&:hover, &.clicked {
+						background-color: aqua;
+						cursor: pointer;
+					}
+				}
 			}
 		}
 

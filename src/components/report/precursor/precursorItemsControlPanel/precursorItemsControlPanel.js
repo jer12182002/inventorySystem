@@ -17,7 +17,7 @@ export default class precurorItemsControlPanel extends React.Component {
 						<div className="col-5">
 							<div className="precursorItemsPanel-display">
 								{this.props.precursorItems.map((item, index) => 
-									<div key={`precursorItem-${index}`}className={`precursorItems`}>{item.ITEM_NAME}</div>
+									<div key={`precursorItem-${index}`} className="precursorItems">{item.ITEM_NAME}</div>
 								)}
 							</div>
 						</div>
@@ -26,9 +26,11 @@ export default class precurorItemsControlPanel extends React.Component {
 						<div className="col-5">
 							<div className="allItemPanel-display">
 								{this.props.allItems.map((item, index)=> 
-									<div key={`inventoryItem-${index}`}>{item}</div>
+									<div key={`inventoryItem-${index}`} className="allItems">{item}</div>
 								)}
 							</div>
+							<label>Search</label>
+							<input id="allItemSearch" type="text"/>
 							<label>Ration/100g</label>
 							<input id="precursor-ration" type="number" step="0.001" placeholder = "0.000" min="0"/>
 						</div>
