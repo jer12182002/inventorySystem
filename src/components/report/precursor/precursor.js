@@ -15,18 +15,35 @@ export default class precursor extends React.Component {
 			allPrecursorItems:[],
 			precursors:[], 
 			precursorItems:[],
-			selectedPrecursor_id: ''
+			selectedPrecursor_id: '', 
+			newPrecursorItem:'', 
+			selectedPrecursorItem_id:''
 		}
 	}
 
 	componentDidMount() {
 		//load all precursors and items from database
+		this.resetState();
 		this.loadAllItems();
 		this.loadAllPrecursors();
-
 	}
 
+
+	resetState() {
+		this.setState({
+			allItems:[],
+			allPrecursorItems:[],
+			precursors:[], 
+			precursorItems:[],
+			selectedPrecursor_id: '', 
+			newPrecursorItem:'', 
+			selectedPrecursorItem_id:''
+		})
+	}
+
+
 	loadAllItems(receviedFilter='') {
+		console.log("loadAllITEMS");
 		fetch(`http://localhost:4000/inventory/loadAllItem?filter=${receviedFilter}`)
 			.then(res => res.json())
 			.then(data =>{
@@ -45,17 +62,18 @@ export default class precursor extends React.Component {
 	}
 
 	loadAllPrecursors() {
+		console.log("loadAllPrecursors");
 		fetch(`http://localhost:4000/report/precursor/loadallprecursors`)
 		.then(res => res.json())
 		.then(data => {
 			if(data && data.data) {
-				
-				this.setState(	
-								{ 
-									allPrecursorItems: data.data,
-									precursors: this.organizePrecursorsData(data.data)
-								}
-							);
+			this.setState(	
+							{ 
+								allPrecursorItems: data.data,
+								precursors: this.organizePrecursorsData(data.data)
+							}
+
+						);
 							  
 			}
 		})
@@ -98,8 +116,11 @@ export default class precursor extends React.Component {
 	}
 
 
-	updateSelectPrecursorId(e, id){
-		e.preventDefault();
+
+
+	//========================================Precursor============================================================
+
+	updateSelectPrecursorId(id){
 		this.setState(
 						{
 							selectedPrecursor_id:id, 
@@ -108,8 +129,7 @@ export default class precursor extends React.Component {
 					);
 	}
 
-
-
+	
 	precursorAction(e, action) {
 		e.preventDefault();
 
@@ -140,7 +160,7 @@ export default class precursor extends React.Component {
 			).then(res => res.json())
 			.then(data => {
 			 	if(data.data && data.data === "success") {
-			 		this.precursorActionFinished("Added");
+			 		this.refreshDataAfterAction("Added");
 			 	}
 			})
 		}else {
@@ -169,7 +189,7 @@ export default class precursor extends React.Component {
 			.then(res => res.json())
 			.then(data => {
 				if(data.data && data.data === "success") {
-			 		this.precursorActionFinished("Updated");
+			 		this.refreshDataAfterAction("Updated");
 			 	}	
 			})
 		}
@@ -203,7 +223,7 @@ export default class precursor extends React.Component {
 				.then(res => res.json())
 				.then(data => {
 					if(data.data && data.data === "success") {
-						this.precursorActionFinished("Deleted");
+						this.refreshDataAfterAction("Deleted");
 					}
 				})
 			}else {
@@ -212,14 +232,83 @@ export default class precursor extends React.Component {
 		}
 	}
 
-	precursorActionFinished(status) {
+	
+
+	//=====================================Precursor New Item============================================================
+	updateSelectPrecursorItem(item) {
+		this.setState({newPrecursorItem : item});
+	}
+
+	updateSelectedPrecursorItem_idToBeRemoved(id) {
+		this.setState({selectedPrecursorItem_id : id});
+	}
+
+
+	addPrecursorItemClick (e) {
+		let ration = $("#precursor-ration").val();
+
+		if(this.state.selectedPrecursor_id && this.state.newPrecursorItem && ration) {
+			fetch('http://localhost:4000/report/precursor/addnewprecursoritem', 
+				{
+					method : "POST", 
+					headers : {
+						"Content-Type":"application/json"
+					}, 
+					body : JSON.stringify({
+						precursor : {
+							precursorID : this.state.selectedPrecursor_id, 
+							newItem : this.state.newPrecursorItem, 
+							ration: ration
+						}
+					})
+				}
+			)
+			.then(res => res.json())
+			.then(data => {
+				if(data.data && data.data === 'success') {
+					this.refreshDataAfterAction("Added");
+				}
+			});
+		}else {
+			alert("Invalid input, please check you have clicked the PRECURSOR, ITEM to be added, and tpye in ration");
+		}
+	}
+
+
+
+	removePrecursorItemClick (e) {
+		e.preventDefault();
+
+		fetch('http://localhost:4000/report/precursor/removeprecursoritem', {
+			method : "POST", 
+			headers: {
+				"Content-Type" : "application/json"
+			}, 
+			body : JSON.stringify({
+				precursorItem : {
+					ID : this.state.selectedPrecursorItem_id
+				}
+			})
+		})
+		.then(res => res.json())
+		.then(data => {
+			if(data.data && data.data === "success") {
+				this.refreshDataAfterAction("Removed");
+				
+			}
+		})
+	}
+
+
+
+	refreshDataAfterAction(status) {
 		alert(status);
-		this.loadAllPrecursors();
-		$(".hidden-btns").addClass('display-none');
-		this.setState({selectedPrecursor_id : ''});
+		this.componentDidMount();
 		$("#precursor").val("");
+		$("#allItemSearch").val("");
 		$("#precursor-ration").val("");
 	}
+
 
 	render() {
 		return (
@@ -237,6 +326,11 @@ export default class precursor extends React.Component {
 					<PrecursorItemsControlPanel
 						allItems = {this.state.allItems}
 						precursorItems = {this.state.precursorItems}
+						loadAllItems={this.loadAllItems.bind(this)}
+						updateSelectPrecursorItem = {this.updateSelectPrecursorItem.bind(this)}
+						addPrecursorItemClick = {this.addPrecursorItemClick.bind(this)}
+						updateSelectedPrecursorItem_idToBeRemoved = {this.updateSelectedPrecursorItem_idToBeRemoved.bind(this)}
+						removePrecursorItemClick = {this.removePrecursorItemClick.bind(this)}
 					/>
 					<h2>display</h2>
 				</div>

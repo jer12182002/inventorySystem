@@ -1,4 +1,6 @@
 .precurorItemsControlPanel-wrapper {
+	margin-top: 100px;
+
 	.main-section {
 		.panels {
 			width: 80%;
@@ -8,8 +10,10 @@
 				height: 200px;
 				overflow-y:scroll;
 				border-radius: 25px;
+				border: 2px solid black;
 				margin: 0 auto;
 				padding: 15px;
+
 
 				div {
 					font-size: 20px;
@@ -42,6 +46,20 @@
 					}
 				}
 			}
+			
+
+			.function-panel {
+				margin: 15px;
+
+				#precursor-ration {
+					width: 15%;
+				}
+
+				.btn {
+					float: right;
+				}	
+			}
+			
 		}
 
 	}

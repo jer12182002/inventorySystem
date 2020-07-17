@@ -1,4 +1,6 @@
 .precursorControlPanel-wrapper {
+	margin-top: 50px;
+	
 	.main-section {
 		.precursorPanel-display {
 			width: 80%;
@@ -23,6 +25,21 @@
 					background-color: green;
 					color: white;
 				}
+			}
+		}
+
+		.precursorPanel-wrapper {
+			width: 80%;
+			text-align: center;
+			margin-top: 25px;
+			label {
+				font-weight: 900;
+				font-size: 24px;
+				margin-right: 20px;
+			}
+
+			.btn {
+				margin: 0 5px;
 			}
 		}	
 	}

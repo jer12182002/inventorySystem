@@ -297,8 +297,9 @@ app.get('/report/precursor/loadallprecursors', (req, res)=> {
 app.post('/report/precursor/addprecursor', (req, res)=> {
 	let precursor = req.body.precursor;
 
-	let sqlQuery = `INSERT INTO precursor_list (NAME) SELECT '${precursor} FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM precursor_list WHERE NAME = '${precursor}');`;
+	let sqlQuery = `INSERT INTO precursor_list (NAME) SELECT '${precursor}' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM precursor_list WHERE NAME = '${precursor}');`;
 
+	console.log(sqlQuery);
 	connection.query(sqlQuery, (err, result) => {
 		if(err) {
 			res.send(err);
@@ -352,6 +353,35 @@ app.post('/report/precursor/deleteprecursor', (req, res) => {
 
 
 
+app.post('/report/precursor/addnewprecursoritem',(req,res) => {
+	let precursor = req.body.precursor;
+	
+	let sqlQuery = `INSERT INTO precursor_item_list (PRECURSOR_ID, ITEM_NAME, RATION) VALUES ('${precursor.precursorID}', '${precursor.newItem}', '${precursor.ration}');`;
+	
+	connection.query(sqlQuery, (err, result) => {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data : 'success'}));
+		}
+	})
+})
+
+
+
+app.post('/report/precursor/removeprecursoritem', (req,res) => {
+	let precursorItem = req.body.precursorItem;
+	console.log(precursorItem);
+	let sqlQuery = `DELETE FROM precursor_item_list WHERE ID = '${precursorItem.ID}';`;
+	console.log(sqlQuery);
+	connection.query(sqlQuery, (err, result) => {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data : 'success'}));
+		}
+	})
+})
 
 //*******************************************************************************************
 //****************************Inventroy******************************************************

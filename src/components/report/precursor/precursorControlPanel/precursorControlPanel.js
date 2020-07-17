@@ -15,7 +15,7 @@ export default class precursorControlPanel extends React.Component {
 		e.preventDefault();
 		$("#precursor").val(precursor.PRECURSOR);
 		$(".hidden-btns").removeClass("display-none");
-		this.props.updateSelectPrecursorId(e, precursor.ID);
+		this.props.updateSelectPrecursorId(precursor.ID);
 	}
 
 	
@@ -23,7 +23,7 @@ export default class precursorControlPanel extends React.Component {
 	render() {
 		return (
 			<div className="precursorControlPanel-wrapper">
-				<div className="head-section"><h3>Precursor Management</h3></div>
+				<div className="head-section text-center"><h3>Precursor Management</h3></div>
 				<div className="main-section container-fluid">
 					<div className="precursorPanel-display">
 						{this.props.precursors.map((precursor, index) =>
@@ -36,10 +36,10 @@ export default class precursorControlPanel extends React.Component {
 							<input id="precursor" type="text"/>
 						</div>
 						<div className="col-4 col-md-4">
-							<button onClick={e => this.props.precursorAction(e,"add")}>Add</button>
+							<button className="btn btn-primary"onClick={e => this.props.precursorAction(e,"add")}>Add</button>
 							<div className="hidden-btns inline-b display-none">
-								<button onClick={e => this.props.precursorAction(e,"update")}>Update</button>
-								<button onClick = {e => this.props.precursorAction(e, "delete")}>Delete</button>
+								<button className="btn btn-info" onClick={e => this.props.precursorAction(e,"update")}>Update</button>
+								<button className="btn btn-warning" onClick = {e => this.props.precursorAction(e, "delete")}>Delete</button>
 							</div>
 						</div>
 					</div>
