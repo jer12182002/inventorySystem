@@ -383,6 +383,19 @@ app.post('/report/precursor/removeprecursoritem', (req,res) => {
 	})
 })
 
+
+
+app.get('/report/precursor/displayreport', (req,res) => {
+	let sqlQuery = 'SELECT l.ORDER_ID, l.PRODUCT, l.PICKUP_ITEMS, o.PROCESS_TIME, o.CUSTOMER FROM order_item_list l INNER JOIN ongoing_order o ON L.ORDER_ID = O.ORDER_ID WHERE O.STATUS = "COMPLETED";';
+	
+	connection.query(sqlQuery, (err, result) => {
+		if(err) {
+			res.send(err);
+		}else {
+			return (res.json({data: result}));
+		}
+	})	
+})
 //*******************************************************************************************
 //****************************Inventroy******************************************************
 app.get('/inventory/actionbeforloadallitem',(req,res)=>{

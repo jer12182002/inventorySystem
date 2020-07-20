@@ -17,7 +17,9 @@ export default class precursor extends React.Component {
 			precursorItems:[],
 			selectedPrecursor_id: '', 
 			newPrecursorItem:'', 
-			selectedPrecursorItem_id:''
+			selectedPrecursorItem_id:'', 
+			orderDetails: [], 
+			orderDetailsDisplay:[]
 		}
 	}
 
@@ -26,6 +28,8 @@ export default class precursor extends React.Component {
 		this.resetState();
 		this.loadAllItems();
 		this.loadAllPrecursors();
+		this.loadOrderDetails();
+
 	}
 
 
@@ -37,7 +41,9 @@ export default class precursor extends React.Component {
 			precursorItems:[],
 			selectedPrecursor_id: '', 
 			newPrecursorItem:'', 
-			selectedPrecursorItem_id:''
+			selectedPrecursorItem_id:'',
+			orderDetails: [],
+			orderDetailsDisplay:[]
 		})
 	}
 
@@ -78,6 +84,24 @@ export default class precursor extends React.Component {
 			}
 		})
 	}
+
+
+	loadOrderDetails() {
+		console.log("Load order Details");
+
+		fetch(`http://localhost:4000/report/precursor/displayreport`)
+		.then(res => res.json())
+		.then(data => {
+			if(data.data) {
+				data.data.forEach(order => {
+					order.PICKUP_ITEMS = JSON.parse(order.PICKUP_ITEMS);
+				});
+
+				this.setState({orderDetails: data.data}, ()=>console.log(this.state.orderDetails));
+			}
+		})
+	}
+
 
 
 	organizePrecursorsData(data) {
@@ -332,7 +356,14 @@ export default class precursor extends React.Component {
 						updateSelectedPrecursorItem_idToBeRemoved = {this.updateSelectedPrecursorItem_idToBeRemoved.bind(this)}
 						removePrecursorItemClick = {this.removePrecursorItemClick.bind(this)}
 					/>
-					<h2>display</h2>
+					<div className="precursor-display-section text-center">
+						<h2>display</h2>
+						<div className="precursorDisplay-header">
+
+						</div>
+						<div className="precursorDisplay-body">
+						</div>
+					</div>
 				</div>
 			</div>
 		);
