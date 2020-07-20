@@ -31,6 +31,10 @@
 						background-color: cyan;
 						cursor: pointer;
 					}
+
+					strong {
+						font-size : 12px;
+					}
 				}
 			}
 
@@ -50,9 +54,22 @@
 
 			.function-panel {
 				margin: 15px;
+				display: inline-block;
+				
+				#allItemSearch {
+					width: 15%;
+				}
 
 				#precursor-ration {
 					width: 15%;
+				}
+				
+				#precursor-npn {
+					width: 15%;
+				}
+
+				label {
+					margin-left: 3%;
 				}
 
 				.btn {

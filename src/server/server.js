@@ -281,7 +281,7 @@ app.get('/home/modifyannouncements',(req,res)=>{
 //****************************Report*********************************************************
 //****************************Report precursor***********************************************
 app.get('/report/precursor/loadallprecursors', (req, res)=> {
-	let sqlQuery = 'SELECT P.ID, P.NAME, i.ID AS "ITEM_ID", i.ITEM_NAME, i.RATION FROM precursor_list p LEFT JOIN precursor_item_list i ON p.ID = i.PRECURSOR_ID;';
+	let sqlQuery = 'SELECT P.ID, P.NAME, i.ID AS "ITEM_ID", i.ITEM_NAME, i.RATION, i.NPN FROM precursor_list p LEFT JOIN precursor_item_list i ON p.ID = i.PRECURSOR_ID;';
 	console.log("load All precursors and Items with precursors");
 	connection.query(sqlQuery, (err, result) => {
 		if(err) {
@@ -356,7 +356,7 @@ app.post('/report/precursor/deleteprecursor', (req, res) => {
 app.post('/report/precursor/addnewprecursoritem',(req,res) => {
 	let precursor = req.body.precursor;
 	
-	let sqlQuery = `INSERT INTO precursor_item_list (PRECURSOR_ID, ITEM_NAME, RATION) VALUES ('${precursor.precursorID}', '${precursor.newItem}', '${precursor.ration}');`;
+	let sqlQuery = `INSERT INTO precursor_item_list (PRECURSOR_ID, ITEM_NAME, RATION, NPN) VALUES ('${precursor.precursorID}', '${precursor.newItem}', '${precursor.ration}','${precursor.npn}');`;
 	
 	connection.query(sqlQuery, (err, result) => {
 		if(err) {

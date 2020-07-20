@@ -278,6 +278,7 @@ export default class precursor extends React.Component {
 
 	addPrecursorItemClick (e) {
 		let ration = $("#precursor-ration").val();
+		let npn = $("#precursor-npn").val();
 
 		if(this.state.selectedPrecursor_id && this.state.newPrecursorItem && ration) {
 			fetch('http://localhost:4000/report/precursor/addnewprecursoritem', 
@@ -290,7 +291,8 @@ export default class precursor extends React.Component {
 						precursor : {
 							precursorID : this.state.selectedPrecursor_id, 
 							newItem : this.state.newPrecursorItem, 
-							ration: ration
+							ration : ration,
+							npn : npn
 						}
 					})
 				}

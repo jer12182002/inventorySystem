@@ -36,7 +36,7 @@ export default class precurorItemsControlPanel extends React.Component {
 						<div className="col-5">
 							<div className="precursorItemsPanel-display">
 								{this.props.precursorItems.map((item, index) => 
-									<div key={`precursorItem-${index}`} className="precursorItems" onClick = {e => this.precursorItemClicked(e,item.ITEM_ID)}><strong>{item.RATION}</strong> | {item.ITEM_NAME}</div>
+									<div key={`precursorItem-${index}`} className="precursorItems" onClick = {e => this.precursorItemClicked(e,item.ITEM_ID)}><strong>Ration: {item.RATION} | NPN: {item.NPN === 0? 'N/A' : item.NPN}</strong><br/>{item.ITEM_NAME}</div>
 								)}
 							</div>
 							<div className="function-panel">
@@ -56,6 +56,8 @@ export default class precurorItemsControlPanel extends React.Component {
 								<input id="allItemSearch" type="text" onChange = {e=> this.props.loadAllItems(e.target.value)}/>
 								<label>Ration/100g</label>
 								<input id="precursor-ration" type="number" step="0.001" placeholder = "0.000" min="0"/>
+								<label>NPN</label>
+								<input id="precursor-npn" type="number" min=""/>
 								<button id="addPrecursorItemBtn" className="btn btn-primary"onClick={e => this.props.addPrecursorItemClick(e)}>Add</button>
 							</div>
 						</div>
