@@ -19,7 +19,9 @@ export default class precursor extends React.Component {
 			newPrecursorItem:'', 
 			selectedPrecursorItem_id:'', 
 			orderDetails: [], 
-			orderDetailsDisplay:[]
+			orderDetailsDisplay:[], 
+			startDate : `${new Date().getFullYear()}-01-01`,
+			endDate: new Date().toISOString().slice(0, 10)
 		}
 	}
 
@@ -95,9 +97,10 @@ export default class precursor extends React.Component {
 			if(data.data) {
 				data.data.forEach(order => {
 					order.PICKUP_ITEMS = JSON.parse(order.PICKUP_ITEMS);
+					order.PROCESS_TIME = new Date(order.PROCESS_TIME).toISOString().slice(0, 10);
 				});
 
-				this.setState({orderDetails: data.data}, ()=>console.log(this.state.orderDetails));
+				this.setState({orderDetails: data.data, orderDetailsDisplay: this.organizeOrderDetails(data.data)});
 			}
 		})
 	}
@@ -140,6 +143,11 @@ export default class precursor extends React.Component {
 	}
 
 
+
+	organizeOrderDetails(startDate = this.state.startDate, endDate = this.state.endDate) {
+
+		return this.state.orderDetails.filter(orderDetails => orderDetails.PROCESS_TIME >= startDate && orderDetails.PROCESS_TIME <= endDate);
+	}
 
 
 	//========================================Precursor============================================================
@@ -334,6 +342,29 @@ export default class precursor extends React.Component {
 	}
 
 
+
+	//=============================Date on change========================================================
+ 	dateOnChangeClicked(e) {
+ 		e.preventDefault();
+ 		
+ 		if($("#startDate").val() >= $("#endDate").val()) {
+ 			alert("@#@!#");
+ 			$("#startDate").val(this.state.startDate);
+ 			$("#endDate").val(this.state.endDate);
+ 		}
+
+ 		this.setState({
+ 			startDate : $("#startDate").val(),
+			endDate : $("#endDate").val(),
+			orderDetailsDisplay : this.organizeOrderDetails( $("#startDate").val(),$("#endDate").val())
+ 		})
+ 		
+ 		console.log(this.organizeOrderDetails( $("#startDate").val(),$("#endDate").val()));
+ 	}
+
+
+
+
 	render() {
 		return (
 			<div className="precursor-wrapper">
@@ -356,14 +387,24 @@ export default class precursor extends React.Component {
 						updateSelectedPrecursorItem_idToBeRemoved = {this.updateSelectedPrecursorItem_idToBeRemoved.bind(this)}
 						removePrecursorItemClick = {this.removePrecursorItemClick.bind(this)}
 					/>
-					<div className="precursor-display-section text-center">
-						<h2>display</h2>
-						<div className="precursorDisplay-header">
 
-						</div>
-						<div className="precursorDisplay-body">
-						</div>
+
+					<div className="precursor-display-section text-center">
+						{this.state.selectedPrecursor_id === '' ?
+							<h2>Please choose precursor to generate report</h2>
+							:
+							<>
+							<h2>display</h2>
+							<div className="precursorDisplay-header">
+								<input id = "startDate" type="date" defaultValue={this.state.startDate} onChange = {e => this.dateOnChangeClicked(e)}></input>
+								<input id = "endDate" type="date" defaultValue={this.state.endDate} onChange = {e => this.dateOnChangeClicked(e)}></input>
+							</div>
+							<div className="precursorDisplay-body">
+							</div>
+							</>
+						}
 					</div>
+
 				</div>
 			</div>
 		);
