@@ -44,7 +44,7 @@ export default class precursor extends React.Component {
 			selectedPrecursor_id: '', 
 			newPrecursorItem:'', 
 			selectedPrecursorItem_id:'',
-			orderDetails: [],
+			allOrderDetails: [],
 			orderDetailsDisplay:[]
 		})
 	}
@@ -100,7 +100,7 @@ export default class precursor extends React.Component {
 					order.PROCESS_TIME = new Date(order.PROCESS_TIME).toISOString().slice(0, 10);
 				});
 
-				this.setState({orderDetails: data.data, orderDetailsDisplay: this.organizeOrderDetails(data.data)});
+				this.setState({allOrderDetails : data.data});
 			}
 		})
 	}
@@ -143,11 +143,6 @@ export default class precursor extends React.Component {
 	}
 
 
-
-	organizeOrderDetails(startDate = this.state.startDate, endDate = this.state.endDate) {
-
-		return this.state.orderDetails.filter(orderDetails => orderDetails.PROCESS_TIME >= startDate && orderDetails.PROCESS_TIME <= endDate);
-	}
 
 
 	//========================================Precursor============================================================
@@ -355,13 +350,53 @@ export default class precursor extends React.Component {
  			$("#endDate").val(this.state.endDate);
  		}
 
+ 		console.log(this.state.precursorItems);
+ 		// let orderDetailsWithDate = this.state.allOrderDetails.filter(order => order.PROCESS_TIME >= $("#startDate").val() 
+ 		// 																&& order.PROCESS_TIME <= $("#endDate").val(this.state.endDate)
+ 		// 																&& this.state.precursorItems.findIndex(item => item.ITEM_NAME === order.PRODUCT) !== -1
+ 		// 															);
+ 		let orderDetails = [];
+
+ 		this.state.allOrderDetails.forEach(order => {
+ 			// 1. filter out orderItems in the selected period time 
+			if(order.PROCESS_TIME >= $("#startDate").val() && order.PROCESS_TIME <= $("#endDate").val()) {
+				
+				//2. iterate items in order and save ration if the item is in the group of selected precursor
+				let ration = -1 ;
+				this.state.precursorItems.forEach(item => {if(item.ITEM_NAME === order.PRODUCT) ration = item.RATION});
+				
+				if(ration !== -1) {
+					let totalQTY = order.PICKUP_ITEMS.reduce((total, item) => total + item.PICKUPVALUE, 0);
+
+					orderDetails.push({
+						ORDER_ID : order.ORDER_ID, 
+						CUSTOMER : order.CUSTOMER,
+						PRODUCT : order.PRODUCT, 
+						RATION: ration, 
+						NPN: order.NPN,
+						TOTALQTY : totalQTY,
+						TOTALRATION: totalQTY*ration
+
+					})
+
+
+				}
+			} 			
+
+ 			// orderDetails.push({
+ 			// 	ORDER_ID : order.ORDER_ID, 
+ 			// 	PRODUCT : order.PRODUCT
+ 			// });
+ 		})
+
+ 		console.log(orderDetails);
  		this.setState({
  			startDate : $("#startDate").val(),
 			endDate : $("#endDate").val(),
-			orderDetailsDisplay : this.organizeOrderDetails( $("#startDate").val(),$("#endDate").val())
+			orderDetailsDisplay : []
  		})
  		
- 		console.log(this.organizeOrderDetails( $("#startDate").val(),$("#endDate").val()));
+ 		
  	}
 
 
