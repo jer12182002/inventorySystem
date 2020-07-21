@@ -2,6 +2,7 @@ import React from 'react';
 import './precursor.scss';
 import PrecursorControlPanel from './precursorControlPanel/precursorControlPanel';
 import PrecursorItemsControlPanel from './precursorItemsControlPanel/precursorItemsControlPanel';
+import PrecursorDisplay from './precursorDisplay/precursorDisplay';
 
 import $ from 'jquery';
 
@@ -345,16 +346,11 @@ export default class precursor extends React.Component {
  		e.preventDefault();
  		
  		if($("#startDate").val() >= $("#endDate").val()) {
- 			alert("@#@!#");
+ 			alert("Please Choose the appropriate period of dates");
  			$("#startDate").val(this.state.startDate);
  			$("#endDate").val(this.state.endDate);
  		}
 
- 		console.log(this.state.precursorItems);
- 		// let orderDetailsWithDate = this.state.allOrderDetails.filter(order => order.PROCESS_TIME >= $("#startDate").val() 
- 		// 																&& order.PROCESS_TIME <= $("#endDate").val(this.state.endDate)
- 		// 																&& this.state.precursorItems.findIndex(item => item.ITEM_NAME === order.PRODUCT) !== -1
- 		// 															);
  		let orderDetails = [];
 
  		this.state.allOrderDetails.forEach(order => {
@@ -362,8 +358,17 @@ export default class precursor extends React.Component {
 			if(order.PROCESS_TIME >= $("#startDate").val() && order.PROCESS_TIME <= $("#endDate").val()) {
 				
 				//2. iterate items in order and save ration if the item is in the group of selected precursor
+				let precursor = '';
 				let ration = -1 ;
-				this.state.precursorItems.forEach(item => {if(item.ITEM_NAME === order.PRODUCT) ration = item.RATION});
+				let npn = "";
+
+				this.state.precursorItems.forEach(item => {
+					if(item.ITEM_NAME === order.PRODUCT) {
+						precursor = item.NAME;
+						ration = item.RATION;
+						npn = item.NPN;
+					}
+				});
 				
 				if(ration !== -1) {
 					let totalQTY = order.PICKUP_ITEMS.reduce((total, item) => total + item.PICKUPVALUE, 0);
@@ -371,29 +376,25 @@ export default class precursor extends React.Component {
 					orderDetails.push({
 						ORDER_ID : order.ORDER_ID, 
 						CUSTOMER : order.CUSTOMER,
+						PRECURSOR : precursor,
 						PRODUCT : order.PRODUCT, 
 						RATION: ration, 
-						NPN: order.NPN,
+						NPN : npn,
 						TOTALQTY : totalQTY,
-						TOTALRATION: totalQTY*ration
-
+						TOTALRATION : totalQTY * ration,
+						PROCESS_TIME : order.PROCESS_TIME
 					})
 
 
 				}
 			} 			
-
- 			// orderDetails.push({
- 			// 	ORDER_ID : order.ORDER_ID, 
- 			// 	PRODUCT : order.PRODUCT
- 			// });
  		})
 
  		console.log(orderDetails);
  		this.setState({
  			startDate : $("#startDate").val(),
 			endDate : $("#endDate").val(),
-			orderDetailsDisplay : []
+			orderDetailsDisplay : orderDetails
  		})
  		
  		
@@ -425,23 +426,16 @@ export default class precursor extends React.Component {
 						removePrecursorItemClick = {this.removePrecursorItemClick.bind(this)}
 					/>
 
-
-					<div className="precursor-display-section text-center">
-						{this.state.selectedPrecursor_id === '' ?
-							<h2>Please choose precursor to generate report</h2>
-							:
-							<>
-							<h2>display</h2>
-							<div className="precursorDisplay-header">
-								<input id = "startDate" type="date" defaultValue={this.state.startDate} onChange = {e => this.dateOnChangeClicked(e)}></input>
-								<input id = "endDate" type="date" defaultValue={this.state.endDate} onChange = {e => this.dateOnChangeClicked(e)}></input>
-							</div>
-							<div className="precursorDisplay-body">
-							</div>
-							</>
-						}
-					</div>
-
+					{this.state.selectedPrecursor_id === ''?
+						<h2 className="text-center">Please Choose A Precursor to generate the report</h2>
+						:
+						<PrecursorDisplay
+							startDate = {this.state.startDate}
+							endDate = {this.state.endDate}
+							orderDetailsDisplay = {this.state.orderDetailsDisplay}
+							dateOnChangeClicked = {this.dateOnChangeClicked.bind(this)}
+						/>
+					}
 				</div>
 			</div>
 		);

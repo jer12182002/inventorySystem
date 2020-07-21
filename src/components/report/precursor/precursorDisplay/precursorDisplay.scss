@@ -1,0 +1,31 @@
+.precursorDisplay-wrapper {
+	.head-section {
+		text-align: center;
+		input[type="date"] {
+			margin: 10px;
+		}
+	}
+
+	.main-section {
+
+		table {
+			width: 90%;
+			margin: 0 auto;
+			background-color: lightyellow;
+
+			td {
+				border: 2px solid black;
+			}
+
+			thead {
+				
+				font-weight: 900;
+
+				tr {
+					border-bottom: 3px solid black; 
+				}
+			}
+
+		}
+	}
+}
