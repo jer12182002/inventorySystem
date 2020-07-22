@@ -30,13 +30,13 @@ export default class precurorItemsControlPanel extends React.Component {
 	render() {
 		return (
 			<div className="precurorItemsControlPanel-wrapper">
-				<div className="head-section text-center"><h3>Precursor Items Management</h3></div>
+				<div className="head-section text-center"><h3>Cites Items Management</h3></div>
 				<div className="main-section">
 					<div className="panels row">
 						<div className="col-5">
 							<div className="precursorItemsPanel-display">
 								{this.props.precursorItems.map((item, index) => 
-									<div key={`precursorItem-${index}`} className="precursorItems" onClick = {e => this.precursorItemClicked(e,item.ITEM_ID)}><strong>Ration: {item.RATION} | NPN: {item.NPN === 0? 'N/A' : item.NPN}</strong><br/>{item.ITEM_NAME}</div>
+										<div key={`precursorItem-${index}`} className="precursorItems" onClick = {e => this.precursorItemClicked(e,item.ITEM_ID)}><strong>Ration: {item.RATION} | NPN: {item.NPN === 0? 'N/A' : item.NPN}</strong><br/>{item.ITEM_NAME}</div>
 								)}
 							</div>
 							<div className="function-panel">

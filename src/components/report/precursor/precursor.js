@@ -350,6 +350,11 @@ export default class precursor extends React.Component {
  			$("#startDate").val(this.state.startDate);
  			$("#endDate").val(this.state.endDate);
  		}
+ 	}
+
+
+ 	generateBtnClicked(e) {
+ 		e.preventDefault();
 
  		let orderDetails = [];
 
@@ -390,16 +395,14 @@ export default class precursor extends React.Component {
 			} 			
  		})
 
- 		console.log(orderDetails);
+
  		this.setState({
  			startDate : $("#startDate").val(),
 			endDate : $("#endDate").val(),
 			orderDetailsDisplay : orderDetails
  		})
  		
- 		
  	}
-
 
 
 
@@ -407,7 +410,7 @@ export default class precursor extends React.Component {
 		return (
 			<div className="precursor-wrapper">
 				<div className="head-section text-center">
-					<h1>Precursor Report</h1>
+					<h1>Cites Report</h1>
 				</div>
 				<div className="main-section">
 					<PrecursorControlPanel 
@@ -427,13 +430,14 @@ export default class precursor extends React.Component {
 					/>
 
 					{this.state.selectedPrecursor_id === ''?
-						<h2 className="text-center">Please Choose A Precursor to generate the report</h2>
+						<h2 className="text-center">Please Choose A Cites to generate the report</h2>
 						:
 						<PrecursorDisplay
 							startDate = {this.state.startDate}
 							endDate = {this.state.endDate}
 							orderDetailsDisplay = {this.state.orderDetailsDisplay}
 							dateOnChangeClicked = {this.dateOnChangeClicked.bind(this)}
+							generateBtnClicked = {this.generateBtnClicked.bind(this)}
 						/>
 					}
 				</div>

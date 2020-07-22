@@ -11,9 +11,10 @@ export default class precursorDisplay extends React.Component {
 		return (
 			<div className = "precursorDisplay-wrapper text-center">
 				<div className = "head-section">
-					<h2>Display</h2>
+					<h2>Cites Report</h2>
 					<input id = "startDate" type="date" defaultValue={this.props.startDate} onChange = {e => this.props.dateOnChangeClicked(e)}></input>
 					<input id = "endDate" type="date" defaultValue={this.props.endDate} onChange = {e => this.props.dateOnChangeClicked(e)}></input>
+					<button type="button" onClick = {e => this.props.generateBtnClicked(e)}>Generate</button>
 				</div>
 				<div className = "main-section">
 					<table>

@@ -23,7 +23,7 @@ export default class precursorControlPanel extends React.Component {
 	render() {
 		return (
 			<div className="precursorControlPanel-wrapper">
-				<div className="head-section text-center"><h3>Precursor Management</h3></div>
+				<div className="head-section text-center"><h3>Cites Management</h3></div>
 				<div className="main-section container-fluid">
 					<div className="precursorPanel-display">
 						{this.props.precursors.map((precursor, index) =>
@@ -32,7 +32,7 @@ export default class precursorControlPanel extends React.Component {
 					</div>
 					<div className="precursorPanel-wrapper row">
 						<div className="col-8 col-md-8">
-							<label>Precursor</label>
+							<label>Cites</label>
 							<input id="precursor" type="text"/>
 						</div>
 						<div className="col-4 col-md-4">
